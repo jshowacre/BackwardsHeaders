@@ -1,4 +1,3 @@
-#include <locale>
 #include <queue>
 
 #include <windows.h>
@@ -30,41 +29,6 @@ std::queue<SAYINFO> SpeakQueue;
 HANDLE SpeakerThread = NULL;
 bool Paused = false;
 
-// ----------------------------------------------------------------------------////
-BOOL WINAPI UnicodeToAnsi( LPWSTR pszwUniString, LPSTR pszAnsiBuff, DWORD dwAnsiBuffSize )
-{
-	int iRet = 0;
-	iRet = WideCharToMultiByte(
-		CP_ACP,
-		0,
-		pszwUniString,
-		-1,
-		pszAnsiBuff,
-		dwAnsiBuffSize,
-		NULL,
-		NULL
-	);    
-	return ( 0 != iRet );
-}
-// ----------------------------------------------------------------------------////
-BOOL WINAPI AnsiToUnicode( LPSTR  pszAnsiString, LPWSTR pszwUniBuff, DWORD dwUniBuffSize )
-{
-	int iRet = 0;
-	iRet = MultiByteToWideChar(
-		CP_ACP,
-		0,
-		pszAnsiString,
-		-1,
-		pszwUniBuff,
-		dwUniBuffSize
-	);
-	return ( 0 != iRet );
-}
-
-bool charToWChar(char const * Source, wchar_t * Dest, size_t DestLen) {
-  return MultiByteToWideChar(CP_ACP, 0, Source, strlen(Source), Dest, DestLen) != 0;
-}
-
 LUA_FUNCTION( Say )
 {
 	//form message
@@ -82,7 +46,6 @@ LUA_FUNCTION( Say )
 	::MultiByteToWideChar(CP_ACP, NULL, myString , -1, pwchString, iRequiredSize);
 	
 	info.msg = pwchString;
-	
 	info.args = Lua()->Top();
 	
 	//volume and rate optional arguments
