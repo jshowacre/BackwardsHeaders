@@ -75,7 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\..\SourceSDK\gmod\CStateManager\CStateManager.cpp" />
-    <ClCompile Include="..\..\..\..\Jake%27s Stuff\GModModules\gmcl_extras\gmcl_extras\main.cpp" />
+    <ClCompile Include="..\..\..\..\Jake%27s Stuff\MyModules\gmcl_extras\gmcl_extras\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

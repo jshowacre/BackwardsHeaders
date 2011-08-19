@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Jake%27s Stuff\GModModules\gm_modelinfo\gm_modelinfo\main.cpp">
+    <ClCompile Include="..\..\..\..\Jake%27s Stuff\MyModules\gm_modelinfo\gm_modelinfo\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
