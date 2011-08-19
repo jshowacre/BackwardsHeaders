@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Jake%27s Stuff\GModModules\gm_stringtables\gm_stringtables\main.cpp">
+    <ClCompile Include="..\..\..\..\..\..\..\SourceSDK\gmod\CStateManager\CStateManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\SourceSDK\gmod\CStateManager\CStateManager.cpp">
+    <ClCompile Include="..\..\..\..\Jake%27s Stuff\MyModules\gm_stringtables\gm_stringtables\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
