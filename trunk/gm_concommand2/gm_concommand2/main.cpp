@@ -125,7 +125,7 @@ void OnLuaCmdRan( const CCommand &args )
 		
 		ILuaObject *retrn = NULL;
 
-		Msg( "Playerindex %i ran command '%s'\n", plyIndex, args[0] );
+		//Msg( "Playerindex %i ran command '%s'\n", plyIndex, args[0] );
 
 		if ( gLua->IsServer() ) // Only the server cares who ran the command
 		{
