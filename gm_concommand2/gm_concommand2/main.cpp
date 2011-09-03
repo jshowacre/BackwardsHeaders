@@ -297,11 +297,11 @@ int Init( lua_State *L ) {
 
 	CreateInterfaceFn ServerFactory = Sys_GetFactory( SERVER_LIB );
 	if ( !ServerFactory )
-		Lua()->Error( "gmcl_extras: Error getting " SERVER_LIB " factory.\n" );
+		Lua()->Error( "gm_concommand2: Error getting " SERVER_LIB " factory.\n" );
 
 	g_IServerGameClients = ( IServerGameClients* )ServerFactory( INTERFACEVERSION_SERVERGAMECLIENTS, NULL );
 	if ( !g_IServerGameClients )
-		Lua()->Error( "gmcl_extras: Error getting IServerGameClients interface.\n" );
+		Lua()->Error( "gm_concommand2: Error getting IServerGameClients interface.\n" );
 
 	if ( !isVFNHooked && Lua()->IsServer() )
 	{
