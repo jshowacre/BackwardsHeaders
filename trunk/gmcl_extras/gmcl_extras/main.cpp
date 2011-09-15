@@ -35,7 +35,6 @@
 #include "gmod/CStateManager/vfnhook.h"
 
 //Lua module interface
-#include "interface.h"
 #include "gmod/CStateManager/GMLuaModule.h"
 #include "gmod/CStateManager/CStateManager.h"
 
@@ -80,7 +79,7 @@
 
 #include "steamworks.h"
 
-ISteamClient009 *g_SteamClient = NULL;
+ISteamClient012 *g_SteamClient = NULL;
 IClientEngine *g_ClientEngine = NULL;
 ISteamFriends009* g_SteamFriends = NULL;
 
@@ -329,7 +328,7 @@ LUA_FUNCTION( PrintConsoleColor )
 
 	MsgCol->UnReference();
 
-	return 1;
+	return 0;
 }
 
 LUA_FUNCTION( IsConsoleVisible )
@@ -1430,9 +1429,9 @@ int Open( lua_State *L ) {
 	if ( !g_ClientEngine )
 		Lua()->Error( "gmcl_extras: Error getting IClientEngine interface.\n" );
 
-	g_SteamClient = ( ISteamClient009* )ClientEngineFactory( STEAMCLIENT_INTERFACE_VERSION_009, NULL );
+	g_SteamClient = ( ISteamClient012* )ClientEngineFactory( STEAMCLIENT_INTERFACE_VERSION_012, NULL );
 	if ( !g_ClientEngine )
-		Lua()->Error( "gmcl_extras: Error getting ISteamClient009 interface.\n" );
+		Lua()->Error( "gmcl_extras: Error getting ISteamClient012 interface.\n" );
 
 	g_EngineServer = ( IVEngineServer* )EngineFactory( INTERFACEVERSION_VENGINESERVER, NULL );
 	if ( !g_EngineServer )
