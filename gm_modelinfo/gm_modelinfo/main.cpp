@@ -376,7 +376,8 @@ const inline mstudioseqdesc_t* pSeqdesc( studiohdr_t* m_pStudioHdr, int i = 0 )
 	//virtualgroup_t *pGroup = pVModel->pSeqGroup( i );
 	virtualgroup_t *pGroup = &pVModel->m_group[ pVModel->m_seq[i].group ];
 
-	const studiohdr_t *pStudioHdr = pGroup->GetStudioHdr();
+	//const studiohdr_t *pStudioHdr = pGroup->GetStudioHdr();
+	const studiohdr_t *pStudioHdr = g_IVModelInfo->FindModel( pGroup->cache );
 	Assert( pStudioHdr );
 
 	return pStudioHdr->pLocalSeqdesc( pVModel->m_seq[i].index );
@@ -391,7 +392,8 @@ const inline mstudioanimdesc_t* pAnimdesc( studiohdr_t* m_pStudioHdr, int i = 0 
 	Assert( pVModel );
 
 	virtualgroup_t *pGroup = &pVModel->m_group[ pVModel->m_anim[i].group ];
-	const studiohdr_t *pStudioHdr = pGroup->GetStudioHdr();
+	//const studiohdr_t *pStudioHdr = pGroup->GetStudioHdr();
+	const studiohdr_t *pStudioHdr = g_IVModelInfo->FindModel( pGroup->cache );
 	Assert( pStudioHdr );
 
 	return pStudioHdr->pLocalAnimdesc( pVModel->m_anim[i].index );

@@ -356,6 +356,20 @@ LUA_FUNCTION( GetConVarMax )
 	return 0;
 }
 
+LUA_FUNCTION( Remove )
+{
+	Lua()->CheckType( 1, GLua::TYPE_CONVAR );
+
+	ConVar *cvar = (ConVar*) Lua()->GetUserData( 1 );
+
+	if (!cvar)
+		Lua()->Error("Invalid ConVar!\n");
+
+	g_ICvar->UnregisterConCommand( cvar );
+	delete cvar;
+	return 0;
+}
+
 LUA_FUNCTION( ExecuteCommandOnClient )
 {
 	if ( !pServer )
@@ -534,6 +548,7 @@ int Open( lua_State *L ) {
 		conVarMeta->SetMember( "HasFlag", ConVarHasFlag );
 		conVarMeta->SetMember( "GetMin", GetConVarMin );
 		conVarMeta->SetMember( "GetMax", GetConVarMax );
+		conVarMeta->SetMember( "Remove", Remove );
 	}
 	conVarMeta->UnReference();
 
