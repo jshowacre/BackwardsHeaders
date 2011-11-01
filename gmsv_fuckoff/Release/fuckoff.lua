@@ -1,5 +1,7 @@
 require("fuckoff")
 
+-- fuckoff.Drop( ply:EntIndex(), "Some reason" )
+
 hook.Add( "ClientConnect", "fuckoff1", function( name, steamid, ip, index )
 	print( "ClientConnect", name, steamid, ip, index )
 end )
