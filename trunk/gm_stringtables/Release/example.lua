@@ -3,7 +3,7 @@ hook.Add( "OnLoadingURLChanged", "OnURLChanged", function( url ) -- Can override
 end )
 
 hook.Add( "OnStringTableChanged", "OnTableChanged", function( stringTable, stringNumber, newString )	
-	if stringTable:GetName() == "GModGameInfo" and newString == "loading_url" then
+	if stringTable:GetName() == "OgfGiyegPNbFOf" and newString == "loading_url" then
 		local oldurl = stringTable:GetString( stringNumber )
 		local newurl = hook.Call( "OnLoadingURLChanged", nil, oldurl )
 		if newurl and newurl != oldurl then
@@ -13,7 +13,7 @@ hook.Add( "OnStringTableChanged", "OnTableChanged", function( stringTable, strin
 end )
 
 hook.Add( "InstallStringTableCallback", "InstallCallback", function( tableName )
-	if tableName == "GModGameInfo" then
+	if tableName == "OgfGiyegPNbFOf" then
 		return true
 	end
 end )
