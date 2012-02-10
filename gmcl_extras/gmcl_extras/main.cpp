@@ -1,3 +1,5 @@
+#pragma comment (lib, "tier0.lib")
+#pragma comment (lib, "tier1.lib")
 #pragma comment (linker, "/NODEFAULTLIB:libcmt")
 
 #ifdef _LINUX
@@ -60,11 +62,12 @@
 #include "public/game/client/IGameClientExports.h" // IGameClientExports
 #include "cdll_client_int.h"
 #include "modes.h" // Video mode struct
-#include "public/game/server/iplayerinfo.h"
+#include "game/server/iplayerinfo.h"
 
 #include "vgui/IVGui.h"
 #include "vgui/VGUI.h"
 #include "vgui_controls/panel.h"
+#include "ienginevgui.h"
 
 // CVar
 #include "tier1/iconvar.h"
@@ -85,7 +88,7 @@ ISteamFriends009* g_SteamFriends = NULL;
 
 IVEngineClient *g_EngineClient = NULL;
 IVEngineServer *g_EngineServer = NULL;
-//IEngineVGui *g_EngineVGUI = NULL;
+IEngineVGui *g_EngineVGUI = NULL;
 IGameUI *g_GameUI = NULL;
 IGameUIFuncs *g_GameUIFuncs = NULL;
 IGameConsole *g_GameConsole = NULL;
@@ -864,6 +867,31 @@ LUA_FUNCTION( SetMainMenuOverride )
 	return 0;
 }
 
+LUA_FUNCTION( GetPanel )
+{
+	Lua()->CheckType( 1, GLua::TYPE_NUMBER );
+	Lua()->CheckType( 2, GLua::TYPE_PANEL );
+
+	vgui::VPANEL root = g_EngineVGUI->GetPanel((VGuiPanel_t)Lua()->GetInteger(1));
+	vgui::Panel *pPanel = *(vgui::Panel **)Lua()->GetUserData( 2 );
+	//pPanel->SetParent( root );
+
+	/*
+	for(int i=0;i<vgui::ipanel()->GetChildCount(root);i++)
+	{
+		vgui::VPANEL child = vgui::ipanel()->GetChild(parent, i);
+		if(Q_strcmp(name, vgui::ipanel()->GetName(child)) == 0) return
+		child;
+	}
+
+	ILuaObject *pPanelMetaTable = Lua()->GetMetaTable( "Panel", GLua::TYPE_PANEL );
+		Lua()->PushUserData( pPanelMetaTable, &pPanel );
+	pPanelMetaTable->UnReference();
+	return 1;
+	*/
+	return 0;
+}
+
 LUA_FUNCTION( IsMainMenuVisible )
 {
 	Lua()->Push( g_GameUI->IsMainMenuVisible() );
@@ -1435,11 +1463,19 @@ int Open( lua_State *L ) {
 
 	g_EngineServer = ( IVEngineServer* )EngineFactory( INTERFACEVERSION_VENGINESERVER, NULL );
 	if ( !g_EngineServer )
-		Lua()->Error( "gmcl_extras: Error getting IVEngineServer interface.\n" );
+	{
+		g_EngineServer = ( IVEngineServer* )EngineFactory( "VEngineServerGMod021", NULL );
+		if ( !g_EngineServer )
+			Lua()->Error( "gmcl_extras: Error getting IVEngineServer interface. <BETA>\n" );
+	}
 	
 	g_EngineClient = ( IVEngineClient* )EngineFactory( VENGINE_CLIENT_INTERFACE_VERSION, NULL );
 	if ( !g_EngineClient )
-		Lua()->Error( "gmcl_extras: Error getting IVEngineClient interface.\n" );
+	{
+		g_EngineClient = ( IVEngineClient* )EngineFactory( "VGMODEngineClient013", NULL );
+		if ( !g_EngineClient )
+			Lua()->Error( "gmcl_extras: Error getting IVEngineClient interface. <BETA>\n" );
+	}
 	
 	g_Panel = (vgui::IPanel*) VGUI2Factory( VGUI_PANEL_INTERFACE_VERSION, NULL );
 	if ( !g_Panel )
@@ -1469,7 +1505,11 @@ int Open( lua_State *L ) {
 
 	g_GameUI = ( IGameUI* )GameUIFactory( GAMEUI_INTERFACE_VERSION, NULL );
 	if ( !g_GameUI )
-		Lua()->Error( "gmcl_extras: Error getting IGameUI interface.\n" );
+	{
+		g_GameUI = ( IGameUI* )GameUIFactory( "GMODGameUI011", NULL );
+		if ( !g_GameUI )
+			Lua()->Error( "gmcl_extras: Error getting IGameUI interface. <BETA>\n" );
+	}
 
 	g_GameUIFuncs = ( IGameUIFuncs* )EngineFactory( VENGINE_GAMEUIFUNCS_VERSION, NULL );
 	if ( !g_GameUIFuncs )
@@ -1477,7 +1517,11 @@ int Open( lua_State *L ) {
 
 	g_BaseClientDLL = ( IBaseClientDLL* )ClientFactory( CLIENT_DLL_INTERFACE_VERSION, NULL );
 	if ( !g_BaseClientDLL )
-		Lua()->Error( "gmcl_extras: Error getting IBaseClientDLL interface.\n" );
+	{
+		g_BaseClientDLL = ( IBaseClientDLL* )ClientFactory( "VGMODClient016", NULL );
+		if ( !g_BaseClientDLL )
+			Lua()->Error( "gmcl_extras: Error getting IBaseClientDLL interface. <BETA>\n" );
+	}
 
 	g_GameClientExports = ( IGameClientExports* )ClientFactory( GAMECLIENTEXPORTS_INTERFACE_VERSION, NULL );
 	if ( !g_BaseClientDLL )
@@ -1485,7 +1529,11 @@ int Open( lua_State *L ) {
 	
 	g_FileSystem = ( IFileSystem* )FileSystemFactory( FILESYSTEM_INTERFACE_VERSION, NULL );
 	if ( !g_FileSystem )
-		Lua()->Error( "gmcl_extras: Error getting IFileSystem interface.\n" );
+	{
+		g_FileSystem = ( IFileSystem* )FileSystemFactory( "VGModFileSystem019", NULL );
+		if ( !g_FileSystem )
+			Lua()->Error( "gmcl_extras: Error getting IFileSystem interface. <BETA>\n" );
+	}
 
 	g_ClientEntityList = ( IClientEntityList* )ClientFactory( VCLIENTENTITYLIST_INTERFACE_VERSION, NULL );
 	if ( !g_ClientEntityList )
@@ -1494,6 +1542,11 @@ int Open( lua_State *L ) {
 	g_IVModelInfoClient = ( IVModelInfoClient* )EngineFactory( VMODELINFO_CLIENT_INTERFACE_VERSION, NULL );
 	if ( !g_IVModelInfoClient )
 		Lua()->Error( "gmcl_extras: Error getting IVModelInfoClient interface.\n" );
+
+	g_EngineVGUI = ( IEngineVGui* )EngineFactory( VENGINE_VGUI_VERSION, NULL );
+	if ( !g_EngineVGUI )
+		Lua()->Error( "gmcl_extras: Error getting IEngineVGui interface.\n" );
+		
 	
 	Lua()->NewGlobalTable("console");
 		ILuaObject *console = Lua()->GetGlobal("console");
@@ -1617,6 +1670,16 @@ int Open( lua_State *L ) {
 		client->SetMember( "GetDXSupportLevel", GetDXSupportLevel );
 
 	client->UnReference();
+
+	/*Lua()->SetGlobal( "SetParent", GetPanel );
+
+	Lua()->SetGlobal( "PANEL_ROOT", (float) PANEL_ROOT );		
+	Lua()->SetGlobal( "PANEL_GAMEUIDLL", (float) PANEL_GAMEUIDLL );		
+	Lua()->SetGlobal( "PANEL_CLIENTDLL", (float) PANEL_CLIENTDLL );		
+	Lua()->SetGlobal( "PANEL_TOOLS", (float) PANEL_TOOLS );
+	Lua()->SetGlobal( "PANEL_INGAMESCREENS", (float) PANEL_INGAMESCREENS );
+	Lua()->SetGlobal( "PANEL_GAMEDLL", (float) PANEL_GAMEDLL );
+	Lua()->SetGlobal( "PANEL_CLIENTDLL_TOOLS", (float) PANEL_CLIENTDLL_TOOLS );*/
 
 	Color Blue( 0, 162, 232, 255 );
 	Color White( 255, 255, 255, 255 );
