@@ -31,7 +31,6 @@ public:
 	virtual const USERID_t	GetNetworkID() const = 0; // network wide ID
 	virtual const char		*GetClientName() const = 0;	// returns client name
 	virtual INetChannel		*GetNetChannel() = 0; // returns client netchannel
-	//virtual IServer			*GetServer() = 0; // returns the object server the client belongs to
 	virtual void			*GetServer() = 0; // returns the object server the client belongs to
 	virtual const char		*GetUserSetting(const char *cvar) const = 0; // returns a clients FCVAR_USERINFO setting
 	virtual const char		*GetNetworkIDString() const = 0; // returns a human readable representation of the network id

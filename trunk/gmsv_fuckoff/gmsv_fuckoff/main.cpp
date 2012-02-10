@@ -1,9 +1,11 @@
 #pragma comment (linker, "/NODEFAULTLIB:libcmt")
 
 #ifdef _LINUX
+	#define VTABLE_OFFSET 1
 	#define SERVER_LIB "server.so"
 	#define ENGINE_LIB "engine.so"
 #else
+	#define VTABLE_OFFSET 0
 	#define SERVER_LIB "server.dll"
 	#define ENGINE_LIB "engine.dll"
 #endif
@@ -61,41 +63,54 @@ DEFVFUNC_( origNetworkIDValidated, void, ( IServerGameClients *ISrvGmCl, const c
 void VFUNC newNetworkIDValidated( IServerGameClients *ISrvGmCl, const char *pszUserName, const char *pszNetworkID ) {
 	
 	int pEntIndex = getIndexFromSteamID( pszNetworkID );
+	edict_t *pEntity = g_EngineServer->PEntityOfEntIndex( pEntIndex );
 
-	ILuaObject* hook = gLua->GetGlobal("hook");
-	ILuaObject* hookCall = hook->GetMember("Call");
-
-	gLua->Push(hookCall);
-		gLua->Push("SteamIDValidated");
-		gLua->PushNil();
-		gLua->Push(pszUserName);
-		gLua->Push(pszNetworkID);
-		gLua->Push((float)pEntIndex);
-	gLua->Call(5, 1);
-
-	hookCall->UnReference();
-	hook->UnReference();
-
-	ILuaObject* ret = gLua->GetReturn(0);
-
-	if ( ret->GetType() == GLua::TYPE_STRING )
+	if ( pEntity != NULL && !pEntity->IsFree() )
 	{
-		const char* reason = ret->GetString();
-		ret->UnReference();
+		const char* steamID = g_EngineServer->GetPlayerNetworkIDString( pEntity );
+
+		ILuaObject* hook = gLua->GetGlobal("hook");
+		ILuaObject* hookCall = hook->GetMember("Call");
+
+		gLua->Push(hookCall);
+			gLua->Push("SteamIDValidated");
+			gLua->PushNil();
+			gLua->Push(pszUserName);
+			gLua->Push(pszNetworkID);
+			gLua->Push(steamID);
+			gLua->Push((float)pEntIndex);
+		gLua->Call(6, 1);
+
+		hookCall->UnReference();
+		hook->UnReference();
+
+		ILuaObject* ret = gLua->GetReturn(0);
+
 		INetChannel *pNetChan = static_cast<INetChannel *>(g_EngineServer->GetPlayerNetInfo(pEntIndex));
-		IClient *pClient = static_cast<IClient *>(pNetChan->GetMsgHandler());
-		pClient->Disconnect( reason );
-	} else if ( ret->GetType() == GLua::TYPE_BOOL && ret->GetBool() == false )
-	{
-		INetChannel *pNetChan = static_cast<INetChannel *>(g_EngineServer->GetPlayerNetInfo(pEntIndex));
-		IClient *pClient = static_cast<IClient *>(pNetChan->GetMsgHandler());
-		pClient->Disconnect( "Connection rejected by game" );
-	}
+
+		if ( pNetChan != NULL )
+		{
+			IClient *pClient = static_cast<IClient *>(pNetChan->GetMsgHandler());
+			if ( pClient != NULL )
+			{
+				if ( ret->GetType() == GLua::TYPE_STRING )
+				{
+					const char* reason = ret->GetString();
+					ret->UnReference();
+					pClient->Disconnect( reason );
+				} else if ( ret->GetType() == GLua::TYPE_BOOL && ret->GetBool() == false )
+					pClient->Disconnect( "Connection rejected by game" );
+			} else
+				gLua->ErrorNoHalt( "gmsv_fuckoff: IClient is null\n" );
+		} else
+			gLua->ErrorNoHalt( "gmsv_fuckoff: INetChannel is null\n" );
+	} else
+		gLua->ErrorNoHalt( "gmsv_fuckoff: edict is null\n" );
 
 	return origNetworkIDValidated( ISrvGmCl, pszUserName, pszNetworkID );
 }
 
-DEFVFUNC_( origClientConnect, bool, ( IServerGameClients *ISrvGmCl, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen ) );
+/*DEFVFUNC_( origClientConnect, bool, ( IServerGameClients *ISrvGmCl, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen ) );
 
 bool VFUNC newClientConnect( IServerGameClients *ISrvGmCl, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen ) {
 	int curIndex = g_EngineServer->IndexOfEdict(pEntity);
@@ -132,7 +147,7 @@ bool VFUNC newClientConnect( IServerGameClients *ISrvGmCl, edict_t *pEntity, con
 	}
 
 	return origClientConnect( ISrvGmCl, pEntity, pszName, pszAddress, reject, maxrejectlen );
-}
+}*/
 
 LUA_FUNCTION( DropPlayer )
 {
@@ -172,8 +187,8 @@ int Init(lua_State *L) {
 	if ( !isVFNHooked && Lua()->IsServer() )
 	{
 		isVFNHooked = true;
-		HOOKVFUNC( g_IServerGameClients, 1, origClientConnect, newClientConnect );
-		HOOKVFUNC( g_IServerGameClients, 15, origNetworkIDValidated, newNetworkIDValidated );
+		//HOOKVFUNC( g_IServerGameClients, 1 - VTABLE_OFFSET, origClientConnect, newClientConnect );
+		HOOKVFUNC( g_IServerGameClients, 15 - VTABLE_OFFSET, origNetworkIDValidated, newNetworkIDValidated );
 	}
 
 	ILuaObject *fuckoff = gLua->GetNewTable();
@@ -190,8 +205,8 @@ int Shutdown(lua_State *L) {
 	if ( Lua()->IsServer() )
 	{
 		isVFNHooked = false;
-		UNHOOKVFUNC( g_IServerGameClients, 1, origClientConnect );
-		UNHOOKVFUNC( g_IServerGameClients, 15, origNetworkIDValidated );
+		//UNHOOKVFUNC( g_IServerGameClients, 1 + VTABLE_OFFSET, origClientConnect );
+		UNHOOKVFUNC( g_IServerGameClients, 15 + VTABLE_OFFSET, origNetworkIDValidated );
 	}
 	return 0;
 }
