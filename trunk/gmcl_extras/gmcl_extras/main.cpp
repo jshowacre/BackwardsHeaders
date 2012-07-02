@@ -1173,8 +1173,8 @@ LUA_FUNCTION( GetLanguage )
 LUA_FUNCTION( RunString )
 {
 	Lua()->CheckType( 1, GLua::TYPE_STRING );
-	Lua()->RunString( "", "", Lua()->GetString(1), true, true );
-	return 0;
+	Lua()->Push( Lua()->RunString( "gmcl_extras", "", Lua()->GetString(1), true, false ) );
+	return 1;
 }
 
 LUA_FUNCTION( HudText )
