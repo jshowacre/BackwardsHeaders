@@ -77,7 +77,7 @@ inline ILuaObject* NewConVarObject( lua_State* L, const char *name ) {
 	return Lua()->GetReturn( 0 );
 }
 
-LUA_FUNCTION( GetAll )
+LUA_FUNCTION( GetAllCvars )
 {
 	ConCommandBase *conCmds = g_ICvar->GetCommands();
 
@@ -100,6 +100,29 @@ LUA_FUNCTION( GetAll )
 				conVarTable->SetMember( i, luaCvar ); // attempt to index a userdata value?
 			luaCvar->UnReference();*/
 
+			conVarTable->SetMember( i, conCmds->GetName() );
+			i++;
+		}
+		conCmds = conCmds->GetNext();
+	}
+
+	Lua()->Push( conVarTable );
+
+	conVarTable->UnReference();
+
+	return 1;
+}
+
+LUA_FUNCTION( GetAllCmds )
+{
+	ConCommandBase *conCmds = g_ICvar->GetCommands();
+
+	ILuaObject* conVarTable = Lua()->GetNewTable();
+
+	int i = 1;
+	while( conCmds )
+	{
+		if ( conCmds->IsCommand() ) {
 			conVarTable->SetMember( i, conCmds->GetName() );
 			i++;
 		}
@@ -213,6 +236,22 @@ LUA_FUNCTION( GetConVarName )
 	return 1;
 }
 
+LUA_FUNCTION( SetConVarName )
+{
+	Lua()->CheckType(1, GLua::TYPE_CONVAR);
+	Lua()->CheckType(2, GLua::TYPE_STRING);
+
+	ConVar *cvar = (ConVar*) Lua()->GetUserData(1);
+
+	if (!cvar)
+		Lua()->Error("Invalid ConVar!\n");
+
+	cvar->m_pszName = new char[50];
+	strcpy( (char*)cvar->m_pszName, Lua()->GetString(2) );
+
+	return 0;
+}
+
 LUA_FUNCTION( GetConVarString )
 {
 	Lua()->CheckType( 1, GLua::TYPE_CONVAR );
@@ -282,8 +321,7 @@ LUA_FUNCTION( SetConVarHelpText )
 		Lua()->Error("Invalid ConVar!\n");
 
 	cvar->m_pszHelpString = new char[100];
-
-	Q_snprintf( (char*) cvar->m_pszHelpString, sizeof(cvar->m_pszHelpString), "%s", Lua()->GetString(2) );
+	strcpy( (char*)cvar->m_pszHelpString, Lua()->GetString(2) );
 
 	return 0;
 }
@@ -356,7 +394,7 @@ LUA_FUNCTION( GetConVarMax )
 	return 0;
 }
 
-LUA_FUNCTION( Remove )
+LUA_FUNCTION( RemoveConVar )
 {
 	Lua()->CheckType( 1, GLua::TYPE_CONVAR );
 
@@ -450,11 +488,10 @@ LUA_FUNCTION( ReplicateData )
 	return 0;
 }
 
-/*
 LUA_FUNCTION( __eq )
 {
-	Lua()->CheckType( 1, CVAR3_ID );
-	Lua()->CheckType( 2, CVAR3_ID );
+	Lua()->CheckType( 1, GLua::TYPE_CONVAR );
+	Lua()->CheckType( 2, GLua::TYPE_CONVAR );
 
 	ConVar *cvar1 = ( ConVar* ) Lua()->GetUserData(1);
 	ConVar *cvar2 = ( ConVar* ) Lua()->GetUserData(2);
@@ -469,31 +506,43 @@ LUA_FUNCTION( __eq )
 
 LUA_FUNCTION( __tostring )
 {
-	Lua()->CheckType( 1, CVAR3_ID );
+	Lua()->CheckType( 1, GLua::TYPE_CONVAR );
 
 	ConVar *cvar = ( ConVar* ) Lua()->GetUserData(1);
 
 	if ( !cvar )
 		Lua()->Error("Invalid ConVar!\n");
 	
-	Lua()->PushVA( "%s: %s", CVAR3_NAME, cvar->GetName() );
+	Lua()->PushVA( "ConVar: %p", cvar );
 
 	return 1;
 }
 
-LUA_FUNCTION( __new )
+LUA_FUNCTION( GetConVar )
 {
 	Lua()->CheckType(1, GLua::TYPE_STRING);
 
-	ConVar *cvar = ( ConVar* ) g_ICvar->FindVar( Lua()->GetString( 1 ) );
+	ConVar *ConVar = g_ICvar->FindVar( Lua()->GetString( 1 ) );
 
-	ILuaObject *metaT = Lua()->GetMetaTable( CVAR3_NAME, CVAR3_ID );
+	ILuaObject *metaT = Lua()->GetMetaTable( "ConVar", GLua::TYPE_CONVAR );
 		Lua()->PushUserData( metaT, cvar );
 	metaT->UnReference();
 
 	return 1;
 }
-*/
+
+LUA_FUNCTION( GetCommand )
+{
+	Lua()->CheckType(1, GLua::TYPE_STRING);
+
+	ConCommand *cvar = g_ICvar->FindCommand( Lua()->GetString( 1 ) );
+
+	ILuaObject *metaT = Lua()->GetMetaTable( "ConVar", GLua::TYPE_CONVAR );
+		Lua()->PushUserData( metaT, cvar );
+	metaT->UnReference();
+
+	return 1;
+}
 
 int Open( lua_State *L ) {
 	
@@ -513,10 +562,11 @@ int Open( lua_State *L ) {
 			Lua()->Error("gm_cvar3: CSigScan::GetDllMemInfo failed!");
 
 		CSigScan sigBaseServer;
-		sigBaseServer.Init((unsigned char *)
-			"\x00\x00\x00\x00\xE8\x2C\xFA\xFF\xFF\x5E"
-			"\xC3\x8B\x0D\x00\x00\x00\x00\x51\xB9",
-			"????xxxxxxxxx????xx", 10);
+		
+		sigBaseServer.Init( (unsigned char *)
+		"\x00\x00\x00\x00" "\x88\x1D\x00\x00\x00\x00" "\xE8\x00\x00\x00\x00" "\xD9\x1D",
+		"????xx????x????xx",
+		17 );
 
 		if ( !sigBaseServer.is_set )
 			Lua()->Error("gm_cvar3: CBaseServer signature failed!");
@@ -536,21 +586,33 @@ int Open( lua_State *L ) {
 	Lua()->SetGlobal( "FCVAR_DEVELOPMENTONLY", (float) FCVAR_DEVELOPMENTONLY );
 	Lua()->SetGlobal( "FCVAR_HIDDEN", (float) FCVAR_HIDDEN );
 	
-	Lua()->SetGlobal( "GetAllConVars", GetAll );
+	Lua()->SetGlobal( "GetAllConVars", GetAllCvars );
+	Lua()->SetGlobal( "GetAllCommands", GetAllCmds );
 	
 	ILuaObject* conVarMeta = Lua()->GetMetaTable( "ConVar", GLua::TYPE_CONVAR );
 	if( conVarMeta ) {
 		conVarMeta->SetMember( "SetValue", SetConVarValue );
-		conVarMeta->SetMember( "ResetValue", ResetConVarValue );
-		conVarMeta->SetMember( "SetHelpText", SetConVarHelpText );
+		conVarMeta->SetMember( "GetBool", GetConVarBool );
+		conVarMeta->SetMember( "GetDefault", GetConVarDefault );
+		conVarMeta->SetMember( "GetFloat", GetConVarFloat );
+		conVarMeta->SetMember( "GetInt", GetConVarInt );
+		conVarMeta->SetMember( "GetName", GetConVarName );
+		conVarMeta->SetMember( "SetName", SetConVarName );
+		conVarMeta->SetMember( "GetString", GetConVarString );
 		conVarMeta->SetMember( "SetFlags", SetConVarFlags );
 		conVarMeta->SetMember( "GetFlags", GetConVarFlags );
 		conVarMeta->SetMember( "HasFlag", ConVarHasFlag );
-		conVarMeta->SetMember( "GetMin", GetConVarMin );
-		conVarMeta->SetMember( "GetMax", GetConVarMax );
-		conVarMeta->SetMember( "Remove", Remove );
+		conVarMeta->SetMember( "SetHelpText", SetConVarHelpText );
+		conVarMeta->SetMember( "GetHelpText", GetConVarHelpText );
+		conVarMeta->SetMember( "ResetValue", ResetConVarValue );
+		conVarMeta->SetMember( "Remove", RemoveConVar );
+		conVarMeta->SetMember( "__tostring", __tostring );
+		conVarMeta->SetMember( "__eq", __eq );
+		conVarMeta->SetMember( "__index", conVarMeta );
 	}
 	conVarMeta->UnReference();
+
+	Lua()->SetGlobal( "GetCommand", GetCommand );
 
 	// Was making my own convar class before I realized I could just extend the already existing one..
 
