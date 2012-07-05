@@ -53,7 +53,7 @@ LUA_FUNCTION( CRC32 )
 
 	CRC32_t crc;
 	CRC32_Init( &crc );
-	CRC32_ProcessBuffer( &crc, crcTxt, Q_strlen( crcTxt ) );
+	CRC32_ProcessBuffer( &crc, crcTxt, Lua()->StringLength(1) );
 	CRC32_Final( &crc );
 
 	char buffer[10];
