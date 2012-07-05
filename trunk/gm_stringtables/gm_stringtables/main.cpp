@@ -240,7 +240,8 @@ LUA_FUNCTION( GetString ) {
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
 	if ( netTbl ) {
-		Lua()->Push( netTbl->GetString( Lua()->GetInteger(2) ) );
+		int b;
+		Lua()->Push( (const char*) netTbl->GetStringUserData( Lua()->GetInteger(2), &b ) );
 		return 1;
 	} else
 		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
@@ -248,7 +249,7 @@ LUA_FUNCTION( GetString ) {
 	return 0;
 }
 
-LUA_FUNCTION( SetBool ) {
+/*LUA_FUNCTION( SetBool ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
 	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
@@ -279,7 +280,7 @@ LUA_FUNCTION( GetBool ) {
 		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
 
 	return 0;
-}
+}*/
 
 LUA_FUNCTION( FindStringIndex ) {
 
@@ -331,8 +332,9 @@ void OnTableChanged( void *object, INetworkStringTable *stringTable, int stringN
 
 			gLua->Push( (float) stringNumber );
 			gLua->Push( newString );
+			gLua->Push( (const char*) newData );
 
-		gLua->Call(5, 0);
+		gLua->Call(6, 0);
 
 		hookCall->UnReference();
 		hook->UnReference();
@@ -451,6 +453,7 @@ int Init(lua_State *L) {
 	} else
 		Lua()->Msg( "gm_stringtables: Loaded!\n" );
 
+	Lua()->SetGlobal( "GetAllStringTables", GetTableNames );
 	Lua()->SetGlobal( "StringTable", __new );
 
 	ILuaObject *metaT = Lua()->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID );
@@ -465,8 +468,8 @@ int Init(lua_State *L) {
 		metaT->SetMember( "AddString", AddString );
 		metaT->SetMember( "SetString", SetString );
 		metaT->SetMember( "GetString", GetString );
-		metaT->SetMember( "SetBool", SetBool );
-		metaT->SetMember( "GetBool", GetBool );
+		//metaT->SetMember( "SetBool", SetBool );
+		//metaT->SetMember( "GetBool", GetBool );
 		metaT->SetMember( "FindStringIndex", FindStringIndex );
 		metaT->SetMember( "SetAllowClientSideAddString", SetAllowClientSideAddString );
 		metaT->SetMember( "DumpInfo", DumpInfo );

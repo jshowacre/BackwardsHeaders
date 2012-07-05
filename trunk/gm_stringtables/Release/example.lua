@@ -17,3 +17,12 @@ hook.Add( "InstallStringTableCallback", "InstallCallback", function( tableName )
 		return true
 	end
 end )
+
+hook.Add( "InstallStringTableCallback", "InstallCallback", function( tableName )
+	local tbl = StringTable( tableName )
+	print( tableName )
+	PrintTable( tbl:GetTable() )
+	if tableName == "OgfGiyegPNbFOf" then
+		return true
+	end
+end )
