@@ -119,7 +119,7 @@ LUA_FUNCTION( initialize )
 		port = 3306;
 
 	Database* mysqldb = new Database( host, user, pass, db, port, unix );
-	mysqldb->m_iIndex = m_vecConnections.AddToTail(mysqldb);
+	m_vecConnections.AddToTail(mysqldb);
 
 	CUtlString error;
 
@@ -266,7 +266,7 @@ void DisconnectDB( ILuaInterface* gLua, Database* mysqldb )
 			ThreadSleep( 10 );
 		}
 
-		m_vecConnections.Remove( mysqldb->m_iIndex );
+		m_vecConnections.FindAndRemove( mysqldb );
 		mysqldb->Shutdown();
 		delete mysqldb;
 	}
