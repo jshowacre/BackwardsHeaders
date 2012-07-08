@@ -105,8 +105,6 @@ public:
 
 	CUtlVectorMT<CUtlVector<Query*> >& CompletedQueries( void ) { return m_vecCompleted; }
 
-	int m_iIndex;
-
 private:
 	bool Connect( MYSQL* mysql, CUtlString& error );
 
