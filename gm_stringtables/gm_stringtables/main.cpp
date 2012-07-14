@@ -26,7 +26,7 @@
 //Lua module interface
 #include "interface.h"
 #include "gmod/CStateManager/GMLuaModule.h"
-#include "gmod/CStateManager/CStateManager.h"
+#include "gmod/CStateManager/CEasyState.h"
 
 #include "filesystem.h"
 #include "cdll_client_int.h"
@@ -249,6 +249,41 @@ LUA_FUNCTION( GetString ) {
 	return 0;
 }
 
+LUA_FUNCTION( GetBool ) {
+
+	Lua()->CheckType( 1, STRINGTABLE_ID );
+	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
+
+	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
+
+	if ( netTbl ) {
+		int b;
+		Lua()->Push( ((int) netTbl->GetStringUserData( Lua()->GetInteger(2), &b ) == 1 ) ? true : false );
+		return 1;
+	} else
+		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
+
+	return 0;
+}
+
+LUA_FUNCTION( GetNumber ) {
+
+	Lua()->CheckType( 1, STRINGTABLE_ID );
+	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
+
+	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
+
+	if ( netTbl ) {
+		int b;
+		const int thing = (int) netTbl->GetStringUserData( Lua()->GetInteger(2), &b );
+		Lua()->Push( (float) thing );
+		return 1;
+	} else
+		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
+
+	return 0;
+}
+
 /*LUA_FUNCTION( SetBool ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
@@ -259,23 +294,6 @@ LUA_FUNCTION( GetString ) {
 
 	if ( netTbl ) {
 		netTbl->SetStringUserData( Lua()->GetInteger(2), strlen( Lua()->GetString(3) ) + 1, (bool*) Lua()->GetBool(3) );
-	} else
-		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
-
-	return 0;
-}
-
-LUA_FUNCTION( GetBool ) {
-
-	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
-
-	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
-
-	if ( netTbl ) {
-		int b;
-		Lua()->Push( (bool) netTbl->GetStringUserData( Lua()->GetInteger(2), &b ) );
-		return 1;
 	} else
 		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
 
@@ -468,8 +486,9 @@ int Init(lua_State *L) {
 		metaT->SetMember( "AddString", AddString );
 		metaT->SetMember( "SetString", SetString );
 		metaT->SetMember( "GetString", GetString );
+		metaT->SetMember( "GetBool", GetBool );
+		metaT->SetMember( "GetNumber", GetNumber );
 		//metaT->SetMember( "SetBool", SetBool );
-		//metaT->SetMember( "GetBool", GetBool );
 		metaT->SetMember( "FindStringIndex", FindStringIndex );
 		metaT->SetMember( "SetAllowClientSideAddString", SetAllowClientSideAddString );
 		metaT->SetMember( "DumpInfo", DumpInfo );
