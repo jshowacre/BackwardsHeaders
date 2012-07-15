@@ -11,7 +11,7 @@
 
 GMOD_MODULE(Start, Close);
 
-CUtlVectorMT<CUtlVector<Database*>> m_vecConnections;
+CUtlVectorMT<CUtlVector<ILuaObject*>> m_vecConnections;
 LUA_FUNCTION( escape );
 LUA_FUNCTION( initialize );
 LUA_FUNCTION( disconnect );
@@ -25,7 +25,7 @@ LUA_FUNCTION( gettable );
 void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requireSync );
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query );
 void HandleQueryCallback( ILuaInterface* gLua, Query* query );
-void DisconnectDB( ILuaInterface* gLua, Database* mysqldb );
+void DisconnectDB( ILuaInterface* gLua, ILuaObject* luaDB );
 
 int Start(lua_State *L)
 {
@@ -44,11 +44,12 @@ int Start(lua_State *L)
 		mfunc->SetMember("Connect", initialize);
 		mfunc->SetMember("escape", escape );
 		mfunc->SetMember("GetTable", gettable);
+		mfunc->SetMember( "PollAll", pollall );
 	gLua->SetGlobal( "tmysql", mfunc );
 
 	mfunc->UnReference();
 
-	ILuaObject *metaT = Lua()->GetMetaTable( DATABASE_NAME, DATABASE_ID );
+	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
 		metaT->SetMember( "Query", query );
 		metaT->SetMember( "Disconnect", disconnect );
 		metaT->SetMember( "SetCharset", setcharset );
@@ -61,10 +62,11 @@ int Start(lua_State *L)
 	// hook.Add("Think", "TMysqlPoll", tmysql.poll)
 	ILuaObject *hookt = gLua->GetGlobal("hook");
 	ILuaObject *addf = hookt->GetMember("Add");
+
 	addf->Push();
-	gLua->Push("Think");
-	gLua->Push("TMysqlPoll");
-	gLua->Push(pollall);
+		gLua->Push("Think");
+		gLua->Push("TMysqlPoll");
+		gLua->Push(pollall);
 	gLua->Call(3);
 
 	hookt->UnReference();
@@ -113,14 +115,12 @@ LUA_FUNCTION( initialize )
 	const char* pass = gLua->GetString(3);
 	const char* db = gLua->GetString(4);
 	int port = gLua->GetInteger(5);
-	const char* unix = gLua->GetString(6);
+	const char* unix = gLua->GetString(6); // Optional unix socket path for linux servers
 
 	if(port == 0)
 		port = 3306;
 
 	Database* mysqldb = new Database( host, user, pass, db, port, unix );
-	m_vecConnections.AddToTail(mysqldb);
-
 	CUtlString error;
 
 	if ( !mysqldb->Initialize( error ) )
@@ -136,30 +136,39 @@ LUA_FUNCTION( initialize )
 		return 2;
 	}
 	
-	ILuaObject *metaT = Lua()->GetMetaTable( DATABASE_NAME, DATABASE_ID );
-		Lua()->PushUserData( metaT, mysqldb );
+	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
+		ILuaObject* luaDB = gLua->NewUserData( metaT ); // New userdata with a set metatable
+			luaDB->SetUserData( mysqldb );
+			m_vecConnections.AddToTail(luaDB);
+			gLua->Push(luaDB);
+		luaDB->UnReference();
 	metaT->UnReference();
 	return 1;
 }
 
 LUA_FUNCTION( disconnect )
 {
-	Lua()->CheckType( 1, DATABASE_ID );
-	Database *mysqldb = ( Database* ) Lua()->GetUserData(1);
-	DisconnectDB( Lua(), mysqldb );
+	ILuaInterface* gLua = Lua();
+
+	gLua->CheckType( 1, DATABASE_ID );
+	ILuaObject* luaDB = gLua->GetObject(1);
+		DisconnectDB( gLua, luaDB );
+	luaDB->UnReference();
 	return 0;
 }
 
 LUA_FUNCTION( __tostring )
 {
-	Lua()->CheckType( 1, DATABASE_ID );
+	ILuaInterface* gLua = Lua();
 
-	Database *mysqldb = ( Database* ) Lua()->GetUserData(1);
+	gLua->CheckType( 1, DATABASE_ID );
+
+	Database *mysqldb = (Database*) gLua->GetUserData(1);
 
 	if ( !mysqldb )
 		return 0;
 	
-	Lua()->PushVA( "%s: %p", DATABASE_NAME, mysqldb );
+	gLua->PushVA( "%s: %p", DATABASE_NAME, mysqldb );
 
 	return 1;
 }
@@ -167,7 +176,7 @@ LUA_FUNCTION( __tostring )
 LUA_FUNCTION( setcharset )
 {
 	ILuaInterface* gLua = Lua();
-	Database *mysqldb = ( Database* ) Lua()->GetUserData(1);
+	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
 
 	if ( !mysqldb )
 		return 0;
@@ -185,7 +194,7 @@ LUA_FUNCTION( setcharset )
 LUA_FUNCTION( query )
 {
 	ILuaInterface* gLua = Lua();
-	Database *mysqldb = ( Database* ) Lua()->GetUserData(1);
+	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
 
 	if ( !mysqldb )
 		return 0;
@@ -215,7 +224,7 @@ LUA_FUNCTION( query )
 LUA_FUNCTION( poll )
 {
 	ILuaInterface* gLua = Lua();
-	Database *mysqldb = ( Database* ) Lua()->GetUserData(1);
+	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
 
 	if ( !mysqldb )
 		return 0;
@@ -230,7 +239,9 @@ LUA_FUNCTION( pollall )
 
 	for(int i = 0; i < m_vecConnections.Count(); i++)
 	{
-		Database* mysqldb = m_vecConnections.Element(i);
+		ILuaObject* luaDB = m_vecConnections.Element(i);
+			Database* mysqldb = (Database*) luaDB->GetUserData();
+		luaDB->UnReference();
 
 		if ( mysqldb )
 			DispatchCompletedQueries( gLua, mysqldb, false );
@@ -244,20 +255,17 @@ LUA_FUNCTION( gettable )
 
 	for(int i = 0; i < m_vecConnections.Count(); i++)
 	{
-		Database* mysqldb = m_vecConnections.Element(i);
-
-		ILuaObject *metaT = Lua()->GetMetaTable( DATABASE_NAME, DATABASE_ID );
-			ILuaObject* luaDB = Lua()->NewUserData( metaT );
-				luaDB->SetUserData( mysqldb );
-				connections->SetMember( i+1, luaDB );
-			luaDB->UnReference();
-		metaT->UnReference();
+		ILuaObject* luaDB = m_vecConnections.Element(i);
+			connections->SetMember( i+1, luaDB );
+		luaDB->UnReference();
 	}
 	return 1;
 }
 
-void DisconnectDB( ILuaInterface* gLua, Database* mysqldb )
+void DisconnectDB( ILuaInterface* gLua, ILuaObject* luaDB )
 {
+	Database *mysqldb = ( Database* ) luaDB->GetUserData();
+
 	if ( mysqldb )
 	{
 		while ( !mysqldb->IsSafeToShutdown() )
@@ -266,7 +274,7 @@ void DisconnectDB( ILuaInterface* gLua, Database* mysqldb )
 			ThreadSleep( 10 );
 		}
 
-		m_vecConnections.FindAndRemove( mysqldb );
+		m_vecConnections.FindAndRemove( luaDB );
 		mysqldb->Shutdown();
 		delete mysqldb;
 	}
@@ -391,38 +399,3 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 
 	return true;
 }
-
-/*
-int main(int argc, char** argv)
-{
-	Database* database = new Database("127.0.0.1", "root", "", "test", 3306);
-
-	CUtlString error;
-	if ( !database->Initialize( error ) )
-	{
-		printf("error: %s\n", error);
-		return 0;
-	}
-
-	CUtlVectorMT<CUtlVector<Query*>>& completed = database->CompletedQueries();
-
-	static int i = 0;
-	while ( true )
-	{
-		{
-			AUTO_LOCK_FM( completed );
-
-			FOR_EACH_VEC( completed, i )
-			{
-				Query* query = completed[i];
-				printf( "query: %s; callback %d; status %d time: %f\n", query->GetQuery(), query->GetCallback(), query->GetStatus(), query->GetQueryTime() );
-
-				BuildTableFromQuery( NULL, query );
-			}
-
-			completed.RemoveAll();
-		}
-		Sleep( 1 );
-	}
-}
-*/
