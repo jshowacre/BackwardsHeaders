@@ -11,7 +11,7 @@
 
 GMOD_MODULE(Start, Close);
 
-CUtlVectorMT<CUtlVector<ILuaObject*>> m_vecConnections;
+CUtlVectorMT<CUtlVector<Database*>> m_vecConnections;
 LUA_FUNCTION( escape );
 LUA_FUNCTION( initialize );
 LUA_FUNCTION( disconnect );
@@ -25,7 +25,7 @@ LUA_FUNCTION( gettable );
 void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requireSync );
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query );
 void HandleQueryCallback( ILuaInterface* gLua, Query* query );
-void DisconnectDB( ILuaInterface* gLua, ILuaObject* luaDB );
+void DisconnectDB( ILuaInterface* gLua, Database* mysqldb );
 
 int Start(lua_State *L)
 {
@@ -135,13 +135,11 @@ LUA_FUNCTION( initialize )
 
 		return 2;
 	}
+
+	m_vecConnections.AddToTail(mysqldb);
 	
 	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
-		ILuaObject* luaDB = gLua->NewUserData( metaT ); // New userdata with a set metatable
-			luaDB->SetUserData( mysqldb );
-			m_vecConnections.AddToTail(luaDB);
-			gLua->Push(luaDB);
-		luaDB->UnReference();
+		gLua->PushUserData( metaT, mysqldb );
 	metaT->UnReference();
 	return 1;
 }
@@ -151,9 +149,9 @@ LUA_FUNCTION( disconnect )
 	ILuaInterface* gLua = Lua();
 
 	gLua->CheckType( 1, DATABASE_ID );
-	ILuaObject* luaDB = gLua->GetObject(1);
-		DisconnectDB( gLua, luaDB );
-	luaDB->UnReference();
+
+	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
+	DisconnectDB( gLua, mysqldb );
 	return 0;
 }
 
@@ -239,9 +237,7 @@ LUA_FUNCTION( pollall )
 
 	for(int i = 0; i < m_vecConnections.Count(); i++)
 	{
-		ILuaObject* luaDB = m_vecConnections.Element(i);
-			Database* mysqldb = (Database*) luaDB->GetUserData();
-		luaDB->UnReference();
+		Database* mysqldb = m_vecConnections.Element(i);
 
 		if ( mysqldb )
 			DispatchCompletedQueries( gLua, mysqldb, false );
@@ -251,21 +247,25 @@ LUA_FUNCTION( pollall )
 
 LUA_FUNCTION( gettable )
 {
-	ILuaObject* connections = Lua()->GetNewTable();
+	ILuaInterface* gLua = Lua();
+	ILuaObject* connections = gLua->GetNewTable();
 
 	for(int i = 0; i < m_vecConnections.Count(); i++)
 	{
-		ILuaObject* luaDB = m_vecConnections.Element(i);
-			connections->SetMember( i+1, luaDB );
-		luaDB->UnReference();
+		Database* mysqldb = m_vecConnections.Element(i);
+
+		ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
+			ILuaObject* luaDB = gLua->NewUserData( metaT );
+				luaDB->SetUserData( mysqldb );
+				connections->SetMember( i+1, luaDB );
+			luaDB->UnReference();
+		metaT->UnReference();
 	}
 	return 1;
 }
 
-void DisconnectDB( ILuaInterface* gLua, ILuaObject* luaDB )
+void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb )
 {
-	Database *mysqldb = ( Database* ) luaDB->GetUserData();
-
 	if ( mysqldb )
 	{
 		while ( !mysqldb->IsSafeToShutdown() )
@@ -274,7 +274,7 @@ void DisconnectDB( ILuaInterface* gLua, ILuaObject* luaDB )
 			ThreadSleep( 10 );
 		}
 
-		m_vecConnections.FindAndRemove( luaDB );
+		m_vecConnections.FindAndRemove( mysqldb );
 		mysqldb->Shutdown();
 		delete mysqldb;
 	}
