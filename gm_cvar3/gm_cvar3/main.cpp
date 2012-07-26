@@ -585,9 +585,13 @@ int Open( lua_State *L ) {
 
 	Lua()->SetGlobal( "FCVAR_DEVELOPMENTONLY", (float) FCVAR_DEVELOPMENTONLY );
 	Lua()->SetGlobal( "FCVAR_HIDDEN", (float) FCVAR_HIDDEN );
-	
-	Lua()->SetGlobal( "GetAllConVars", GetAllCvars );
-	Lua()->SetGlobal( "GetAllCommands", GetAllCmds );
+
+	Lua()->NewGlobalTable("cvars");
+	ILuaObject* cvars = Lua()->GetGlobal( "cvars" );
+		cvars->SetMember( "GetAllConVars", GetAllCvars );
+		cvars->SetMember( "GetAllCommands", GetAllCmds );
+		cvars->SetMember( "GetCommand", GetCommand );
+	cvars->UnReference();
 	
 	ILuaObject* conVarMeta = Lua()->GetMetaTable( "ConVar", GLua::TYPE_CONVAR );
 	if( conVarMeta ) {
@@ -611,8 +615,6 @@ int Open( lua_State *L ) {
 		conVarMeta->SetMember( "__index", conVarMeta );
 	}
 	conVarMeta->UnReference();
-
-	Lua()->SetGlobal( "GetCommand", GetCommand );
 
 	// Was making my own convar class before I realized I could just extend the already existing one..
 
