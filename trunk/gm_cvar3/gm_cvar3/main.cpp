@@ -10,6 +10,8 @@
 	#define ENGINE_LIB "engine.dll"
 #endif
 
+#define GMOD_BETA
+
 //#define CVAR3_NAME "CVar3"
 //#define CVAR3_ID 9001
 
@@ -67,7 +69,9 @@ int GetPlayerMethodInt( lua_State* L, int i, char *methodName ) {
 }
 
 inline ILuaObject* NewConVarObject( lua_State* L, const char *name ) {
-	ILuaObject* func = Lua()->GetGlobal( "GetConVar" );
+	ILuaObject* _G = Lua()->Global();
+
+	ILuaObject* func = _G->GetMember( "GetConVar" );
 	Lua()->Push( func );
 	Lua()->Push( name );
 	if( !Lua()->Call( 1, 1 ) ) {
@@ -545,6 +549,8 @@ LUA_FUNCTION( GetCommand )
 }
 
 int Open( lua_State *L ) {
+
+	ILuaObject* _G = Lua()->Global();
 	
 	CreateInterfaceFn VSTDLibFactory = Sys_GetFactory( VSTD_LIB );
 	if ( !VSTDLibFactory )
@@ -582,12 +588,13 @@ int Open( lua_State *L ) {
 			playerMeta->UnReference();
 		}
 	}
-
-	Lua()->SetGlobal( "FCVAR_DEVELOPMENTONLY", (float) FCVAR_DEVELOPMENTONLY );
-	Lua()->SetGlobal( "FCVAR_HIDDEN", (float) FCVAR_HIDDEN );
+	
+	_G->SetMember( "FCVAR_DEVELOPMENTONLY", (float) FCVAR_DEVELOPMENTONLY );
+	_G->SetMember( "FCVAR_HIDDEN", (float) FCVAR_HIDDEN );
 
 	Lua()->NewGlobalTable("cvars");
-	ILuaObject* cvars = Lua()->GetGlobal( "cvars" );
+
+	ILuaObject* cvars = _G->GetMember("cvars");
 		cvars->SetMember( "GetAllConVars", GetAllCvars );
 		cvars->SetMember( "GetAllCommands", GetAllCmds );
 		cvars->SetMember( "GetCommand", GetCommand );
@@ -615,6 +622,7 @@ int Open( lua_State *L ) {
 		conVarMeta->SetMember( "__index", conVarMeta );
 	}
 	conVarMeta->UnReference();
+	_G->UnReference();
 
 	// Was making my own convar class before I realized I could just extend the already existing one..
 

@@ -15,6 +15,7 @@
 
 #include <windows.h>
 
+#define GMOD_BETA
 #define CLIENT_DLL
 
 //String stuff
@@ -25,7 +26,7 @@
 
 //Lua module interface
 #include "interface.h"
-#include "gmod/CStateManager/GMLuaModule.h"
+#include "gmod/GMLuaModule.h"
 #include "gmod/CStateManager/CEasyState.h"
 
 #include "filesystem.h"
@@ -337,7 +338,9 @@ void OnTableChanged( void *object, INetworkStringTable *stringTable, int stringN
 		ILuaInterface* gLua = CStateManager::GetByIndex( i );
 		if ( gLua == NULL ){ continue; }
 
-		ILuaObject* hook = gLua->GetGlobal("hook");
+		ILuaObject* _G = gLua->Global();
+
+		ILuaObject* hook = _G->GetMember("hook");
 		ILuaObject* hookCall = hook->GetMember("Call");
 
 		gLua->Push( hookCall );
@@ -356,6 +359,8 @@ void OnTableChanged( void *object, INetworkStringTable *stringTable, int stringN
 
 		hookCall->UnReference();
 		hook->UnReference();
+
+		_G->UnReference();
 	}
 
 }
@@ -369,7 +374,9 @@ void VFUNC newInstallStringTableCallback( IBaseClientDLL *baseCLDLL, char const 
 		ILuaInterface* gLua = CStateManager::GetByIndex( i );
 		if ( gLua == NULL ){ continue; }
 
-		ILuaObject* hook = gLua->GetGlobal("hook");
+		ILuaObject* _G = gLua->Global();
+
+		ILuaObject* hook = _G->GetMember("hook");
 		ILuaObject* hookCall = hook->GetMember("Call");
 
 		gLua->Push( hookCall );
@@ -388,6 +395,8 @@ void VFUNC newInstallStringTableCallback( IBaseClientDLL *baseCLDLL, char const 
 		retrn->UnReference();
 		hookCall->UnReference();
 		hook->UnReference();
+
+		_G->UnReference();
 	}
 
 	return origInstallStringTableCallback( baseCLDLL, tableName );
@@ -471,8 +480,10 @@ int Init(lua_State *L) {
 	} else
 		Lua()->Msg( "gm_stringtables: Loaded!\n" );
 
-	Lua()->SetGlobal( "GetAllStringTables", GetTableNames );
-	Lua()->SetGlobal( "StringTable", __new );
+	ILuaObject* _G = Lua()->Global();
+
+	_G->SetMember( "GetAllStringTables", GetTableNames );
+	_G->SetMember( "StringTable", __new );
 
 	ILuaObject *metaT = Lua()->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID );
 		metaT->SetMember( "GetTable", GetTable );
@@ -496,6 +507,8 @@ int Init(lua_State *L) {
 		metaT->SetMember( "__eq", __eq );
 		metaT->SetMember( "__index", metaT );
 	metaT->UnReference();
+
+	_G->UnReference();
 
 	return 0;
 }

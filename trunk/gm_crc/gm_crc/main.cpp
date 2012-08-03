@@ -6,6 +6,8 @@
 	#define FILESYSTEM_LIB "filesystem_steam.dll"
 #endif
 
+#define GMOD_BETA
+
 //Lua module interface
 #include "gmod/GMLuaModule.h"
 
@@ -65,6 +67,7 @@ LUA_FUNCTION( CRC32 )
 
 int Open( lua_State *L )
 {
+
 	CreateInterfaceFn FileSystemFactory = Sys_GetFactory( FILESYSTEM_LIB );
 	if ( !FileSystemFactory )
 		Lua()->Error( "gm_crc: Error getting " FILESYSTEM_LIB " factory.\n" );
@@ -72,12 +75,16 @@ int Open( lua_State *L )
 	g_FileSystem = ( IFileSystem* )FileSystemFactory( FILESYSTEM_INTERFACE_VERSION, NULL );
 	if ( !g_FileSystem )
 		Lua()->Error( "gm_crc: Error getting IFileSystem interface.\n" );
+	
+	ILuaObject* _G = Lua()->Global();
 
-	Lua()->SetGlobal("CRC32", CRC32);
+	_G->SetMember("CRC32", CRC32);
 
-	ILuaObject *file = Lua()->GetGlobal("file");
+	ILuaObject *file = _G->GetMember("file");
 		file->SetMember( "CRC32", FILE_CRC32 );
 	file->UnReference();
+
+	_G->UnReference();
 	
 	return 0;
 }
