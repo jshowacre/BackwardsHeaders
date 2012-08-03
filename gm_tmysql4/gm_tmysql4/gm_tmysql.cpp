@@ -2,9 +2,9 @@
 #pragma comment (lib, "tier1.lib")
 #pragma comment (linker, "/NODEFAULTLIB:libcmt")
 
-#include "gm_tmysql.h"
-
 #define GMOD_BETA
+
+#include "gm_tmysql.h"
 
 #define DATABASE_NAME "tmysqlDB"
 #define DATABASE_ID 6603
@@ -33,11 +33,13 @@ int Start(lua_State *L)
 
 	ILuaInterface *gLua = Lua();
 
-	gLua->SetGlobal( "QUERY_SUCCESS", QUERY_SUCCESS );
-	gLua->SetGlobal( "QUERY_FAIL", QUERY_FAIL );
+	ILuaObject *_G = gLua->Global();
 
-	gLua->SetGlobal( "QUERY_FLAG_ASSOC", (float)QUERY_FLAG_ASSOC );
-	gLua->SetGlobal( "QUERY_FLAG_LASTID", (float)QUERY_FLAG_LASTID );
+	_G->SetMember( "QUERY_SUCCESS", QUERY_SUCCESS );
+	_G->SetMember( "QUERY_FAIL", QUERY_FAIL );
+
+	_G->SetMember( "QUERY_FLAG_ASSOC", (float)QUERY_FLAG_ASSOC );
+	_G->SetMember( "QUERY_FLAG_LASTID", (float)QUERY_FLAG_LASTID );
 
 	ILuaObject* mfunc = gLua->GetNewTable();
 		mfunc->SetMember("initialize", initialize);
@@ -45,7 +47,7 @@ int Start(lua_State *L)
 		mfunc->SetMember("escape", escape );
 		mfunc->SetMember("GetTable", gettable);
 		mfunc->SetMember( "PollAll", pollall );
-	gLua->SetGlobal( "tmysql", mfunc );
+	_G->SetMember( "tmysql", mfunc );
 
 	mfunc->UnReference();
 
@@ -60,7 +62,7 @@ int Start(lua_State *L)
 	metaT->UnReference();
 
 	// hook.Add("Think", "TMysqlPoll", tmysql.poll)
-	ILuaObject *hookt = gLua->GetGlobal("hook");
+	ILuaObject *hookt = _G->GetMember("hook");
 	ILuaObject *addf = hookt->GetMember("Add");
 
 	addf->Push();
@@ -71,6 +73,8 @@ int Start(lua_State *L)
 
 	hookt->UnReference();
 	addf->UnReference();
+
+	_G->UnReference();
 
 	return 0;
 }

@@ -3,9 +3,9 @@
 #include <windows.h>
 #include <sapi.h>
 
-#include "gmod/GMLuaModule.h"
+#define GMOD_BETA
 
-#include "atlbase.h"
+#include "gmod/GMLuaModule.h"
 
 ISpVoice* Voice = NULL;
 USHORT DefaultVolume;
@@ -139,15 +139,19 @@ int Init( lua_State *L )
 	Voice->GetVolume(&DefaultVolume);
 	Voice->GetRate(&DefaultRate);
 	Voice->GetVoice(&DefaultVoice);
+
+	ILuaObject* _G = Lua()->Global();
 	
 	Lua()->NewGlobalTable( "tts" );
-	ILuaObject* tts = Lua()->GetGlobal( "tts" );
+	ILuaObject* tts = _G->GetMember( "tts" );
 		tts->SetMember( "Say", Say );
 		tts->SetMember( "IsSpeaking", IsSpeaking );
 		tts->SetMember( "QueueSize", QueueSize );
 		tts->SetMember( "Pause", Pause );
 		tts->SetMember( "Resume", Resume );
 	tts->UnReference();
+
+	_G->UnReference();
 	return 0;
 }
 

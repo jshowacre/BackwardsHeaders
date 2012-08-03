@@ -25,6 +25,7 @@
 #endif
 
 #define CLIENT_DLL
+#define GMOD_BETA
 
 #include <windows.h>
 
@@ -37,7 +38,7 @@
 #include "gmod/CStateManager/vfnhook.h"
 
 //Lua module interface
-#include "gmod/CStateManager/GMLuaModule.h"
+#include "gmod/GMLuaModule.h"
 #include "gmod/CStateManager/CStateManager.h"
 
 #ifdef CLIENT_DLL
@@ -116,15 +117,18 @@ inline int GetModelIndex( lua_State* L, int i = 1 ) {
 }
 
 inline ILuaObject* NewVectorObject( lua_State* L, Vector& vec ) {
-	ILuaObject* func = Lua()->GetGlobal( "Vector" );
+	ILuaObject* _G = Lua()->Global();
+	ILuaObject* func = _G->GetMember( "Vector" );
 	Lua()->Push( func );
 	Lua()->Push( vec.x );
 	Lua()->Push( vec.y );
 	Lua()->Push( vec.z );
 	if( !Lua()->Call( 3, 1 ) ) {
 		func->UnReference();
+		_G->UnReference();
 		return NULL;
 	}
+	_G->UnReference();
 	return Lua()->GetReturn( 0 );
 }
 
@@ -139,15 +143,18 @@ inline Vector& GetVector( lua_State* L, int i = 1 ) {
 }
 
 inline ILuaObject* NewAngleObject( lua_State* L, QAngle& vec ) {
-	ILuaObject* func = Lua()->GetGlobal( "Angle" );
+	ILuaObject* _G = Lua()->Global();
+	ILuaObject* func = _G->GetMember( "Angle" );
 	Lua()->Push( func );
 	Lua()->Push( vec.x );
 	Lua()->Push( vec.y );
 	Lua()->Push( vec.z );
 	if( !Lua()->Call( 3, 1 ) ) {
 		func->UnReference();
+		_G->UnReference();
 		return NULL;
 	}
+	_G->UnReference();
 	return Lua()->GetReturn( 0 );
 }
 
@@ -166,15 +173,19 @@ inline vgui::Panel* GetPanel( lua_State* L, int stackPos ) {
 }
 
 inline ILuaObject *NewMaterialObject( lua_State* L, const char* path ) {
-	ILuaObject* func = Lua()->GetGlobal( "Material" );
+	ILuaObject* _G = Lua()->Global();
+	ILuaObject* func = _G->GetMember( "Material" );
 
 	Lua()->Push( func );
 	Lua()->Push( path );
 
 	if( !Lua()->Call( 1, 1 ) ) {
 		func->UnReference();
+		_G->UnReference();
 		return NULL;
 	}
+
+	_G->UnReference();
 
 	return Lua()->GetReturn( 0 );
 }
@@ -1239,9 +1250,11 @@ void OpenLuaMenu( const CCommand &command ) {
 }
 
 bool IsMenuState( lua_State *L ) {
-	ILuaObject* maxPlayers = Lua()->GetGlobal( "MaxPlayers" );
+	ILuaObject* _G = Lua()->Global();
+	ILuaObject* maxPlayers = _G->GetMember( "MaxPlayers" );
 	bool isMenuState = ( !maxPlayers || !maxPlayers->isFunction() );
 	maxPlayers->UnReference();
+	_G->UnReference();
 	return isMenuState;
 }
 
@@ -1256,7 +1269,8 @@ DEFVFUNC_( origOnConfirmQuit, void, ( IGameUI *gGUI ) );
 
 void VFUNC newOnConfirmQuit( IGameUI *gGUI ) {
 
-	ILuaObject* hook = menuLua->GetGlobal("hook");
+	ILuaObject* _G = menuLua->Global();
+	ILuaObject* hook = _G->GetMember("hook");
 	ILuaObject* hookCall = hook->GetMember("Call");
 
 	menuLua->Push( hookCall );
@@ -1266,6 +1280,7 @@ void VFUNC newOnConfirmQuit( IGameUI *gGUI ) {
 
 	hookCall->UnReference();
 	hook->UnReference();
+	_G->UnReference();
 
 	return origOnConfirmQuit( gGUI );
 }
@@ -1274,7 +1289,8 @@ DEFVFUNC_( origStartProgressBar, void, ( IGameUI *gGUI ) );
 
 void VFUNC newStartProgressBar( IGameUI *gGUI ) {
 
-	ILuaObject* hook = menuLua->GetGlobal("hook");
+	ILuaObject* _G = menuLua->Global();
+	ILuaObject* hook = _G->GetMember("hook");
 	ILuaObject* hookCall = hook->GetMember("Call");
 
 	menuLua->Push( hookCall );
@@ -1284,6 +1300,7 @@ void VFUNC newStartProgressBar( IGameUI *gGUI ) {
 
 	hookCall->UnReference();
 	hook->UnReference();
+	_G->UnReference();
 
 	return origStartProgressBar( gGUI );
 }
@@ -1292,7 +1309,8 @@ DEFVFUNC_( origStopProgressBar, void, ( IGameUI *gGUI, bool, const char*, const 
 
 void VFUNC newStopProgressBar( IGameUI *gGUI, bool something1, const char* something2, const char* something3 ) {
 
-	ILuaObject* hook = menuLua->GetGlobal("hook");
+	ILuaObject* _G = menuLua->Global();
+	ILuaObject* hook = _G->GetMember("hook");
 	ILuaObject* hookCall = hook->GetMember("Call");
 
 	menuLua->Push(hookCall);
@@ -1326,6 +1344,7 @@ void VFUNC newStopProgressBar( IGameUI *gGUI, bool something1, const char* somet
 
 	hookCall->UnReference();
 	hook->UnReference();
+	_G->UnReference();
 
 	return origStopProgressBar( gGUI, something1, something2, something3 );
 }
@@ -1354,8 +1373,8 @@ void VFUNC newOnConnectToServer( IGameUI *gGUI, const char *game, int IP, int co
 	
 	//char strIP[15];
 	//sprintf( strIP, "%u.%u.%u.%u", band( IP / 2^24, 0xFF ), band( IP / 2^16, 0xFF ), band( IP / 2^8, 0xFF ), band( IP, 0xFF ) );
-
-	ILuaObject* hook = menuLua->GetGlobal("hook");
+	ILuaObject* _G = menuLua->Global();
+	ILuaObject* hook = _G->GetMember("hook");
 	ILuaObject* hookCall = hook->GetMember("Call");
 
 	menuLua->Push( hookCall );
@@ -1369,6 +1388,7 @@ void VFUNC newOnConnectToServer( IGameUI *gGUI, const char *game, int IP, int co
 
 	hookCall->UnReference();
 	hook->UnReference();
+	_G->UnReference();
 
 	return origOnConnectToServer( gGUI, game, IP, connectionPort, queryPort );
 }
@@ -1377,7 +1397,8 @@ DEFVFUNC_( origOnDisconnectFromServer, void, ( IGameUI *gGUI, uint8 eSteamLoginF
 
 void VFUNC newOnDisconnectFromServer( IGameUI *gGUI, uint8 eSteamLoginFailure ) {
 
-	ILuaObject* hook = menuLua->GetGlobal("hook");
+	ILuaObject* _G = menuLua->Global();
+	ILuaObject* hook = _G->GetMember("hook");
 	ILuaObject* hookCall = hook->GetMember("Call");
 
 	menuLua->Push(hookCall);
@@ -1396,7 +1417,8 @@ DEFVFUNC_( origVoiceStatus, void, ( IBaseClientDLL *baseCLDLL, int entindex, qbo
 
 void VFUNC newVoiceStatus( IBaseClientDLL *baseCLDLL, int entindex, qboolean bTalking ) {
 
-	ILuaObject* hook = menuLua->GetGlobal("hook");
+	ILuaObject* _G = menuLua->Global();
+	ILuaObject* hook = _G->GetMember("hook");
 	ILuaObject* hookCall = hook->GetMember("Call");
 
 	menuLua->Push(hookCall);
@@ -1408,6 +1430,7 @@ void VFUNC newVoiceStatus( IBaseClientDLL *baseCLDLL, int entindex, qboolean bTa
 
 	hookCall->UnReference();
 	hook->UnReference();
+	_G->UnReference();
 
 	return origVoiceStatus( baseCLDLL, entindex, bTalking );
 }
@@ -1546,10 +1569,11 @@ int Open( lua_State *L ) {
 	g_EngineVGUI = ( IEngineVGui* )EngineFactory( VENGINE_VGUI_VERSION, NULL );
 	if ( !g_EngineVGUI )
 		Lua()->Error( "gmcl_extras: Error getting IEngineVGui interface.\n" );
-		
+	
+	ILuaObject* _G = Lua()->Global();
 	
 	Lua()->NewGlobalTable("console");
-		ILuaObject *console = Lua()->GetGlobal("console");
+		ILuaObject *console = _G->GetMember("console");
 		console->SetMember( "PrintColor", PrintConsoleColor );
 		console->SetMember( "IsVisible", IsConsoleVisible );
 		console->SetMember( "Clear", ConsoleClear );
@@ -1561,19 +1585,19 @@ int Open( lua_State *L ) {
 		//console->SetMember( "SetParent", ConsoleSetParent );
 	console->UnReference();
 
-	Lua()->SetGlobal( "STEAM_FRIENDS_ALL", (float) k_EFriendFlagAll );
-	Lua()->SetGlobal( "STEAM_FRIENDS_IGNORED_FRIEND", (float) k_EFriendFlagIgnoredFriend );		
-	Lua()->SetGlobal( "STEAM_FRIENDS_IGNORED", (float) k_EFriendFlagIgnored );
-	Lua()->SetGlobal( "STEAM_FRIENDS_REQUESTING_INFO", (float) k_EFriendFlagRequestingInfo );		
-	Lua()->SetGlobal( "STEAM_FRIENDS_REQUESTING_FRIENDSHIP", (float) k_EFriendFlagRequestingFriendship );		
-	Lua()->SetGlobal( "STEAM_FRIENDS_ON_GAME_SERVER", (float) k_EFriendFlagOnGameServer );
-	Lua()->SetGlobal( "STEAM_FRIENDS_CLAN_MEMBER", (float) k_EFriendFlagClanMember );		
-	Lua()->SetGlobal( "STEAM_FRIENDS_FRIENDSHIP_REQUESTED", (float) k_EFriendFlagFriendshipRequested );		
-	Lua()->SetGlobal( "STEAM_FRIENDS_BLOCKED", (float) k_EFriendFlagBlocked );
-	Lua()->SetGlobal( "STEAM_FRIENDS_NONE", (float) k_EFriendFlagNone );
+	_G->SetMember( "STEAM_FRIENDS_ALL", (float) k_EFriendFlagAll );
+	_G->SetMember( "STEAM_FRIENDS_IGNORED_FRIEND", (float) k_EFriendFlagIgnoredFriend );		
+	_G->SetMember( "STEAM_FRIENDS_IGNORED", (float) k_EFriendFlagIgnored );
+	_G->SetMember( "STEAM_FRIENDS_REQUESTING_INFO", (float) k_EFriendFlagRequestingInfo );		
+	_G->SetMember( "STEAM_FRIENDS_REQUESTING_FRIENDSHIP", (float) k_EFriendFlagRequestingFriendship );		
+	_G->SetMember( "STEAM_FRIENDS_ON_GAME_SERVER", (float) k_EFriendFlagOnGameServer );
+	_G->SetMember( "STEAM_FRIENDS_CLAN_MEMBER", (float) k_EFriendFlagClanMember );		
+	_G->SetMember( "STEAM_FRIENDS_FRIENDSHIP_REQUESTED", (float) k_EFriendFlagFriendshipRequested );		
+	_G->SetMember( "STEAM_FRIENDS_BLOCKED", (float) k_EFriendFlagBlocked );
+	_G->SetMember( "STEAM_FRIENDS_NONE", (float) k_EFriendFlagNone );
 
 	Lua()->NewGlobalTable("friends");
-		ILuaObject *friends = Lua()->GetGlobal("friends");
+		ILuaObject *friends = _G->GetMember("friends");
 
 		friends->SetMember( "GetPersonaName", GetPersonaName );
 		friends->SetMember( "SetPersonaName", SetPersonaName );
@@ -1582,7 +1606,7 @@ int Open( lua_State *L ) {
 	friends->UnReference();
 
 	Lua()->NewGlobalTable("client");
-		ILuaObject *client = Lua()->GetGlobal("client");
+		ILuaObject *client = _G->GetMember("client");
 
 		client->SetMember( "IsDedicatedServer", IsDedicatedServer );
 		//client->SetMember( "GetGameDescription", GetGameDescription );
@@ -1671,15 +1695,15 @@ int Open( lua_State *L ) {
 
 	client->UnReference();
 
-	/*Lua()->SetGlobal( "SetParent", GetPanel );
+	/*_G->SetMember( "SetParent", GetPanel );
 
-	Lua()->SetGlobal( "PANEL_ROOT", (float) PANEL_ROOT );		
-	Lua()->SetGlobal( "PANEL_GAMEUIDLL", (float) PANEL_GAMEUIDLL );		
-	Lua()->SetGlobal( "PANEL_CLIENTDLL", (float) PANEL_CLIENTDLL );		
-	Lua()->SetGlobal( "PANEL_TOOLS", (float) PANEL_TOOLS );
-	Lua()->SetGlobal( "PANEL_INGAMESCREENS", (float) PANEL_INGAMESCREENS );
-	Lua()->SetGlobal( "PANEL_GAMEDLL", (float) PANEL_GAMEDLL );
-	Lua()->SetGlobal( "PANEL_CLIENTDLL_TOOLS", (float) PANEL_CLIENTDLL_TOOLS );*/
+	_G->SetMember( "PANEL_ROOT", (float) PANEL_ROOT );		
+	_G->SetMember( "PANEL_GAMEUIDLL", (float) PANEL_GAMEUIDLL );		
+	_G->SetMember( "PANEL_CLIENTDLL", (float) PANEL_CLIENTDLL );		
+	_G->SetMember( "PANEL_TOOLS", (float) PANEL_TOOLS );
+	_G->SetMember( "PANEL_INGAMESCREENS", (float) PANEL_INGAMESCREENS );
+	_G->SetMember( "PANEL_GAMEDLL", (float) PANEL_GAMEDLL );
+	_G->SetMember( "PANEL_CLIENTDLL_TOOLS", (float) PANEL_CLIENTDLL_TOOLS );*/
 
 	Color Blue( 0, 162, 232, 255 );
 	Color White( 255, 255, 255, 255 );
@@ -1695,11 +1719,11 @@ int Open( lua_State *L ) {
 		
 		menuLua = Lua(); // Used for the menu commands
 		
-		menuLua->SetGlobal( "MENU", true );
-		menuLua->SetGlobal( "RunString", RunString );
+		_G->SetMember( "MENU", true );
+		_G->SetMember( "RunString", RunString );
 
 		Lua()->NewGlobalTable("menu");
-			ILuaObject *menu = Lua()->GetGlobal("menu");
+			ILuaObject *menu = _G->GetMember("menu");
 			menu->SetMember( "SetPanelOverride", SetMainMenuOverride );
 			menu->SetMember( "IsVisible", IsMainMenuVisible );
 			menu->SetMember( "Command", SendMainMenuCommand );
@@ -1707,7 +1731,7 @@ int Open( lua_State *L ) {
 		menu->UnReference();
 
 		Lua()->NewGlobalTable("loading");
-			ILuaObject *loading = Lua()->GetGlobal("loading");
+			ILuaObject *loading = _G->GetMember("loading");
 			loading->SetMember( "SetPanelOverride", SetLoadingBackgroundDialog );
 			loading->SetMember( "IsVisible", IsDrawingLoadingImage );
 			loading->SetMember( "StartProgressBar", StartProgressBar );
@@ -1725,11 +1749,11 @@ int Open( lua_State *L ) {
 		HOOKVFUNC( g_GameUI, 33, origOnDisconnectFromServer, newOnDisconnectFromServer );
 		HOOKVFUNC( g_GameUI, 30, origOnConnectToServer, newOnConnectToServer );
 
-		menuLua->SetGlobal( "STEAMLOGINFAILURE_NONE", (float) STEAMLOGINFAILURE_NONE );		
-		menuLua->SetGlobal( "STEAMLOGINFAILURE_BADTICKET", (float) STEAMLOGINFAILURE_BADTICKET );		
-		menuLua->SetGlobal( "STEAMLOGINFAILURE_NOSTEAMLOGIN", (float) STEAMLOGINFAILURE_NOSTEAMLOGIN );		
-		menuLua->SetGlobal( "STEAMLOGINFAILURE_VACBANNED", (float) STEAMLOGINFAILURE_VACBANNED );		
-		menuLua->SetGlobal( "STEAMLOGINFAILURE_LOGGED_IN_ELSEWHERE", (float) STEAMLOGINFAILURE_LOGGED_IN_ELSEWHERE );
+		_G->SetMember( "STEAMLOGINFAILURE_NONE", (float) STEAMLOGINFAILURE_NONE );		
+		_G->SetMember( "STEAMLOGINFAILURE_BADTICKET", (float) STEAMLOGINFAILURE_BADTICKET );		
+		_G->SetMember( "STEAMLOGINFAILURE_NOSTEAMLOGIN", (float) STEAMLOGINFAILURE_NOSTEAMLOGIN );		
+		_G->SetMember( "STEAMLOGINFAILURE_VACBANNED", (float) STEAMLOGINFAILURE_VACBANNED );		
+		_G->SetMember( "STEAMLOGINFAILURE_LOGGED_IN_ELSEWHERE", (float) STEAMLOGINFAILURE_LOGGED_IN_ELSEWHERE );
 
 		lua_run_mn = new ConCommand("lua_run_mn", RunLuaMenu, "Run a Lua command", FCVAR_UNREGISTERED );
 		g_ICvar->RegisterConCommand( lua_run_mn );
@@ -1745,16 +1769,13 @@ int Open( lua_State *L ) {
 		ConColorMsg( White, ": Client mode..\n" );
 	}
 
+	_G->UnReference();
+
 	return 0;
 }
 
 int Close(lua_State *L)
 {
-
-	Lua()->Push(Lua()->GetGlobal("hook")->GetMember("Call"));
-		Lua()->Push("ExtrasShutdown");
-	Lua()->Call(1, 0);
-
 	if ( menuLua && menuLua->GetLuaState() == L ) { // It's the menu state shutting down, remove the commands/hooks
 
 		UNHOOKVFUNC( g_BaseClientDLL, 33, origVoiceStatus );
