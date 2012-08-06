@@ -374,7 +374,11 @@ void VFUNC newInstallStringTableCallback( IBaseClientDLL *baseCLDLL, char const 
 		ILuaInterface* gLua = CStateManager::GetByIndex( i );
 		if ( gLua == NULL ){ continue; }
 
+#ifdef GMOD_BETA
 		ILuaObject* _G = gLua->Global();
+#else
+		ILuaObject* _G = gLua->GetGlobal("_G");
+#endif
 
 		ILuaObject* hook = _G->GetMember("hook");
 		ILuaObject* hookCall = hook->GetMember("Call");
@@ -396,7 +400,9 @@ void VFUNC newInstallStringTableCallback( IBaseClientDLL *baseCLDLL, char const 
 		hookCall->UnReference();
 		hook->UnReference();
 
+#ifndef GMOD_BETA
 		_G->UnReference();
+#endif
 	}
 
 	return origInstallStringTableCallback( baseCLDLL, tableName );
@@ -451,23 +457,25 @@ LUA_FUNCTION( __new )
 
 int Init(lua_State *L) {
 
+	ILuaInterface* gLua = Lua();
+
 	CreateInterfaceFn EngineFactory = Sys_GetFactory( ENGINE_LIB );
 	if ( !EngineFactory )
-		Lua()->Error( "gm_stringtables: Error getting " ENGINE_LIB " factory." );
+		gLua->Error( "gm_stringtables: Error getting " ENGINE_LIB " factory." );
 	
 	g_NetworkStringTable = ( INetworkStringTableContainer* )EngineFactory( INTERFACENAME_NETWORKSTRINGTABLECLIENT, NULL );
 	if ( !g_NetworkStringTable )
-		Lua()->Error( "gm_stringtables: Error getting INetworkStringTableContainer interface." );
+		gLua->Error( "gm_stringtables: Error getting INetworkStringTableContainer interface." );
 
-	if ( Lua()->IsClient() ) {
+	if ( gLua->IsClient() ) {
 
 		CreateInterfaceFn ClientFactory = Sys_GetFactory( CLIENT_LIB );
 		if ( !ClientFactory )
-			Lua()->Error( "gm_stringtables: Error getting " CLIENT_LIB " factory." );
+			gLua->Error( "gm_stringtables: Error getting " CLIENT_LIB " factory." );
 
 		g_BaseClientDLL = ( IBaseClientDLL* )ClientFactory( CLIENT_DLL_INTERFACE_VERSION, NULL );
 		if ( !g_BaseClientDLL )
-			Lua()->Error( "gm_stringtables: Error getting IBaseClientDLL interface.\n" );
+			gLua->Error( "gm_stringtables: Error getting IBaseClientDLL interface.\n" );
 	
 		HOOKVFUNC( g_BaseClientDLL, 34, origInstallStringTableCallback, newInstallStringTableCallback );
 		
@@ -478,14 +486,18 @@ int Init(lua_State *L) {
 		ConColorMsg( White, ": Loaded!\n" );
 
 	} else
-		Lua()->Msg( "gm_stringtables: Loaded!\n" );
+		gLua->Msg( "gm_stringtables: Loaded!\n" );
 
-	ILuaObject* _G = Lua()->Global();
+#ifdef GMOD_BETA
+		ILuaObject* _G = gLua->Global();
+#else
+		ILuaObject* _G = gLua->GetGlobal("_G");
+#endif
 
 	_G->SetMember( "GetAllStringTables", GetTableNames );
 	_G->SetMember( "StringTable", __new );
 
-	ILuaObject *metaT = Lua()->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID );
+	ILuaObject *metaT = gLua->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID );
 		metaT->SetMember( "GetTable", GetTable );
 		metaT->SetMember( "GetName", GetName );
 		metaT->SetMember( "GetTableID", GetTableId );
@@ -508,7 +520,9 @@ int Init(lua_State *L) {
 		metaT->SetMember( "__index", metaT );
 	metaT->UnReference();
 
+#ifndef GMOD_BETA
 	_G->UnReference();
+#endif
 
 	return 0;
 }

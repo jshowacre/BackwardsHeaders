@@ -34,8 +34,6 @@
 
 #include "tmpserver.h"
 #include "tmpclient.h"
-//#include "iserver.h"
-//#include "iclient.h"
 
 #include "igameevents.h"
 #include "inetchannel.h"

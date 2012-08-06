@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gm_tmysql4", "gm_tmysql4\gm_tmysql4.vcxproj", "{10EBD2B9-95E8-455F-A41A-6075D19867C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10EBD2B9-95E8-455F-A41A-6075D19867C1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{10EBD2B9-95E8-455F-A41A-6075D19867C1}.Debug|Win32.Build.0 = Debug|Win32
+		{10EBD2B9-95E8-455F-A41A-6075D19867C1}.Release|Win32.ActiveCfg = Release|Win32
+		{10EBD2B9-95E8-455F-A41A-6075D19867C1}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
