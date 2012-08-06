@@ -2,6 +2,8 @@
 #include <winsock2.h>
 #endif
 
+#define GMOD_BETA
+
 #include "include/mysql.h"
 
 #include "utlvector.h"
