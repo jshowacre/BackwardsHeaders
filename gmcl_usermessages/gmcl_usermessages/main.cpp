@@ -21,7 +21,7 @@
 
 //Lua module interface
 #include "interface.h"
-#include "gmod/CStateManager/GMLuaModule.h"
+#include "gmod/GMLuaModule.h"
 #include "gmod/CStateManager/CStateManager.h"
 
 #include "eiface.h"
@@ -467,9 +467,9 @@ LUA_FUNCTION( __tostring )
 	return 1;
 }
 
-DEFVFUNC_( origDispatchUserMessage, void, ( IBaseClientDLL *baseCLDLL, int msg_type, bf_read &msg_data ) );
+DEFVFUNC_( origDispatchUserMessage, void, ( IBaseClientDLL *baseCLDLL, int peebis, int msg_type, bf_read &msg_data ) );
 
-void VFUNC newDispatchUserMessage( IBaseClientDLL *baseCLDLL, int msg_type, bf_read &msg_data ) {
+void VFUNC newDispatchUserMessage( IBaseClientDLL *baseCLDLL, int peebis, int msg_type, bf_read &msg_data ) {
 
 	for ( int i=0; i <= 1; i++) {
 		ILuaInterface* gLua = CStateManager::GetByIndex( i );
@@ -479,6 +479,7 @@ void VFUNC newDispatchUserMessage( IBaseClientDLL *baseCLDLL, int msg_type, bf_r
 			gLua->Push("DispatchUserMessage");
 			gLua->PushNil();
 
+			gLua->Push( (float) peebis );
 			gLua->Push( (float) msg_type );
 
 			ILuaObject *metaT = gLua->GetMetaTable( CBITREAD_NAME, CBITREAD_ID ); //Push our custom stringtable object
@@ -488,7 +489,7 @@ void VFUNC newDispatchUserMessage( IBaseClientDLL *baseCLDLL, int msg_type, bf_r
 		gLua->Call(4, 0);
 	}
 
-	return origDispatchUserMessage( baseCLDLL, msg_type, msg_data );
+	return origDispatchUserMessage( baseCLDLL, peebis, msg_type, msg_data );
 }
 
 int Init(lua_State *L) {
