@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gm_tts", "gm_tts\gm_tts.vcxproj", "{590B5DA8-7CAC-43D8-8089-E888E3500B48}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{590B5DA8-7CAC-43D8-8089-E888E3500B48}.Debug|Win32.ActiveCfg = Debug|Win32
+		{590B5DA8-7CAC-43D8-8089-E888E3500B48}.Debug|Win32.Build.0 = Debug|Win32
+		{590B5DA8-7CAC-43D8-8089-E888E3500B48}.Release|Win32.ActiveCfg = Release|Win32
+		{590B5DA8-7CAC-43D8-8089-E888E3500B48}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
