@@ -23,6 +23,25 @@
 #endif
 
 // You should place this at the top of your module
+#ifdef GMOD_BETA
+#define GMOD_MODULE( _startfunction_, _closefunction_ ) \
+	ILuaModuleManager* modulemanager = NULL;\
+	int _startfunction_( lua_State* L );\
+	int _closefunction_( lua_State* L );\
+	extern "C" int GM_EXPORT gmod13_open( ILuaInterface* i ) \
+	{ \
+		if ( !i ) return 0;\
+		modulemanager = i->GetModuleManager();\
+		return _startfunction_( (lua_State*)(i->GetLuaState()) );\
+	}\
+	extern "C" int GM_EXPORT gmod13_close( lua_State* L ) \
+	{\
+		if ( !L ) return 0;\
+		_closefunction_( L );\
+		return 0;\
+	}\
+
+#else
 #define GMOD_MODULE( _startfunction_, _closefunction_ ) \
 	ILuaModuleManager* modulemanager = NULL;\
 	int _startfunction_( lua_State* L );\
@@ -39,5 +58,7 @@
 		_closefunction_( L );\
 		return 0;\
 	}\
+
+#endif
 
 #define LUA_FUNCTION( _function_ ) int _function_( lua_State* L )

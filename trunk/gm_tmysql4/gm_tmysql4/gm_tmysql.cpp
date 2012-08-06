@@ -33,7 +33,11 @@ int Start(lua_State *L)
 
 	ILuaInterface *gLua = Lua();
 
+#ifdef GMOD_BETA
 	ILuaObject *_G = gLua->Global();
+#else
+	ILuaObject *_G = gLua->GetGlobal("_G");
+#endif
 
 	_G->SetMember( "QUERY_SUCCESS", QUERY_SUCCESS );
 	_G->SetMember( "QUERY_FAIL", QUERY_FAIL );
@@ -74,7 +78,9 @@ int Start(lua_State *L)
 	hookt->UnReference();
 	addf->UnReference();
 
+#ifndef GMOD_BETA
 	_G->UnReference();
+#endif
 
 	return 0;
 }

@@ -76,7 +76,11 @@ int Open( lua_State *L )
 	if ( !g_FileSystem )
 		Lua()->Error( "gm_crc: Error getting IFileSystem interface.\n" );
 	
+#ifdef GMOD_BETA
 	ILuaObject* _G = Lua()->Global();
+#else
+	ILuaObject* _G = Lua()->GetGlobal("_G");
+#endif
 
 	_G->SetMember("CRC32", CRC32);
 
@@ -84,7 +88,9 @@ int Open( lua_State *L )
 		file->SetMember( "CRC32", FILE_CRC32 );
 	file->UnReference();
 
+#ifndef GMOD_BETA
 	_G->UnReference();
+#endif
 	
 	return 0;
 }
