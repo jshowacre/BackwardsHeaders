@@ -140,7 +140,11 @@ int Init( lua_State *L )
 	Voice->GetRate(&DefaultRate);
 	Voice->GetVoice(&DefaultVoice);
 
+#ifdef GMOD_BETA
 	ILuaObject* _G = Lua()->Global();
+#else
+	ILuaObject* _G = Lua()->GetGlobal("_G");
+#endif
 	
 	Lua()->NewGlobalTable( "tts" );
 	ILuaObject* tts = _G->GetMember( "tts" );
@@ -151,7 +155,9 @@ int Init( lua_State *L )
 		tts->SetMember( "Resume", Resume );
 	tts->UnReference();
 
+#ifndef GMOD_BETA
 	_G->UnReference();
+#endif
 	return 0;
 }
 
