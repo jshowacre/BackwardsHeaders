@@ -23,6 +23,16 @@ public:
 	void			SetMember( const char* name, const char* s );
 	void			SetMember( const char* name, CFunc f );
 
+	void			SetUserData( void* obj );
+	
+	bool			isType( int iType );
+	bool			isNil();
+	bool			isTable();
+	bool			isString();
+	bool			isNumber();
+	bool			isFunction();
+	bool			isUserData();
+
 	void			Push();
 
 private:

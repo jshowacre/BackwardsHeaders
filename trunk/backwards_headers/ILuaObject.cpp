@@ -11,12 +11,11 @@ ILuaObject::ILuaObject( ILuaBase* lua, ILuaObject* obj ) : m_pLua(lua), m_iRef(o
 
 ILuaObject::~ILuaObject()
 {
-
+	m_pLua->ReferenceFree( m_iRef );
 }
 
 void ILuaObject::UnReference()
 {
-	m_pLua->ReferenceFree( m_iRef );
 	delete this;
 }
 
@@ -27,27 +26,31 @@ int ILuaObject::GetReference()
 
 int ILuaObject::GetType()
 {
-	m_pLua->ReferencePush( m_iRef );
-	return m_pLua->GetType( -1 );
+	Push();
+	int ret = m_pLua->GetType( -1 );
+	m_pLua->Pop();
+	return ret;
 }
 
 const char* ILuaObject::GetTypeName()
 {
-	m_pLua->ReferencePush( m_iRef );
-	return m_pLua->GetTypeName( m_pLua->GetType( -1 ) );
+	Push();
+	const char* ret = m_pLua->GetTypeName( m_pLua->GetType( -1 ) );
+	m_pLua->Pop();
+	return ret;
 }
 
 void ILuaObject::SetMember( const char* name, ILuaObject* obj )
 {
-	m_pLua->ReferencePush( m_iRef );
+	Push();
 	m_pLua->PushString( name );
-	m_pLua->ReferencePush( obj->GetReference() );
+	obj->Push();
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( const char* name, double d )
 {
-	m_pLua->ReferencePush( m_iRef );
+	Push();
 	m_pLua->PushString( name );
 	m_pLua->PushNumber( d );
 	m_pLua->SetTable( -3 );
@@ -55,7 +58,7 @@ void ILuaObject::SetMember( const char* name, double d )
 
 void ILuaObject::SetMember( const char* name, bool b )
 {
-	m_pLua->ReferencePush( m_iRef );
+	Push();
 	m_pLua->PushString( name );
 	m_pLua->PushBool( b );
 	m_pLua->SetTable( -3 );
@@ -63,7 +66,7 @@ void ILuaObject::SetMember( const char* name, bool b )
 
 void ILuaObject::SetMember( const char* name, const char* s )
 {
-	m_pLua->ReferencePush( m_iRef );
+	Push();
 	m_pLua->PushString( name );
 	m_pLua->PushString( s );
 	m_pLua->SetTable( -3 );
@@ -71,12 +74,57 @@ void ILuaObject::SetMember( const char* name, const char* s )
 
 void ILuaObject::SetMember( const char* name, CFunc f )
 {
-	m_pLua->ReferencePush( m_iRef );
+	Push();
 	m_pLua->PushString( name );
 	m_pLua->PushCFunction( f );
 	m_pLua->SetTable( -3 );
 }
 
+void ILuaObject::SetUserData( void* obj )
+{
+	Push();
+	m_pLua->NewUserdata( sizeof( obj ) );
+	m_pLua->PushUserdata( obj );
+	m_pLua->GetUserdata( -3 );
+}
+
+bool ILuaObject::isType( int iType )
+{
+	Push();
+	bool ret = m_pLua->GetType(-1) == iType;
+	m_pLua->Pop();
+	return ret;
+}
+
+bool ILuaObject::isNil()
+{
+	return isType( Type::NIL );
+}
+
+bool ILuaObject::isTable()
+{
+	return isType( Type::TABLE );
+}
+
+bool ILuaObject::isString()
+{
+	return isType( Type::STRING );
+}
+
+bool ILuaObject::isNumber()
+{
+	return isType( Type::NUMBER );
+}
+
+bool ILuaObject::isFunction()
+{
+	return isType( Type::FUNCTION );
+}
+
+bool ILuaObject::isUserData()
+{
+	return isType( Type::USERDATA );
+}
 
 void ILuaObject::Push()
 {
