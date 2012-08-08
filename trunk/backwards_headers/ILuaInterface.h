@@ -1,35 +1,22 @@
 #ifndef ILUAINTERFACE_H
 #define ILUAINTERFACE_H
 
+#define GMMODULE
+#include <stdio.h>
+#include <stdarg.h>
+
 #include "ILuaObject.h"
 #include "Interface.h"
-
-#define GMOD_MODULE( _startfunction_, _closefunction_ ) \
-	int _startfunction_( lua_State* L );\
-	int _closefunction_( lua_State* L );\
-	DLL_EXPORT int gmod13_open( lua_State* L ) \
-	{ \
-		modulemanager->CreateInterface(L);\
-		return _startfunction_(L);\
-	} \
-	DLL_EXPORT int gmod13_close( lua_State* L ) \
-	{ \
-		modulemanager->DestroyInterface(L);\
-		return _closefunction_(L);\
-	} \
-
-
-#define LUA_FUNCTION( _function_ ) int _function_( lua_State* L ) // Compatablity, also I find it neater
 
 using namespace GarrysMod::Lua;
 
 class ILuaInterface
 {
 public:
-	ILuaInterface( ILuaBase* state );
+	ILuaInterface( lua_State* state );
 	~ILuaInterface( void );
 
-	ILuaBase*		GetLua();
+	lua_State*		GetLuaState();
 	ILuaObject*		Global();
 	ILuaObject*		GetNewTable();
 
@@ -58,6 +45,7 @@ public:
 
 	void			Push( ILuaObject* o );
 	void			Push( const char* s );
+	void			PushVA( const char* str, ... );
 	void			Push( double d );
 	void			Push( bool b );
 	void			Push( CFunc f );
@@ -66,12 +54,19 @@ public:
 	void			PushUserData( ILuaObject* metatable, void * v );
 
 	void			CheckType( int i, int iType );
+	int				GetType( int iStackPos );
+	const char*		GetTypeName( int iType );
+
+	ILuaObject*		GetReturn( int iNum );
+
+	void			Call( int args, int returns = 0 );
 
 	ILuaObject*		GetMetaTable( const char* strName, int iType );
 	//ILuaObject*		GetMetaTable( int i );
 
 private:
-	ILuaBase* m_pState;
+	lua_State* m_pState;
+	ILuaBase* m_pLua;
 };
 
 #endif

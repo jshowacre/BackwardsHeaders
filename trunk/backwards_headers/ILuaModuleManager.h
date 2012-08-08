@@ -16,7 +16,23 @@ private:
 	//std::map<lua_State*, ILuaInterface*> map_States;
 };
 
-ILuaModuleManager* modulemanager = new ILuaModuleManager();
+extern ILuaModuleManager* modulemanager;
+
+#define GMOD_MODULE( _startfunction_, _closefunction_ ) \
+	int _startfunction_( lua_State* L );\
+	int _closefunction_( lua_State* L );\
+	DLL_EXPORT int gmod13_open( lua_State* L ) \
+	{ \
+		modulemanager->CreateInterface(L);\
+		return _startfunction_(L);\
+	} \
+	DLL_EXPORT int gmod13_close( lua_State* L ) \
+	{ \
+		modulemanager->DestroyInterface(L);\
+		return _closefunction_(L);\
+	} \
+
+#define LUA_FUNCTION( _function_ ) int _function_( lua_State* L ) // Compatablity, also I find it neater
 
 #define Lua() modulemanager->GetLuaInterface( L )
 
