@@ -14,6 +14,7 @@
 	} \
 	DLL_EXPORT int gmod13_close( lua_State* L ) \
 	{ \
+		modulemanager->DestroyInterface(L);\
 		return _closefunction_(L);\
 	} \
 
