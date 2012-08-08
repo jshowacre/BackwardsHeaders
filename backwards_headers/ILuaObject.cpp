@@ -34,7 +34,7 @@ int ILuaObject::GetType()
 const char* ILuaObject::GetTypeName()
 {
 	m_pLua->ReferencePush( m_iRef );
-	return m_pLua->GetTypeName( -1 );
+	return m_pLua->GetTypeName( m_pLua->GetType( -1 ) );
 }
 
 void ILuaObject::SetMember( const char* name, ILuaObject* obj )
