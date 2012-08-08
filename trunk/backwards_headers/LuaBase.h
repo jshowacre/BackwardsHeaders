@@ -26,15 +26,20 @@ namespace GarrysMod
 				virtual void		CreateTable() = 0;
 				virtual void		SetTable( int i ) = 0;
 				virtual void		SetMetaTable( int i ) = 0;
+				virtual bool		GetMetaTable( int i ) = 0;
 				virtual void		Call( int iArgs, int iResults ) = 0;
 				virtual int			PCall( int iArgs, int iResults, int iErrorFunc ) = 0;
-				virtual void		ThrowError( const char* strError ) = 0;
 				virtual int			Equal( int iA, int iB ) = 0;
 				virtual int			RawEqual( int iA, int iB ) = 0;
 				virtual void		Insert( int iStackPos ) = 0;
 				virtual void		Remove( int iStackPos ) = 0;
 				virtual int			Next( int iStackPos ) = 0;
 				virtual void*		NewUserdata( unsigned int iSize ) = 0;
+				virtual void		ThrowError( const char* strError ) = 0;
+				virtual void		CheckType( int iStackPos, int iType ) = 0;
+				virtual void		ArgError( int iArgNum, const char* strMessage ) = 0;
+				virtual void		RawGet( int iStackPos ) = 0;
+				virtual void		RawSet( int iStackPos ) = 0;
 
 				virtual const char*		GetString( int iStackPos = -1, unsigned int* iOutLen = NULL ) = 0;
 				virtual double			GetNumber( int iStackPos = -1 ) = 0;

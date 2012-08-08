@@ -62,11 +62,12 @@ public:
 	void			Call( int args, int returns = 0 );
 
 	ILuaObject*		GetMetaTable( const char* strName, int iType );
-	//ILuaObject*		GetMetaTable( int i );
+	ILuaObject*		GetMetaTable( int i );
 
 private:
-	lua_State* m_pState;
-	ILuaBase* m_pLua;
+	lua_State*		m_pState;
+	ILuaBase*		m_pLua;
+	ILuaObject*		m_pG;
 };
 
 #endif

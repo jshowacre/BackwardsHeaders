@@ -2,11 +2,13 @@
 
 ILuaInterface::ILuaInterface( lua_State* state ) : m_pState(state), m_pLua(state->luabase)
 {
+	m_pLua->PushSpecial( SPECIAL_GLOB );
+	m_pG = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 ILuaInterface::~ILuaInterface()
 {
-
+	m_pG->UnReference();
 }
 
 lua_State* ILuaInterface::GetLuaState()
@@ -16,8 +18,7 @@ lua_State* ILuaInterface::GetLuaState()
 
 ILuaObject* ILuaInterface::Global()
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+	return m_pG;
 }
 
 ILuaObject* ILuaInterface::GetNewTable()
@@ -184,11 +185,7 @@ void ILuaInterface::PushUserData( ILuaObject* metatable, void * v )
 
 void ILuaInterface::CheckType( int i, int iType )
 {
-	if (m_pLua->GetType(i) != iType)
-	{
-		char buff[1024];
-		sprintf_s(buff, "bad argument #%i (%s expected, got %s)", i, m_pLua->GetTypeName( iType ), m_pLua->GetTypeName( m_pLua->GetType(i) ) );
-	}
+	m_pLua->CheckType( i, iType );
 }
 
 int ILuaInterface::GetType( int iStackPos )
@@ -217,9 +214,10 @@ ILuaObject* ILuaInterface::GetMetaTable( const char* strName, int iType )
 	return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
 }
 
-/*
-ILuaObject* ILuaInterface::GetMetaTable( int i );
+ILuaObject* ILuaInterface::GetMetaTable( int i )
 {
-	// Not possible yet..
+	if(m_pLua->GetMetaTable( i ))
+		return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
+	else
+		return NULL;
 }
-*/
