@@ -13,7 +13,7 @@ public:
 	ILuaInterface*	GetLuaInterface( lua_State* state );
 
 private:
-	//std::map<lua_State*, ILuaInterface*> map_States;
+	std::map<lua_State*, ILuaInterface*> map_States;
 };
 
 extern ILuaModuleManager* modulemanager;
