@@ -6,6 +6,7 @@
 #include "Types.h"
 #include "LuaBase.h"
 
+
 	#ifdef GMMODULE
 
 		struct lua_State

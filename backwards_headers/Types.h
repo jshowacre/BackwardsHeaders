@@ -18,13 +18,16 @@ namespace GarrysMod
 		{
 			enum
 			{
+
 				INVALID = -1,
 				NIL, 
-				STRING, 
-				NUMBER, 
-				TABLE,
 				BOOL,
+				LIGHTUSERDATA,
+				NUMBER, 
+				STRING, 
+				TABLE,
 				FUNCTION,
+				USERDATA,
 				THREAD,
 
 				// UserData
@@ -55,7 +58,6 @@ namespace GarrysMod
 				SOUND,
 				PIXELVISHANDLE,
 				DLIGHT,
-				LIGHTUSERDATA,
 				VIDEO,
 				FILE,
 
@@ -65,11 +67,13 @@ namespace GarrysMod
 			static const char* Name[] = 
 			{
 				"nil",
-				"string",
-				"number",
-				"table",
 				"bool",
+				"lightuserdata",
+				"number",
+				"string",
+				"table",
 				"function",
+				"userdata",
 				"thread",
 				"entity",
 				"vector",
@@ -95,7 +99,6 @@ namespace GarrysMod
 				"sound",
 				"pixelvishandle",
 				"dlight",
-				"lightuserdata",
 				"video",
 				"file",
 
