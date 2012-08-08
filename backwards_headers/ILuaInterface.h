@@ -2,7 +2,7 @@
 #define ILUAINTERFACE_H
 
 #include "ILuaObject.h"
-#include "gmod13/include/GarrysMod/Lua/Interface.h"
+#include "Interface.h"
 
 #define GMOD_MODULE( _startfunction_, _closefunction_ ) \
 	int _startfunction_( lua_State* L );\
