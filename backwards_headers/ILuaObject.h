@@ -8,8 +8,8 @@ using namespace GarrysMod::Lua;
 class ILuaObject
 {
 public:
-	ILuaObject( ILuaBase* state, int iRef );
-	ILuaObject( ILuaBase* state, ILuaObject* obj );
+	ILuaObject( ILuaBase* lua, int iRef );
+	ILuaObject( ILuaBase* lua, ILuaObject* obj );
 	~ILuaObject( void );
 	
 	void			UnReference();
@@ -26,7 +26,7 @@ public:
 	void			Push();
 
 private:
-	ILuaBase* m_pState;
+	ILuaBase* m_pLua;
 	int m_iRef;
 };
 
