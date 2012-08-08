@@ -19,7 +19,7 @@
 	} \
 
 
-#define LUA_FUNCTION( _function_ ) int _function_( lua_State* state ) // Compatablity, also I find it neater
+#define LUA_FUNCTION( _function_ ) int _function_( lua_State* L ) // Compatablity, also I find it neater
 
 using namespace GarrysMod::Lua;
 
