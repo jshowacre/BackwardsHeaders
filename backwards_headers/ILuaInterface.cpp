@@ -27,6 +27,11 @@ ILuaObject* ILuaInterface::GetNewTable()
 	return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
 }
 
+void ILuaInterface::NewTable()
+{
+	m_pLua->CreateTable();
+}
+
 void ILuaInterface::Error( const char* strError )
 {
 	m_pLua->ThrowError( strError );
@@ -76,7 +81,7 @@ void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
 	m_pLua->PushString( name );
-	m_pLua->ReferencePush( o->GetReference() );
+	o->Push();
 	m_pLua->SetTable( -3 );
 }
 
@@ -93,7 +98,7 @@ const char* ILuaInterface::GetString( int i )
 
 int ILuaInterface::GetInteger( int i )
 {
-	return m_pLua->GetNumber( i );
+	return (int) m_pLua->GetNumber( i );
 }
 
 double ILuaInterface::GetNumber( int i )
@@ -101,9 +106,19 @@ double ILuaInterface::GetNumber( int i )
 	return m_pLua->GetNumber( i );
 }
 
+double ILuaInterface::GetDouble( int i )
+{
+	return GetNumber( i );
+}
+
+float ILuaInterface::GetFloat( int i )
+{
+	return (float) m_pLua->GetNumber( i );
+}
+
 bool ILuaInterface::GetBool( int i )
 {
-	return (int) m_pLua->GetBool( i );
+	return m_pLua->GetBool( i );
 }
 
 void* ILuaInterface::GetUserData( int i )
@@ -140,7 +155,7 @@ int ILuaInterface::Top()
 
 void ILuaInterface::Push( ILuaObject* o )
 {
-	m_pLua->ReferencePush( o->GetReference() );
+	o->Push();
 }
 
 void ILuaInterface::Push( const char* str )
@@ -180,7 +195,10 @@ void ILuaInterface::PushNil()
 
 void ILuaInterface::PushUserData( ILuaObject* metatable, void * v )
 {
-
+	m_pLua->NewUserdata( sizeof( v ) );
+		metatable->Push();
+		m_pLua->GetMetaTable( -1 );
+	m_pLua->SetMetaTable( -2 );
 }
 
 void ILuaInterface::CheckType( int i, int iType )

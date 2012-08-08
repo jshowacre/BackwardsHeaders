@@ -19,6 +19,7 @@ public:
 	lua_State*		GetLuaState();
 	ILuaObject*		Global();
 	ILuaObject*		GetNewTable();
+	void			NewTable();
 
 	void			Error( const char* strError );
 
@@ -33,6 +34,8 @@ public:
 	const char*		GetString( int i = -1 );
 	int				GetInteger( int i = -1 );
 	double			GetNumber( int i = -1 );
+	double			GetDouble( int i = -1 );
+	float			GetFloat( int i = -1 );
 	bool			GetBool( int i = -1 );
 	void*			GetUserData( int i = -1 );
 
