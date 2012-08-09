@@ -17,11 +17,17 @@ public:
 	~ILuaInterface( void );
 
 	lua_State*		GetLuaState();
+
 	ILuaObject*		Global();
+	ILuaObject*		Registry();
+	ILuaObject*		Environment();
+
 	ILuaObject*		GetNewTable();
 	void			NewTable();
 
 	void			Error( const char* strError );
+
+	ILuaObject*		GetGlobal( const char* name );
 
 	void			SetGlobal( const char* name, CFunc f );
 	void			SetGlobal( const char* name, double d );
@@ -71,6 +77,8 @@ private:
 	lua_State*		m_pState;
 	ILuaBase*		m_pLua;
 	ILuaObject*		m_pG;
+	ILuaObject*		m_pR;
+	ILuaObject*		m_pE;
 };
 
 #endif
