@@ -17,6 +17,11 @@ public:
 
 	int				GetType();
 	const char*		GetTypeName();
+
+	const char*		GetString( void );
+	float			GetFloat( void );
+	int				GetInt( void );
+	void*			GetUserData( void );
 	
 	void			SetMember( const char* name );
 	void			SetMember( const char* name, ILuaObject* obj );
