@@ -18,10 +18,12 @@ public:
 	int				GetType();
 	const char*		GetTypeName();
 
-	const char*		GetString( void );
-	float			GetFloat( void );
-	int				GetInt( void );
-	void*			GetUserData( void );
+	const char*		GetString();
+	int				GetInt();
+	double			GetDouble();
+	float			GetFloat();
+	bool			GetBool();
+	void*			GetUserData();
 	
 	void			SetMember( const char* name );
 	void			SetMember( const char* name, ILuaObject* obj );

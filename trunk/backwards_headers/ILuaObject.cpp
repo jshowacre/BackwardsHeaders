@@ -48,6 +48,22 @@ const char* ILuaObject::GetString( void )
 	return ret;
 }
 
+int ILuaObject::GetInt( void )
+{
+	Push();
+	int ret = (int) m_pLua->GetNumber( -1 );
+	m_pLua->Pop();
+	return ret;
+}
+
+double ILuaObject::GetDouble( void )
+{
+	Push();
+	double ret = m_pLua->GetNumber( -1 );
+	m_pLua->Pop();
+	return ret;
+}
+
 float ILuaObject::GetFloat( void )
 {
 	Push();
@@ -56,10 +72,10 @@ float ILuaObject::GetFloat( void )
 	return ret;
 }
 
-int ILuaObject::GetInt( void )
+bool ILuaObject::GetBool( void )
 {
 	Push();
-	int ret = (int) m_pLua->GetNumber( -1 );
+	bool ret = m_pLua->GetBool( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -186,7 +202,7 @@ void ILuaObject::SetUserData( void* obj )
 bool ILuaObject::isType( int iType )
 {
 	Push();
-	bool ret = m_pLua->GetType(1) == iType;
+	bool ret = m_pLua->GetType( -1 ) == iType;
 	m_pLua->Pop();
 	return ret;
 }
