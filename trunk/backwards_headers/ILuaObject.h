@@ -14,14 +14,25 @@ public:
 	
 	void			UnReference();
 	int				GetReference();
+
 	int				GetType();
 	const char*		GetTypeName();
 	
+	void			SetMember( const char* name );
 	void			SetMember( const char* name, ILuaObject* obj );
 	void			SetMember( const char* name, double d );
 	void			SetMember( const char* name, bool b );
 	void			SetMember( const char* name, const char* s );
 	void			SetMember( const char* name, CFunc f );
+	
+	void			SetMember( double fKey );
+	void			SetMember( double fKey, ILuaObject* obj );
+	void			SetMember( double fKey, double d );
+	void			SetMember( double fKey, bool b );
+	void			SetMember( double fKey, const char* s );
+	void			SetMember( double fKey, CFunc f );
+
+	ILuaObject*		GetMember( const char* name );
 
 	void			SetUserData( void* obj );
 	

@@ -4,11 +4,19 @@ ILuaInterface::ILuaInterface( lua_State* state ) : m_pState(state), m_pLua(state
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
 	m_pG = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+
+	m_pLua->PushSpecial( SPECIAL_REG );
+	m_pR = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+
+	m_pLua->PushSpecial( SPECIAL_ENV );
+	m_pE = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 ILuaInterface::~ILuaInterface()
 {
 	m_pG->UnReference();
+	m_pR->UnReference();
+	m_pE->UnReference();
 }
 
 lua_State* ILuaInterface::GetLuaState()
@@ -21,10 +29,20 @@ ILuaObject* ILuaInterface::Global()
 	return m_pG;
 }
 
+ILuaObject* ILuaInterface::Registry()
+{
+	return m_pR;
+}
+
+ILuaObject* ILuaInterface::Environment()
+{
+	return m_pE;
+}
+
 ILuaObject* ILuaInterface::GetNewTable()
 {
 	m_pLua->CreateTable();
-	return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
+	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 void ILuaInterface::NewTable()
@@ -35,6 +53,13 @@ void ILuaInterface::NewTable()
 void ILuaInterface::Error( const char* strError )
 {
 	m_pLua->ThrowError( strError );
+}
+
+ILuaObject* ILuaInterface::GetGlobal( const char* name )
+{
+	m_pLua->PushSpecial( SPECIAL_GLOB );
+	m_pLua->GetField( -1, name );
+	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 void ILuaInterface::SetGlobal( const char* name, CFunc f )
@@ -88,7 +113,7 @@ void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 ILuaObject* ILuaInterface::GetObject( int i )
 {
 	m_pLua->ReferencePush( i );
-	return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
+	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 const char* ILuaInterface::GetString( int i )
@@ -165,11 +190,11 @@ void ILuaInterface::Push( const char* str )
 
 void ILuaInterface::PushVA(const char* str, ...)
 {
-	char buff[1024];
+	char buff[ 1024 ];
 	va_list argptr;
-	va_start(argptr, str);
-	vsprintf_s(buff, str, argptr);
-	va_end(argptr);
+	va_start( argptr, str );
+	vsprintf_s( buff, str, argptr );
+	va_end( argptr );
 	m_pLua->PushString( buff );
 }
 
@@ -229,13 +254,13 @@ void ILuaInterface::Call( int args, int returns )
 ILuaObject* ILuaInterface::GetMetaTable( const char* strName, int iType )
 {
 	m_pLua->CreateMetaTableType( strName, iType );
-	return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
+	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 ILuaObject* ILuaInterface::GetMetaTable( int i )
 {
-	if(m_pLua->GetMetaTable( i ))
-		return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
+	if( m_pLua->GetMetaTable( i ) )
+		return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 	else
 		return NULL;
 }
