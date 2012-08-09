@@ -243,7 +243,7 @@ const char* ILuaInterface::GetTypeName( int iType )
 
 ILuaObject* ILuaInterface::GetReturn( int iNum )
 {
-	return new ILuaObject(m_pLua, m_pLua->ReferenceCreate());
+	return GetObject( iNum );
 }
 
 void ILuaInterface::Call( int args, int returns )
