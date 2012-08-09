@@ -50,6 +50,17 @@ void ILuaInterface::NewTable()
 	m_pLua->CreateTable();
 }
 
+ILuaObject* ILuaInterface::NewTemporaryObject()
+{
+	return new ILuaObject( m_pLua );
+}
+
+ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
+{
+	// Really not sure how to handle this..
+	return metaT;
+}
+
 void ILuaInterface::Error( const char* strError )
 {
 	m_pLua->ThrowError( strError );

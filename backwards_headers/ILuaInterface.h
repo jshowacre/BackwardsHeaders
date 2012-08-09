@@ -24,6 +24,8 @@ public:
 
 	ILuaObject*		GetNewTable();
 	void			NewTable();
+	ILuaObject*		NewTemporaryObject();
+	ILuaObject*		NewUserData( ILuaObject* metaT );
 
 	void			Error( const char* strError );
 

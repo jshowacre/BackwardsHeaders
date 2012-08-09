@@ -8,9 +8,13 @@ using namespace GarrysMod::Lua;
 class ILuaObject
 {
 public:
+	ILuaObject( ILuaBase* lua );
 	ILuaObject( ILuaBase* lua, int iRef );
 	ILuaObject( ILuaBase* lua, ILuaObject* obj );
 	~ILuaObject( void );
+
+	void			Set( ILuaObject* obj );
+	void			SetFromStack( int i );
 	
 	void			UnReference();
 	int				GetReference();
