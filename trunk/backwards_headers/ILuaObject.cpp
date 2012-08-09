@@ -51,7 +51,7 @@ const char* ILuaObject::GetString( void )
 float ILuaObject::GetFloat( void )
 {
 	Push();
-	float ret = m_pLua->GetNumber( -1 );
+	float ret = (float) m_pLua->GetNumber( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -59,7 +59,7 @@ float ILuaObject::GetFloat( void )
 int ILuaObject::GetInt( void )
 {
 	Push();
-	int ret = m_pLua->GetNumber( -1 );
+	int ret = (int) m_pLua->GetNumber( -1 );
 	m_pLua->Pop();
 	return ret;
 }
