@@ -41,7 +41,7 @@ ILuaObject* ILuaInterface::Environment()
 
 ILuaObject* ILuaInterface::GetNewTable()
 {
-	m_pLua->CreateTable();
+	NewTable();
 	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
@@ -112,8 +112,10 @@ void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 
 ILuaObject* ILuaInterface::GetObject( int i )
 {
-	m_pLua->ReferencePush( i );
-	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+	m_pLua->Push( i );
+	ILuaObject* o = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+	m_pLua->Pop( i );
+	return o;
 }
 
 const char* ILuaInterface::GetString( int i )
@@ -123,7 +125,7 @@ const char* ILuaInterface::GetString( int i )
 
 int ILuaInterface::GetInteger( int i )
 {
-	return (int) m_pLua->GetNumber( i );
+	return (int) GetNumber( i );
 }
 
 double ILuaInterface::GetNumber( int i )
@@ -138,7 +140,7 @@ double ILuaInterface::GetDouble( int i )
 
 float ILuaInterface::GetFloat( int i )
 {
-	return (float) m_pLua->GetNumber( i );
+	return (float) GetNumber( i );
 }
 
 bool ILuaInterface::GetBool( int i )
@@ -166,7 +168,6 @@ void ILuaInterface::PushReference( int i )
 {
 	m_pLua->ReferencePush( i );
 }
-
 
 void ILuaInterface::Pop( int i )
 {
