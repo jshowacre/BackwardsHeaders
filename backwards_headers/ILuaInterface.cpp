@@ -57,8 +57,27 @@ ILuaObject* ILuaInterface::NewTemporaryObject()
 
 ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
 {
-	// Really not sure how to handle this..
-	return metaT;
+	/*
+		int v3; // edi@1
+		int v4; // ebx@1
+		int v5; // esi@1
+
+		v3 = a1;
+		v4 = lua_newuserdata(*(_DWORD *)(a1 + 4), 4);
+		(*(void (__cdecl **)(int))(*(_DWORD *)a2 + 96))(a2);
+		lua_setmetatable(*(_DWORD *)(a1 + 4), -2);
+		v5 = (*(int (__cdecl **)(int))(*(_DWORD *)v3 + 176))(v3);
+		(*(void (__cdecl **)(int, signed int))(*(_DWORD *)v5 + 4))(v5, -1);
+		(*(void (__cdecl **)(int, signed int))(*(_DWORD *)v3 + 8))(v3, 1);
+		*(_DWORD *)v4 = 0;
+		return v5;
+	*/
+
+	void* thing = m_pLua->NewUserdata( 4 );
+		metaT->Push();
+	m_pLua->SetMetaTable( -2 );
+
+	return metaT; // need to return an ILuaObject out of this somehow..
 }
 
 void ILuaInterface::Error( const char* strError )
@@ -76,55 +95,55 @@ ILuaObject* ILuaInterface::GetGlobal( const char* name )
 void ILuaInterface::SetGlobal( const char* name, CFunc f )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
-	m_pLua->PushString( name );
-	m_pLua->PushCFunction( f );
+		m_pLua->PushString( name );
+		m_pLua->PushCFunction( f );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaInterface::SetGlobal( const char* name, double d )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
-	m_pLua->PushString( name );
-	m_pLua->PushNumber( d );
+		m_pLua->PushString( name );
+		m_pLua->PushNumber( d );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaInterface::SetGlobal( const char* name, const char* str )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
-	m_pLua->PushString( name );
-	m_pLua->PushString( str );
+		m_pLua->PushString( name );
+		m_pLua->PushString( str );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaInterface::SetGlobal( const char* name, bool b )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
-	m_pLua->PushString( name );
-	m_pLua->PushBool( b );
+		m_pLua->PushString( name );
+		m_pLua->PushBool( b );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaInterface::SetGlobal( const char* name, void* u )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
-	m_pLua->PushString( name );
-	m_pLua->PushUserdata( u );
+		m_pLua->PushString( name );
+		m_pLua->PushUserdata( u );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB );
-	m_pLua->PushString( name );
-	o->Push();
+		m_pLua->PushString( name );
+		o->Push();
 	m_pLua->SetTable( -3 );
 }
 
 ILuaObject* ILuaInterface::GetObject( int i )
 {
 	m_pLua->Push( i );
-	ILuaObject* o = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+		ILuaObject* o = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 	m_pLua->Pop( i );
 	return o;
 }
@@ -232,10 +251,13 @@ void ILuaInterface::PushNil()
 
 void ILuaInterface::PushUserData( ILuaObject* metatable, void * v )
 {
-	m_pLua->NewUserdata( sizeof( v ) );
-		metatable->Push();
-		m_pLua->GetMetaTable( -1 );
-	m_pLua->SetMetaTable( -2 );
+	if (!metatable)
+		Error("CLuaInterface - No Metatable!\n");
+
+	metatable->Push();
+		m_pLua->NewUserdata( sizeof( v ) );
+		m_pLua->PushUserdata( v );
+	m_pLua->GetUserdata( -3 );
 }
 
 void ILuaInterface::CheckType( int i, int iType )
