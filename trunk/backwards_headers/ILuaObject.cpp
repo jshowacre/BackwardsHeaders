@@ -1,5 +1,9 @@
 #include "ILuaObject.h"
 
+ILuaObject::ILuaObject( ILuaBase* lua ) : m_pLua(lua), m_iRef(-1)
+{
+}
+
 ILuaObject::ILuaObject( ILuaBase* lua, int iRef ) : m_pLua(lua), m_iRef(iRef)
 {
 }
@@ -12,6 +16,18 @@ ILuaObject::ILuaObject( ILuaBase* lua, ILuaObject* obj ) : m_pLua(lua), m_iRef(o
 ILuaObject::~ILuaObject()
 {
 	m_pLua->ReferenceFree( m_iRef );
+}
+
+void ILuaObject::Set( ILuaObject* obj ) // ???
+{
+	m_iRef = obj->GetReference();
+}
+
+void ILuaObject::SetFromStack( int i ) // ???
+{
+	m_pLua->Push( i );
+	m_iRef = m_pLua->ReferenceCreate();
+	m_pLua->Pop( i );
 }
 
 void ILuaObject::UnReference()
@@ -197,6 +213,7 @@ void ILuaObject::SetUserData( void* obj )
 	m_pLua->NewUserdata( sizeof( obj ) );
 	m_pLua->PushUserdata( obj );
 	m_pLua->GetUserdata( -3 );
+	m_pLua->Pop();
 }
 
 bool ILuaObject::isType( int iType )
