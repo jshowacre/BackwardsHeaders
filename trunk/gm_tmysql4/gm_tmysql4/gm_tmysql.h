@@ -10,7 +10,7 @@
 #include "utlstack.h"
 #include "vstdlib/jobthread.h"
 
-#include "gmod/GMLuaModule.h"
+#include "ILuaModuleManager.h"
 #include "database.h"
 
 #include "memdbgon.h"

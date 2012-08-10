@@ -2,14 +2,14 @@
 #pragma comment (lib, "tier1.lib")
 #pragma comment (linker, "/NODEFAULTLIB:libcmt")
 
-#define GMOD_BETA
-
 #include "gm_tmysql.h"
+
+using namespace GarrysMod::Lua;
 
 #define DATABASE_NAME "tmysqlDB"
 #define DATABASE_ID 6603
 
-GMOD_MODULE(Start, Close);
+GMOD_MODULE( Start, Close );
 
 CUtlVectorMT<CUtlVector<Database*>> m_vecConnections;
 LUA_FUNCTION( escape );
@@ -22,38 +22,38 @@ LUA_FUNCTION( poll );
 LUA_FUNCTION( pollall );
 LUA_FUNCTION( gettable );
 
+void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb );
 void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requireSync );
-bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query );
 void HandleQueryCallback( ILuaInterface* gLua, Query* query );
-void DisconnectDB( ILuaInterface* gLua, Database* mysqldb );
+bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query );
 
-int Start(lua_State *L)
+int Start( lua_State* L )
 {
+	ILuaInterface* gLua = Lua();
 	mysql_library_init( 0, NULL, NULL );
 
-	ILuaInterface *gLua = Lua();
+	gLua->SetGlobal( "QUERY_SUCCESS", QUERY_SUCCESS );
 
-#ifdef GMOD_BETA
-	ILuaObject *_G = gLua->Global();
-#else
-	ILuaObject *_G = gLua->GetGlobal("_G");
-#endif
+	gLua->SetGlobal( "QUERY_SUCCESS", QUERY_SUCCESS );
+	gLua->SetGlobal( "QUERY_FAIL", QUERY_FAIL );
 
-	_G->SetMember( "QUERY_SUCCESS", QUERY_SUCCESS );
-	_G->SetMember( "QUERY_FAIL", QUERY_FAIL );
+	gLua->SetGlobal( "QUERY_FLAG_ASSOC", (float)QUERY_FLAG_ASSOC );
+	gLua->SetGlobal( "QUERY_FLAG_LASTID", (float)QUERY_FLAG_LASTID );
 
-	_G->SetMember( "QUERY_FLAG_ASSOC", (float)QUERY_FLAG_ASSOC );
-	_G->SetMember( "QUERY_FLAG_LASTID", (float)QUERY_FLAG_LASTID );
+	gLua->SetGlobal( "MYSQL_VERSION", (float)mysql_get_client_version() );
+    gLua->SetGlobal( "MYSQL_INFO", mysql_get_client_info() );
 
-	ILuaObject* mfunc = gLua->GetNewTable();
-		mfunc->SetMember("initialize", initialize);
-		mfunc->SetMember("Connect", initialize);
-		mfunc->SetMember("escape", escape );
-		mfunc->SetMember("GetTable", gettable);
-		mfunc->SetMember( "PollAll", pollall );
-	_G->SetMember( "tmysql", mfunc );
+	ILuaObject* tmysql = gLua->GetNewTable();
 
-	mfunc->UnReference();
+		tmysql->SetMember("initialize", initialize);
+		tmysql->SetMember("Connect", initialize);
+		tmysql->SetMember("escape", escape);
+		tmysql->SetMember("GetTable", gettable);
+		tmysql->SetMember("PollAll", pollall);
+
+		gLua->SetGlobal( "tmysql", tmysql );
+
+	tmysql->UnReference();
 
 	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
 		metaT->SetMember( "Query", query );
@@ -64,9 +64,9 @@ int Start(lua_State *L)
 		metaT->SetMember( "__tostring", __tostring );
 		metaT->SetMember( "__index", metaT );
 	metaT->UnReference();
-
+	
 	// hook.Add("Think", "TMysqlPoll", tmysql.poll)
-	ILuaObject *hookt = _G->GetMember("hook");
+	ILuaObject *hookt = gLua->GetGlobal("hook");
 	ILuaObject *addf = hookt->GetMember("Add");
 
 	addf->Push();
@@ -78,14 +78,10 @@ int Start(lua_State *L)
 	hookt->UnReference();
 	addf->UnReference();
 
-#ifndef GMOD_BETA
-	_G->UnReference();
-#endif
-
 	return 0;
 }
 
-int Close(lua_State *L)
+int Close( lua_State* L )
 {
 	mysql_library_end();
 	return 0;
@@ -94,8 +90,7 @@ int Close(lua_State *L)
 LUA_FUNCTION( escape )
 {
 	ILuaInterface* gLua = Lua();
-	
-	gLua->CheckType( 1, GLua::TYPE_STRING );
+	gLua->CheckType(1, Type::STRING);
 
 	const char* query = gLua->GetString( 1 );
 
@@ -107,6 +102,7 @@ LUA_FUNCTION( escape )
 	gLua->Push( escaped );
 
 	delete escaped;
+	delete gLua;
 	return 1;
 }
 
@@ -114,11 +110,11 @@ LUA_FUNCTION( initialize )
 {
 	ILuaInterface* gLua = Lua();
 
-	gLua->CheckType(1, GLua::TYPE_STRING);
-	gLua->CheckType(2, GLua::TYPE_STRING);
-	gLua->CheckType(3, GLua::TYPE_STRING);
-	gLua->CheckType(4, GLua::TYPE_STRING);
-	gLua->CheckType(5, GLua::TYPE_NUMBER);
+	gLua->CheckType(1, Type::STRING);
+	gLua->CheckType(2, Type::STRING);
+	gLua->CheckType(3, Type::STRING);
+	gLua->CheckType(4, Type::STRING);
+	gLua->CheckType(5, Type::NUMBER);
 
 	const char* host = gLua->GetString(1);
 	const char* user = gLua->GetString(2);
@@ -138,11 +134,10 @@ LUA_FUNCTION( initialize )
 		char buffer[1024];
 
 		Q_snprintf( buffer, sizeof(buffer), "Error connecting to DB: %s", error.Get() );
-		gLua->Msg( "%s\n", buffer );
+		Msg( "%s\n", buffer );
 
 		gLua->Push( false );
 		gLua->Push( buffer );
-
 		return 2;
 	}
 
@@ -189,7 +184,7 @@ LUA_FUNCTION( setcharset )
 	if ( !mysqldb )
 		return 0;
 
-	gLua->CheckType( 2, GLua::TYPE_STRING );
+	gLua->CheckType( 2, Type::STRING );
 
 	const char* set = gLua->GetString( 2 );
 
@@ -207,11 +202,11 @@ LUA_FUNCTION( query )
 	if ( !mysqldb )
 		return 0;
 
-	gLua->CheckType( 2, GLua::TYPE_STRING );
+	gLua->CheckType( 2, Type::STRING );
 	const char* query = gLua->GetString( 2 );
 
 	int callbackfunc = -1;
-	if(gLua->GetType(3) == GLua::TYPE_FUNCTION)
+	if(gLua->GetType(3) == Type::FUNCTION)
 	{
 		callbackfunc = gLua->GetReference(3);
 	}
@@ -220,7 +215,7 @@ LUA_FUNCTION( query )
 
 	int callbackref = -1;
 	int callbackobj = gLua->GetType(5);
-	if(callbackobj != GLua::TYPE_NIL)
+	if(callbackobj != Type::NIL)
 	{
 		callbackref = gLua->GetReference(5);
 	}
