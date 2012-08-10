@@ -28,8 +28,9 @@ extern ILuaModuleManager* modulemanager;
 	} \
 	DLL_EXPORT int gmod13_close( lua_State* L ) \
 	{ \
+		int ret = _closefunction_(L);\
 		modulemanager->DestroyInterface(L);\
-		return _closefunction_(L);\
+		return ret;\
 	} \
 
 #define LUA_FUNCTION( _function_ ) int _function_( lua_State* L ) // Compatablity, also I find it neater
