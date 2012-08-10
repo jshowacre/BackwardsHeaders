@@ -74,12 +74,13 @@ ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
 		return v5;
 	*/
 
-	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
+	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( 4 );
 	ILuaObject* obj = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 
-	obj->Push();
-		metaT->Push();
-	m_pLua->SetMetaTable( -2 );
+	obj->Push(); // +1
+		metaT->Push(); // +1
+		m_pLua->SetMetaTable( -2 ); // -1
+	m_pLua->Pop(); // -1
 
 	return obj;
 }
@@ -96,9 +97,7 @@ void ILuaInterface::PushUserData( ILuaObject* metaT, void * v )
 
 	obj->Push(); // +1
 		metaT->Push(); // +1
-	m_pLua->SetMetaTable( -2 ); // -2
-
-	obj->Push(); // +1
+		m_pLua->SetMetaTable( -2 ); // -1
 }
 
 void ILuaInterface::Error( const char* strError )
@@ -207,8 +206,10 @@ void* ILuaInterface::GetUserData( int i )
 
 int ILuaInterface::GetReference( int i )
 {
-	m_pLua->ReferencePush( i );
-	return m_pLua->ReferenceCreate();
+	m_pLua->Push( i );
+		int iRef = m_pLua->ReferenceCreate();
+	m_pLua->Pop( i );
+	return iRef;
 }
 
 void ILuaInterface::FreeReference( int i )
