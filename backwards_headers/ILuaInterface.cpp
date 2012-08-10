@@ -74,7 +74,7 @@ ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
 		return v5;
 	*/
 
-	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( 4 );
+	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
 	ILuaObject* obj = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 
 	obj->Push(); // +1
