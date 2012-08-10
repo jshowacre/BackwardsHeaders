@@ -27,6 +27,8 @@ public:
 	ILuaObject*		NewTemporaryObject();
 	ILuaObject*		NewUserData( ILuaObject* metaT );
 
+	void			PushUserData( ILuaObject* metatable, void * v );
+
 	void			Error( const char* strError );
 
 	ILuaObject*		GetGlobal( const char* name );
@@ -61,8 +63,6 @@ public:
 	void			Push( bool b );
 	void			Push( CFunc f );
 	void			PushNil();
-
-	void			PushUserData( ILuaObject* metatable, void * v );
 
 	void			CheckType( int i, int iType );
 	int				GetType( int iStackPos );
