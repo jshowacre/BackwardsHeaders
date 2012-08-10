@@ -4,8 +4,6 @@
 
 #include "gm_tmysql.h"
 
-using namespace GarrysMod::Lua;
-
 #define DATABASE_NAME "tmysqlDB"
 #define DATABASE_ID 6603
 
@@ -66,17 +64,17 @@ int Start( lua_State* L )
 	metaT->UnReference();
 	
 	// hook.Add("Think", "TMysqlPoll", tmysql.poll)
-	ILuaObject *hookt = gLua->GetGlobal("hook");
-	ILuaObject *addf = hookt->GetMember("Add");
+	ILuaObject *hook = gLua->GetGlobal("hook");
+	ILuaObject *Add = hook->GetMember("Add");
 
-	addf->Push();
-		gLua->Push("Think");
+	Add->Push();
+		gLua->Push("Tick");
 		gLua->Push("TMysqlPoll");
 		gLua->Push(pollall);
 	gLua->Call(3);
 
-	hookt->UnReference();
-	addf->UnReference();
+	hook->UnReference();
+	Add->UnReference();
 
 	return 0;
 }
@@ -102,7 +100,6 @@ LUA_FUNCTION( escape )
 	gLua->Push( escaped );
 
 	delete escaped;
-	delete gLua;
 	return 1;
 }
 
@@ -273,11 +270,11 @@ void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb )
 {
 	if ( mysqldb )
 	{
-		while ( !mysqldb->IsSafeToShutdown() )
+		/*while ( !mysqldb->IsSafeToShutdown() )
 		{
 			DispatchCompletedQueries( gLua, mysqldb, true );
 			ThreadSleep( 10 );
-		}
+		}*/
 
 		m_vecConnections.FindAndRemove( mysqldb );
 		mysqldb->Shutdown();
@@ -374,14 +371,18 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 	}
 
 	int rowid = 1;
-	ILuaObject* resultrow = gLua->NewTemporaryObject();
+	//ILuaObject* resultrow = gLua->NewTemporaryObject();
 
 	while ( row != NULL )
 	{
+		/*
 		// black magic warning: we use a temp and assign it so that we avoid consuming all the temp objects and causing horrible disasters
 		gLua->NewTable();
 		resultrow->SetFromStack(-1);
 		gLua->Pop();
+		*/
+
+		ILuaObject* resultrow = gLua->GetNewTable();
 
 		for ( int i = 0; i < field_count; i++ )
 		{
