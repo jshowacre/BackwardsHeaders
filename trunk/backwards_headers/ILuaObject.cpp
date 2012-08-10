@@ -1,4 +1,5 @@
 #include "ILuaObject.h"
+#include "ILuaUserData.h"
 
 ILuaObject::ILuaObject( ILuaBase* lua ) : m_pLua(lua), m_iRef(-1)
 {
@@ -26,7 +27,7 @@ void ILuaObject::Set( ILuaObject* obj ) // ???
 void ILuaObject::SetFromStack( int i ) // ???
 {
 	m_pLua->Push( i );
-	m_iRef = m_pLua->ReferenceCreate();
+		m_iRef = m_pLua->ReferenceCreate();
 	m_pLua->Pop( i );
 }
 
@@ -43,7 +44,7 @@ int ILuaObject::GetReference()
 int ILuaObject::GetType()
 {
 	Push();
-	int ret = m_pLua->GetType( -1 );
+		int ret = m_pLua->GetType( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -51,7 +52,7 @@ int ILuaObject::GetType()
 const char* ILuaObject::GetTypeName()
 {
 	Push();
-	const char* ret = m_pLua->GetTypeName( m_pLua->GetType( -1 ) );
+		const char* ret = m_pLua->GetTypeName( m_pLua->GetType( -1 ) );
 	m_pLua->Pop();
 	return ret;
 }
@@ -59,7 +60,7 @@ const char* ILuaObject::GetTypeName()
 const char* ILuaObject::GetString( void )
 {
 	Push();
-	const char* ret = m_pLua->GetString( -1 );
+		const char* ret = m_pLua->GetString( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -67,7 +68,7 @@ const char* ILuaObject::GetString( void )
 int ILuaObject::GetInt( void )
 {
 	Push();
-	int ret = (int) m_pLua->GetNumber( -1 );
+		int ret = (int) m_pLua->GetNumber( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -75,7 +76,7 @@ int ILuaObject::GetInt( void )
 double ILuaObject::GetDouble( void )
 {
 	Push();
-	double ret = m_pLua->GetNumber( -1 );
+		double ret = m_pLua->GetNumber( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -83,7 +84,7 @@ double ILuaObject::GetDouble( void )
 float ILuaObject::GetFloat( void )
 {
 	Push();
-	float ret = (float) m_pLua->GetNumber( -1 );
+		float ret = (float) m_pLua->GetNumber( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -91,7 +92,7 @@ float ILuaObject::GetFloat( void )
 bool ILuaObject::GetBool( void )
 {
 	Push();
-	bool ret = m_pLua->GetBool( -1 );
+		bool ret = m_pLua->GetBool( -1 );
 	m_pLua->Pop();
 	return ret;
 }
@@ -99,127 +100,125 @@ bool ILuaObject::GetBool( void )
 void* ILuaObject::GetUserData( void )
 {
 	Push();
-	void* ret = m_pLua->GetUserdata( -1 );
+		ILuaUserData* data = (ILuaUserData*) m_pLua->GetUserdata( -1 );
 	m_pLua->Pop();
-	return ret;
+	return data->obj;
 }
 
 void ILuaObject::SetMember( const char* name )
 {
 	Push();
-	m_pLua->PushString( name );
-	m_pLua->PushNil();
+		m_pLua->PushString( name );
+		m_pLua->PushNil();
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( const char* name, ILuaObject* obj )
 {
 	Push();
-	m_pLua->PushString( name );
-	obj->Push();
+		m_pLua->PushString( name );
+		obj->Push();
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( const char* name, double d )
 {
 	Push();
-	m_pLua->PushString( name );
-	m_pLua->PushNumber( d );
+		m_pLua->PushString( name );
+		m_pLua->PushNumber( d );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( const char* name, bool b )
 {
 	Push();
-	m_pLua->PushString( name );
-	m_pLua->PushBool( b );
+		m_pLua->PushString( name );
+		m_pLua->PushBool( b );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( const char* name, const char* s )
 {
 	Push();
-	m_pLua->PushString( name );
-	m_pLua->PushString( s );
+		m_pLua->PushString( name );
+		m_pLua->PushString( s );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( const char* name, CFunc f )
 {
 	Push();
-	m_pLua->PushString( name );
-	m_pLua->PushCFunction( f );
+		m_pLua->PushString( name );
+		m_pLua->PushCFunction( f );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( double fKey )
 {
 	Push();
-	m_pLua->PushNumber( fKey );
-	m_pLua->PushNil();
+		m_pLua->PushNumber( fKey );
+		m_pLua->PushNil();
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( double fKey, ILuaObject* obj )
 {
 	Push();
-	m_pLua->PushNumber( fKey );
-	obj->Push();
+		m_pLua->PushNumber( fKey );
+		obj->Push();
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( double fKey, double d )
 {
 	Push();
-	m_pLua->PushNumber( fKey );
-	m_pLua->PushNumber( d );
+		m_pLua->PushNumber( fKey );
+		m_pLua->PushNumber( d );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( double fKey, bool b )
 {
 	Push();
-	m_pLua->PushNumber( fKey );
-	m_pLua->PushBool( b );
+		m_pLua->PushNumber( fKey );
+		m_pLua->PushBool( b );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( double fKey, const char* s )
 {
 	Push();
-	m_pLua->PushNumber( fKey );
-	m_pLua->PushString( s );
+		m_pLua->PushNumber( fKey );
+		m_pLua->PushString( s );
 	m_pLua->SetTable( -3 );
 }
 
 void ILuaObject::SetMember( double fKey, CFunc f )
 {
 	Push();
-	m_pLua->PushNumber( fKey );
-	m_pLua->PushCFunction( f );
+		m_pLua->PushNumber( fKey );
+		m_pLua->PushCFunction( f );
 	m_pLua->SetTable( -3 );
 }
 
 ILuaObject* ILuaObject::GetMember( const char* name )
 {
 	Push();
-	m_pLua->GetField( -1, name );
+		m_pLua->GetField( -1, name );
 	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 void ILuaObject::SetUserData( void* obj )
 {
 	Push();
-	m_pLua->NewUserdata( sizeof( obj ) );
-	m_pLua->PushUserdata( obj );
-	m_pLua->GetUserdata( -3 );
-	m_pLua->Pop();
+		ILuaUserData *data = (ILuaUserData*) m_pLua->GetUserdata();
+	data->obj = obj;
 }
 
 bool ILuaObject::isType( int iType )
 {
 	Push();
-	bool ret = m_pLua->GetType( -1 ) == iType;
+		bool ret = m_pLua->GetType( -1 ) == iType;
 	m_pLua->Pop();
 	return ret;
 }

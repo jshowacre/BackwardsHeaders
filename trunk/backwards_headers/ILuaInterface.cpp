@@ -1,4 +1,5 @@
 #include "ILuaInterface.h"
+#include "ILuaUserData.h"
 
 ILuaInterface::ILuaInterface( lua_State* state ) : m_pState(state), m_pLua(state->luabase)
 {
@@ -73,11 +74,31 @@ ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
 		return v5;
 	*/
 
-	void* thing = m_pLua->NewUserdata( 4 );
+	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
+	ILuaObject* obj = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+
+	obj->Push();
 		metaT->Push();
 	m_pLua->SetMetaTable( -2 );
 
-	return metaT; // need to return an ILuaObject out of this somehow..
+	return obj;
+}
+
+void ILuaInterface::PushUserData( ILuaObject* metaT, void * v )
+{
+	if (!metaT)
+		Error("CLuaInterface - No Metatable!\n");
+
+	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
+	data->obj = v;
+
+	ILuaObject* obj = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+
+	obj->Push(); // +1
+		metaT->Push(); // +1
+	m_pLua->SetMetaTable( -2 ); // -2
+
+	obj->Push(); // +1
 }
 
 void ILuaInterface::Error( const char* strError )
@@ -87,57 +108,57 @@ void ILuaInterface::Error( const char* strError )
 
 ILuaObject* ILuaInterface::GetGlobal( const char* name )
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-	m_pLua->GetField( -1, name );
-	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+	m_pLua->GetField( -1, name ); // -1 AND +1
+	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
 }
 
 void ILuaInterface::SetGlobal( const char* name, CFunc f )
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-		m_pLua->PushString( name );
-		m_pLua->PushCFunction( f );
-	m_pLua->SetTable( -3 );
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->PushCFunction( f ); // +1
+	m_pLua->SetTable( -3 ); // -3
 }
 
 void ILuaInterface::SetGlobal( const char* name, double d )
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-		m_pLua->PushString( name );
-		m_pLua->PushNumber( d );
-	m_pLua->SetTable( -3 );
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->PushNumber( d ); // +1
+	m_pLua->SetTable( -3 ); // -3
 }
 
 void ILuaInterface::SetGlobal( const char* name, const char* str )
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-		m_pLua->PushString( name );
-		m_pLua->PushString( str );
-	m_pLua->SetTable( -3 );
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->PushString( str ); // +1
+	m_pLua->SetTable( -3 ); // -3
 }
 
 void ILuaInterface::SetGlobal( const char* name, bool b )
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-		m_pLua->PushString( name );
-		m_pLua->PushBool( b );
-	m_pLua->SetTable( -3 );
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->PushBool( b ); // +1
+	m_pLua->SetTable( -3 ); // -3
 }
 
 void ILuaInterface::SetGlobal( const char* name, void* u )
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-		m_pLua->PushString( name );
-		m_pLua->PushUserdata( u );
-	m_pLua->SetTable( -3 );
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->PushUserdata( u ); // +1
+	m_pLua->SetTable( -3 ); // -3
 }
 
 void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 {
-	m_pLua->PushSpecial( SPECIAL_GLOB );
-		m_pLua->PushString( name );
-		o->Push();
-	m_pLua->SetTable( -3 );
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		o->Push(); // +1
+	m_pLua->SetTable( -3 ); // -3
 }
 
 ILuaObject* ILuaInterface::GetObject( int i )
@@ -180,7 +201,8 @@ bool ILuaInterface::GetBool( int i )
 
 void* ILuaInterface::GetUserData( int i )
 {
-	return m_pLua->GetUserdata( i );
+	ILuaUserData* data = (ILuaUserData*) m_pLua->GetUserdata( i );
+	return data->obj;
 }
 
 int ILuaInterface::GetReference( int i )
@@ -247,17 +269,6 @@ void ILuaInterface::Push( CFunc f )
 void ILuaInterface::PushNil()
 {
 	m_pLua->PushNil();
-}
-
-void ILuaInterface::PushUserData( ILuaObject* metatable, void * v )
-{
-	if (!metatable)
-		Error("CLuaInterface - No Metatable!\n");
-
-	metatable->Push();
-		m_pLua->NewUserdata( sizeof( v ) );
-		m_pLua->PushUserdata( v );
-	m_pLua->GetUserdata( -3 );
 }
 
 void ILuaInterface::CheckType( int i, int iType )
