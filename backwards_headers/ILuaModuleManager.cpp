@@ -9,7 +9,9 @@ void ILuaModuleManager::CreateInterface(lua_State* state)
 
 void ILuaModuleManager::DestroyInterface(lua_State* state)
 {
-	delete GetLuaInterface(state);
+	ILuaInterface* gLua = GetLuaInterface(state);
+	map_States.erase(state);
+	delete gLua;
 }
 
 ILuaInterface* ILuaModuleManager::GetLuaInterface(lua_State* state)
