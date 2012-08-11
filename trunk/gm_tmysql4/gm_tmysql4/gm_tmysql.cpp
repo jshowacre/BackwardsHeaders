@@ -149,18 +149,19 @@ LUA_FUNCTION( initialize )
 LUA_FUNCTION( disconnect )
 {
 	ILuaInterface* gLua = Lua();
-
 	gLua->CheckType( 1, DATABASE_ID );
 
 	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
-	DisconnectDB( gLua, mysqldb );
+
+	if (mysqldb)
+		DisconnectDB( gLua, mysqldb );
+
 	return 0;
 }
 
 LUA_FUNCTION( __tostring )
 {
 	ILuaInterface* gLua = Lua();
-
 	gLua->CheckType( 1, DATABASE_ID );
 
 	Database *mysqldb = (Database*) gLua->GetUserData(1);
@@ -169,7 +170,6 @@ LUA_FUNCTION( __tostring )
 		return 0;
 	
 	gLua->PushVA( "%s: %p", DATABASE_NAME, mysqldb );
-
 	return 1;
 }
 
@@ -270,11 +270,11 @@ void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb )
 {
 	if ( mysqldb )
 	{
-		/*while ( !mysqldb->IsSafeToShutdown() )
+		while ( !mysqldb->IsSafeToShutdown() )
 		{
 			DispatchCompletedQueries( gLua, mysqldb, true );
 			ThreadSleep( 10 );
-		}*/
+		}
 
 		m_vecConnections.FindAndRemove( mysqldb );
 		mysqldb->Shutdown();
@@ -297,7 +297,7 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 		{
 			Query* query = completed[i];
 
-			if ( query->GetCallback() >= 0 )
+			if ( !requireSync && query->GetCallback() >= 0 )
 			{
 				HandleQueryCallback( gLua, query );
 			}
@@ -375,12 +375,10 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 
 	while ( row != NULL )
 	{
-		/*
 		// black magic warning: we use a temp and assign it so that we avoid consuming all the temp objects and causing horrible disasters
-		gLua->NewTable();
+		/*gLua->NewTable();
 		resultrow->SetFromStack(-1);
-		gLua->Pop();
-		*/
+		gLua->Pop();*/
 
 		ILuaObject* resultrow = gLua->GetNewTable();
 

@@ -21,14 +21,16 @@ ILuaObject::~ILuaObject()
 
 void ILuaObject::Set( ILuaObject* obj ) // ???
 {
+	if(m_iRef >= 0)
+		m_pLua->ReferenceFree( m_iRef ); // How could I forget to do this
 	m_iRef = obj->GetReference();
 }
 
-void ILuaObject::SetFromStack( int i ) // ???
+void ILuaObject::SetFromStack() // ???
 {
-	m_pLua->Push( i );
-		m_iRef = m_pLua->ReferenceCreate();
-	m_pLua->Pop( i );
+	if(m_iRef >= 0)
+		m_pLua->ReferenceFree( m_iRef ); // How could I forget to do this
+	m_iRef = m_pLua->ReferenceCreate();
 }
 
 void ILuaObject::UnReference()
