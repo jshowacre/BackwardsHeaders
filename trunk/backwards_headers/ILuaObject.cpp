@@ -16,21 +16,34 @@ ILuaObject::ILuaObject( ILuaBase* lua, ILuaObject* obj ) : m_pLua(lua), m_iRef(o
 
 ILuaObject::~ILuaObject()
 {
-	m_pLua->ReferenceFree( m_iRef );
+	if(m_iRef >= 0)
+		m_pLua->ReferenceFree( m_iRef );
 }
 
 void ILuaObject::Set( ILuaObject* obj ) // ???
 {
 	if(m_iRef >= 0)
-		m_pLua->ReferenceFree( m_iRef ); // How could I forget to do this
+		m_pLua->ReferenceFree( m_iRef );
+	
 	m_iRef = obj->GetReference();
 }
 
-void ILuaObject::SetFromStack() // ???
+void ILuaObject::SetFromStack() // THIS WORKS
 {
 	if(m_iRef >= 0)
-		m_pLua->ReferenceFree( m_iRef ); // How could I forget to do this
+		m_pLua->ReferenceFree( m_iRef );
+		
 	m_iRef = m_pLua->ReferenceCreate();
+}
+
+void ILuaObject::SetFromStack(int i) // THIS DOESN'T ToDo: Fix
+{
+	if(m_iRef >= 0)
+		m_pLua->ReferenceFree( m_iRef );
+		
+	m_pLua->Push(i);
+		m_iRef = m_pLua->ReferenceCreate();
+	m_pLua->Pop(i);
 }
 
 void ILuaObject::UnReference()
