@@ -297,7 +297,7 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 		{
 			Query* query = completed[i];
 
-			if ( !requireSync && query->GetCallback() >= 0 )
+			if ( !requireSync && query->GetCallback() >= 0 ) // Don't do the lua callbacks on shutdown.. Crashes..
 			{
 				HandleQueryCallback( gLua, query );
 			}
@@ -347,7 +347,7 @@ void HandleQueryCallback( ILuaInterface* gLua, Query* query )
 		gLua->Push( query->GetError() );
 	}
 
-	gLua->Call(args);
+	gLua->Call(args); // Crashes here on shutdown... Not sure why this is the case
 }
 
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query )
@@ -371,16 +371,14 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 	}
 
 	int rowid = 1;
-	//ILuaObject* resultrow = gLua->NewTemporaryObject();
+
+	ILuaObject* resultrow = gLua->NewTemporaryObject();
 
 	while ( row != NULL )
 	{
 		// black magic warning: we use a temp and assign it so that we avoid consuming all the temp objects and causing horrible disasters
-		/*gLua->NewTable();
-		resultrow->SetFromStack(-1);
-		gLua->Pop();*/
-
-		ILuaObject* resultrow = gLua->GetNewTable();
+		gLua->NewTable();
+		resultrow->SetFromStack(); // Will pop off the stack and set the resultrow object to the new tables reference
 
 		for ( int i = 0; i < field_count; i++ )
 		{
