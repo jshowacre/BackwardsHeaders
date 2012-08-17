@@ -270,7 +270,11 @@ bool ILuaObject::isFunction()
 
 bool ILuaObject::isUserData()
 {
-	return isType( Type::USERDATA );
+	Push(); // +1
+		int iType = m_pLua->GetType( -1 );
+	m_pLua->Pop(); // -1
+
+	return iType == Type::USERDATA || iType > Type::COUNT;
 }
 
 void ILuaObject::Push()
