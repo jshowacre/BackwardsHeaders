@@ -297,7 +297,7 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 		{
 			Query* query = completed[i];
 
-			if ( !requireSync && query->GetCallback() >= 0 ) // Don't do the lua callbacks on shutdown.. Crashes..
+			if ( query->GetCallback() >= 0 ) // Don't do the lua callbacks on shutdown.. Crashes..
 			{
 				HandleQueryCallback( gLua, query );
 			}
@@ -377,8 +377,9 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 	while ( row != NULL )
 	{
 		// black magic warning: we use a temp and assign it so that we avoid consuming all the temp objects and causing horrible disasters
-		//gLua->NewTable();
-		//resultrow->SetFromStack(); // Will pop off the stack and set the resultrow object to the new tables reference
+		/*gLua->NewTable();
+			resultrow->SetFromStack(-1);
+		gLua->Pop();*/
 
 		ILuaObject* resultrow = gLua->GetNewTable();
 

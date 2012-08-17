@@ -153,7 +153,7 @@ void ILuaInterface::SetGlobal( const char* name, void* u )
 	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
 		m_pLua->PushString( name ); // +1
 		m_pLua->PushUserdata( u ); // +1
-		m_pLua->SetTable( -2 ); // -3
+		m_pLua->SetTable( -3 ); // -2
 	m_pLua->Pop(); // -1
 }
 
@@ -168,8 +168,8 @@ void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 
 ILuaObject* ILuaInterface::GetObject( int i )
 {
-	m_pLua->Push( i ); // + ??
-	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // - 1
+	m_pLua->Push( i ); // +??
+	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
 }
 
 const char* ILuaInterface::GetString( int i )
@@ -210,7 +210,7 @@ void* ILuaInterface::GetUserData( int i )
 
 int ILuaInterface::GetReference( int i )
 {
-	m_pLua->Push( i ); // + ??
+	m_pLua->Push( i ); // +??
 	return m_pLua->ReferenceCreate();
 }
 
