@@ -14,8 +14,6 @@ public:
 	~ILuaObject( void );
 
 	void			Set( ILuaObject* obj );
-
-	void			SetFromStack();
 	void			SetFromStack( int i );
 	
 	void			UnReference();
