@@ -10,8 +10,10 @@ GMOD_MODULE( Open, Close );
 
 LUA_FUNCTION( CRC32 )
 {
-	Lua()->CheckType(1, Type::STRING);
-	const char* crcTxt = Lua()->GetString(1);
+	ILuaInterface* gLua = Lua();
+
+	gLua->CheckType(1, Type::STRING);
+	const char* crcTxt = gLua->GetString(1);
 
 	CRC32_t crc;
 	CRC32_Init( &crc );
@@ -21,7 +23,7 @@ LUA_FUNCTION( CRC32 )
 	char buffer[10];
 	sprintf(buffer, "%lu", crc);
 
-	Lua()->Push( buffer );
+	gLua->Push( buffer );
 	return 1;
 }
 
