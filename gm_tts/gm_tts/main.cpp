@@ -3,9 +3,9 @@
 #include <windows.h>
 #include <sapi.h>
 
-#define GMOD_BETA
+#define GMMODULE
 
-#include "gmod/GMLuaModule.h"
+#include "ILuaModuleManager.h"
 
 ISpVoice* Voice = NULL;
 USHORT DefaultVolume;
@@ -31,8 +31,9 @@ bool Paused = false;
 
 LUA_FUNCTION( Say )
 {
+	ILuaInterface* gLua = Lua();
 	//form message
-	const char* myString = Lua()->GetString(1);
+	const char* myString = gLua->GetString(1);
 
 	SAYINFO info;
 
@@ -46,15 +47,15 @@ LUA_FUNCTION( Say )
 	::MultiByteToWideChar(CP_ACP, NULL, myString , -1, pwchString, iRequiredSize);
 	
 	info.msg = pwchString;
-	info.args = Lua()->Top();
+	info.args = gLua->Top();
 	
 	//volume and rate optional arguments
 	if(info.args > 1)
 	{
-		info.volume = Lua()->GetInteger(2);
+		info.volume = gLua->GetInteger(2);
 
 		if(info.args > 2)
-			info.rate = Lua()->GetInteger(3);
+			info.rate = gLua->GetInteger(3);
 	}
 
 	SpeakQueue.push(info);
@@ -70,16 +71,19 @@ LUA_FUNCTION( Say )
 
 LUA_FUNCTION(IsSpeaking)
 {
+	ILuaInterface* gLua = Lua();
+
 	if(Paused)
-		Lua()->Push(false);
+		gLua->Push(false);
 	else
-		Lua()->Push(!SpeakQueue.empty());
+		gLua->Push(!SpeakQueue.empty());
 	return 1;
 }
 
 LUA_FUNCTION(QueueSize)
 {
-	Lua()->Push(static_cast<float>(SpeakQueue.size()));
+	ILuaInterface* gLua = Lua();
+	gLua->Push(static_cast<float>(SpeakQueue.size()));
 	return 1;
 }
 
@@ -140,24 +144,16 @@ int Init( lua_State *L )
 	Voice->GetRate(&DefaultRate);
 	Voice->GetVoice(&DefaultVoice);
 
-#ifdef GMOD_BETA
-	ILuaObject* _G = Lua()->Global();
-#else
-	ILuaObject* _G = Lua()->GetGlobal("_G");
-#endif
-	
-	Lua()->NewGlobalTable( "tts" );
-	ILuaObject* tts = _G->GetMember( "tts" );
+	ILuaInterface* gLua = Lua();
+
+	ILuaObject* tts = gLua->GetNewTable();
 		tts->SetMember( "Say", Say );
 		tts->SetMember( "IsSpeaking", IsSpeaking );
 		tts->SetMember( "QueueSize", QueueSize );
 		tts->SetMember( "Pause", Pause );
 		tts->SetMember( "Resume", Resume );
+		gLua->SetGlobal( "tts", tts );
 	tts->UnReference();
-
-#ifndef GMOD_BETA
-	_G->UnReference();
-#endif
 	return 0;
 }
 
