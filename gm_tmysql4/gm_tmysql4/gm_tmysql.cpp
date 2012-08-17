@@ -65,15 +65,15 @@ int Start( lua_State* L )
 	
 	// hook.Add("Think", "TMysqlPoll", tmysql.poll)
 	ILuaObject *hook = gLua->GetGlobal("hook");
-	ILuaObject *Add = hook->GetMember("Add");
+		ILuaObject *Add = hook->GetMember("Add");
 
-	Add->Push();
-		gLua->Push("Tick");
-		gLua->Push("TMysqlPoll");
-		gLua->Push(pollall);
-	gLua->Call(3);
+			Add->Push();
+				gLua->Push("Tick");
+				gLua->Push("TMysqlPoll");
+				gLua->Push(pollall);
+			gLua->Call(3);
 
-	hook->UnReference();
+		hook->UnReference();
 	Add->UnReference();
 
 	return 0;
@@ -83,24 +83,6 @@ int Close( lua_State* L )
 {
 	mysql_library_end();
 	return 0;
-}
-
-LUA_FUNCTION( escape )
-{
-	ILuaInterface* gLua = Lua();
-	gLua->CheckType(1, Type::STRING);
-
-	const char* query = gLua->GetString( 1 );
-
-	size_t len = Q_strlen( query );
-	char* escaped = new char[len*2+1];
-
-	mysql_escape_string( escaped, query, len );	
-
-	gLua->Push( escaped );
-
-	delete escaped;
-	return 1;
 }
 
 LUA_FUNCTION( initialize )
@@ -131,7 +113,6 @@ LUA_FUNCTION( initialize )
 		char buffer[1024];
 
 		Q_snprintf( buffer, sizeof(buffer), "Error connecting to DB: %s", error.Get() );
-		Msg( "%s\n", buffer );
 
 		gLua->Push( false );
 		gLua->Push( buffer );
@@ -143,6 +124,25 @@ LUA_FUNCTION( initialize )
 	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
 		gLua->PushUserData( metaT, mysqldb );
 	metaT->UnReference();
+
+	return 1;
+}
+
+LUA_FUNCTION( escape )
+{
+	ILuaInterface* gLua = Lua();
+	gLua->CheckType(1, Type::STRING);
+
+	const char* query = gLua->GetString( 1 );
+
+	size_t len = Q_strlen( query );
+	char* escaped = new char[len*2+1];
+
+	mysql_escape_string( escaped, query, len );	
+
+	gLua->Push( escaped );
+
+	delete escaped;
 	return 1;
 }
 
@@ -237,7 +237,7 @@ LUA_FUNCTION( pollall )
 {
 	ILuaInterface* gLua = Lua();
 
-	for(int i = 0; i < m_vecConnections.Count(); i++)
+	FOR_EACH_VEC( m_vecConnections, i )
 	{
 		Database* mysqldb = m_vecConnections.Element(i);
 
@@ -252,7 +252,7 @@ LUA_FUNCTION( gettable )
 	ILuaInterface* gLua = Lua();
 	ILuaObject* connections = gLua->GetNewTable();
 
-	for(int i = 0; i < m_vecConnections.Count(); i++)
+	FOR_EACH_VEC( m_vecConnections, i )
 	{
 		Database* mysqldb = m_vecConnections.Element(i);
 
