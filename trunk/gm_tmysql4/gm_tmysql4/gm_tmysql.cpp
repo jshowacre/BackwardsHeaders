@@ -113,6 +113,7 @@ LUA_FUNCTION( initialize )
 		char buffer[1024];
 
 		Q_snprintf( buffer, sizeof(buffer), "Error connecting to DB: %s", error.Get() );
+		Msg( "%s\n", buffer );
 
 		gLua->Push( false );
 		gLua->Push( buffer );
