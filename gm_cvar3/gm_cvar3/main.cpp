@@ -138,7 +138,7 @@ LUA_FUNCTION( GetAllCmds )
 	return 1;
 }
 
-LUA_FUNCTION( SetConVarValue )
+LUA_FUNCTION( SetValue )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -169,7 +169,7 @@ LUA_FUNCTION( SetConVarValue )
 	return 0;
 }
 
-LUA_FUNCTION( GetConVarBool )
+LUA_FUNCTION( GetBool )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -184,7 +184,7 @@ LUA_FUNCTION( GetConVarBool )
 	return 1;
 }
 
-LUA_FUNCTION( GetConVarDefault )
+LUA_FUNCTION( GetDefault )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -199,7 +199,7 @@ LUA_FUNCTION( GetConVarDefault )
 	return 1;
 }
 
-LUA_FUNCTION( GetConVarFloat )
+LUA_FUNCTION( GetFloat )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -214,7 +214,7 @@ LUA_FUNCTION( GetConVarFloat )
 	return 1;
 }
 
-LUA_FUNCTION( GetConVarInt )
+LUA_FUNCTION( GetInt )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -229,7 +229,7 @@ LUA_FUNCTION( GetConVarInt )
 	return 1;
 }
 
-LUA_FUNCTION( GetConVarName )
+LUA_FUNCTION( GetName )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -244,7 +244,7 @@ LUA_FUNCTION( GetConVarName )
 	return 1;
 }
 
-LUA_FUNCTION( SetConVarName )
+LUA_FUNCTION( SetName )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -261,7 +261,7 @@ LUA_FUNCTION( SetConVarName )
 	return 0;
 }
 
-LUA_FUNCTION( GetConVarString )
+LUA_FUNCTION( GetString )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -276,7 +276,7 @@ LUA_FUNCTION( GetConVarString )
 	return 1;
 }
 
-LUA_FUNCTION( SetConVarFlags )
+LUA_FUNCTION( SetFlags )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -292,7 +292,7 @@ LUA_FUNCTION( SetConVarFlags )
 	return 0;
 }
 
-LUA_FUNCTION( GetConVarFlags )
+LUA_FUNCTION( GetFlags )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -323,7 +323,7 @@ LUA_FUNCTION( ConVarHasFlag )
 	return 1;
 }
 
-LUA_FUNCTION( SetConVarHelpText )
+LUA_FUNCTION( SetHelpText )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -340,7 +340,7 @@ LUA_FUNCTION( SetConVarHelpText )
 	return 0;
 }
 
-LUA_FUNCTION( GetConVarHelpText )
+LUA_FUNCTION( GetHelpText )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -370,7 +370,7 @@ LUA_FUNCTION( ResetConVarValue )
 	return 0;
 }
 
-LUA_FUNCTION( GetConVarMin )
+LUA_FUNCTION( GetMin )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -391,7 +391,7 @@ LUA_FUNCTION( GetConVarMin )
 	return 0;
 }
 
-LUA_FUNCTION( GetConVarMax )
+LUA_FUNCTION( GetMax )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -629,21 +629,23 @@ int Open( lua_State *L ) {
 	
 	ILuaObject* conVarMeta = gLua->GetMetaTable( "ConVar", Type::CONVAR );
 	if( conVarMeta ) {
-		conVarMeta->SetMember( "SetValue", SetConVarValue );
-		conVarMeta->SetMember( "GetBool", GetConVarBool );
-		conVarMeta->SetMember( "GetDefault", GetConVarDefault );
-		conVarMeta->SetMember( "GetFloat", GetConVarFloat );
-		conVarMeta->SetMember( "GetInt", GetConVarInt );
-		conVarMeta->SetMember( "GetName", GetConVarName );
-		conVarMeta->SetMember( "SetName", SetConVarName );
-		conVarMeta->SetMember( "GetString", GetConVarString );
-		conVarMeta->SetMember( "SetFlags", SetConVarFlags );
-		conVarMeta->SetMember( "GetFlags", GetConVarFlags );
+		conVarMeta->SetMember( "SetValue", SetValue );
+		conVarMeta->SetMember( "GetBool", GetBool );
+		conVarMeta->SetMember( "GetDefault", GetDefault );
+		conVarMeta->SetMember( "GetFloat", GetFloat );
+		conVarMeta->SetMember( "GetInt", GetInt );
+		conVarMeta->SetMember( "GetName", GetName );
+		conVarMeta->SetMember( "SetName", SetName );
+		conVarMeta->SetMember( "GetString", GetString );
+		conVarMeta->SetMember( "SetFlags", SetFlags );
+		conVarMeta->SetMember( "GetFlags", GetFlags );
 		conVarMeta->SetMember( "HasFlag", ConVarHasFlag );
-		conVarMeta->SetMember( "SetHelpText", SetConVarHelpText );
-		conVarMeta->SetMember( "GetHelpText", GetConVarHelpText );
+		conVarMeta->SetMember( "SetHelpText", SetHelpText );
+		conVarMeta->SetMember( "GetHelpText", GetHelpText );
 		conVarMeta->SetMember( "ResetValue", ResetConVarValue );
 		conVarMeta->SetMember( "Remove", RemoveConVar );
+		conVarMeta->SetMember( "GetMin", GetMin );
+		conVarMeta->SetMember( "GetMax", GetMax );
 		conVarMeta->SetMember( "__tostring", __tostring );
 		conVarMeta->SetMember( "__eq", __eq );
 		conVarMeta->SetMember( "__index", conVarMeta );
