@@ -58,22 +58,6 @@ ILuaObject* ILuaInterface::NewTemporaryObject()
 
 ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
 {
-	/*
-		int v3; // edi@1
-		int v4; // ebx@1
-		int v5; // esi@1
-
-		v3 = a1;
-		v4 = lua_newuserdata(*(_DWORD *)(a1 + 4), 4);
-		(*(void (__cdecl **)(int))(*(_DWORD *)a2 + 96))(a2);
-		lua_setmetatable(*(_DWORD *)(a1 + 4), -2);
-		v5 = (*(int (__cdecl **)(int))(*(_DWORD *)v3 + 176))(v3);
-		(*(void (__cdecl **)(int, signed int))(*(_DWORD *)v5 + 4))(v5, -1);
-		(*(void (__cdecl **)(int, signed int))(*(_DWORD *)v3 + 8))(v3, 1);
-		*(_DWORD *)v4 = 0;
-		return v5;
-	*/
-
 	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
 	ILuaObject* obj = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 
@@ -108,8 +92,10 @@ void ILuaInterface::Error( const char* strError )
 ILuaObject* ILuaInterface::GetGlobal( const char* name )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
-	m_pLua->GetField( -1, name ); // -1 AND +1
-	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+		m_pLua->GetField( -1, name ); // +1
+		ILuaObject* o = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+	m_pLua->Pop();
+	return o;
 }
 
 void ILuaInterface::SetGlobal( const char* name, CFunc f )
@@ -168,7 +154,8 @@ void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 
 ILuaObject* ILuaInterface::GetObject( int i )
 {
-	m_pLua->Push( i ); // +??
+	if(i != 0)
+		m_pLua->Push( i ); // +??
 	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
 }
 
@@ -210,7 +197,8 @@ void* ILuaInterface::GetUserData( int i )
 
 int ILuaInterface::GetReference( int i )
 {
-	m_pLua->Push( i ); // +??
+	if(i != 0)
+		m_pLua->Push( i ); // +??
 	return m_pLua->ReferenceCreate();
 }
 
