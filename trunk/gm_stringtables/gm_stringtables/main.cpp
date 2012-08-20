@@ -15,7 +15,6 @@
 
 #include <windows.h>
 
-#define GMOD_BETA
 #define CLIENT_DLL
 
 //String stuff
@@ -25,16 +24,15 @@
 #include "gmod/CStateManager/vfnhook.h"
 
 //Lua module interface
-#include "interface.h"
-#include "gmod/GMLuaModule.h"
-#include "gmod/CStateManager/CEasyState.h"
+#include "ILuaModuleManager.h"
 
 #include "filesystem.h"
 #include "cdll_client_int.h"
 #include "networkstringtabledefs.h"
 
-IBaseClientDLL *g_BaseClientDLL = NULL;
-INetworkStringTableContainer *g_NetworkStringTable = NULL;
+ILuaInterface* gLua = NULL;
+IBaseClientDLL* g_BaseClientDLL = NULL;
+INetworkStringTableContainer* g_NetworkStringTable = NULL;
 
 GMOD_MODULE( Init, Shutdown );
 
@@ -45,7 +43,7 @@ LUA_FUNCTION(DumpInfo)
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
 	if ( netTbl )
-		Lua()->Msg("%d %s %d %d %d\n", netTbl->a, netTbl->b, netTbl->c, netTbl->d);
+		Msg("%d %s %d %d %d\n", netTbl->a, netTbl->b, netTbl->c, netTbl->d);
 	else
 		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
 
@@ -54,8 +52,8 @@ LUA_FUNCTION(DumpInfo)
 
 LUA_FUNCTION(SetTableSize)
 {
-	Lua()->CheckType(1, GLua::TYPE_STRING);
-	Lua()->CheckType(2, GLua::TYPE_NUMBER);
+	Lua()->CheckType(1, Type::STRING);
+	Lua()->CheckType(2, Type::NUMBER);
 
 	INetworkStringTable *netTbl = g_NetworkStringTable->FindTable(Lua()->GetString(1));
 
@@ -173,7 +171,7 @@ LUA_FUNCTION( GetEntryBits ) {
 LUA_FUNCTION( SetTick ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
+	Lua()->CheckType( 2, Type::NUMBER );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -188,7 +186,7 @@ LUA_FUNCTION( SetTick ) {
 LUA_FUNCTION( ChangedSinceTick ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
+	Lua()->CheckType( 2, Type::NUMBER );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -204,8 +202,8 @@ LUA_FUNCTION( ChangedSinceTick ) {
 LUA_FUNCTION( AddString ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_BOOL );
-	Lua()->CheckType( 3, GLua::TYPE_STRING );
+	Lua()->CheckType( 2, Type::BOOL );
+	Lua()->CheckType( 3, Type::STRING );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -220,8 +218,8 @@ LUA_FUNCTION( AddString ) {
 LUA_FUNCTION( SetString ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
-	Lua()->CheckType( 3, GLua::TYPE_STRING );
+	Lua()->CheckType( 2, Type::NUMBER );
+	Lua()->CheckType( 3, Type::STRING );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -236,7 +234,7 @@ LUA_FUNCTION( SetString ) {
 LUA_FUNCTION( GetString ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
+	Lua()->CheckType( 2, Type::NUMBER );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -253,7 +251,7 @@ LUA_FUNCTION( GetString ) {
 LUA_FUNCTION( GetBool ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
+	Lua()->CheckType( 2, Type::NUMBER );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -270,7 +268,7 @@ LUA_FUNCTION( GetBool ) {
 LUA_FUNCTION( GetNumber ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
+	Lua()->CheckType( 2, Type::NUMBER );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -288,8 +286,8 @@ LUA_FUNCTION( GetNumber ) {
 /*LUA_FUNCTION( SetBool ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_NUMBER );
-	Lua()->CheckType( 3, GLua::TYPE_BOOL );
+	Lua()->CheckType( 2, Type::NUMBER );
+	Lua()->CheckType( 3, Type::BOOL );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -304,7 +302,7 @@ LUA_FUNCTION( GetNumber ) {
 LUA_FUNCTION( FindStringIndex ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_STRING );
+	Lua()->CheckType( 2, Type::STRING );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -320,7 +318,7 @@ LUA_FUNCTION( FindStringIndex ) {
 LUA_FUNCTION( SetAllowClientSideAddString ) {
 
 	Lua()->CheckType( 1, STRINGTABLE_ID );
-	Lua()->CheckType( 2, GLua::TYPE_BOOL );
+	Lua()->CheckType( 2, Type::BOOL );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
@@ -334,34 +332,25 @@ LUA_FUNCTION( SetAllowClientSideAddString ) {
 
 void OnTableChanged( void *object, INetworkStringTable *stringTable, int stringNumber, const char *newString, void const *newData ) {
 
-	for ( int i=0; i <= 1; i++) {
-		ILuaInterface* gLua = CStateManager::GetByIndex( i );
-		if ( gLua == NULL ){ continue; }
+	ILuaObject* hook = gLua->GetGlobal("hook");
+	ILuaObject* hookCall = hook->GetMember("Call");
 
-		ILuaObject* _G = gLua->Global();
+	gLua->Push( hookCall );
+		gLua->Push("OnStringTableChanged");
+		gLua->PushNil();
 
-		ILuaObject* hook = _G->GetMember("hook");
-		ILuaObject* hookCall = hook->GetMember("Call");
+		ILuaObject *metaT = gLua->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID ); //Push our custom stringtable object
+			gLua->PushUserData( metaT, stringTable );
+		metaT->UnReference();
 
-		gLua->Push( hookCall );
-			gLua->Push("OnStringTableChanged");
-			gLua->PushNil();
+		gLua->Push( (float) stringNumber );
+		gLua->Push( newString );
+		gLua->Push( (const char*) newData );
 
-			ILuaObject *metaT = gLua->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID ); //Push our custom stringtable object
-				gLua->PushUserData( metaT, stringTable );
-			metaT->UnReference();
+	gLua->Call(6, 0);
 
-			gLua->Push( (float) stringNumber );
-			gLua->Push( newString );
-			gLua->Push( (const char*) newData );
-
-		gLua->Call(6, 0);
-
-		hookCall->UnReference();
-		hook->UnReference();
-
-		_G->UnReference();
-	}
+	hookCall->UnReference();
+	hook->UnReference();
 
 }
 
@@ -369,41 +358,25 @@ DEFVFUNC_( origInstallStringTableCallback, void, ( IBaseClientDLL *baseCLDLL, ch
 
 void VFUNC newInstallStringTableCallback( IBaseClientDLL *baseCLDLL, char const *tableName ) {
 
-	for ( int i=0; i <= 1; i++ ) {
+	ILuaObject* hook = gLua->GetGlobal("hook");
+	ILuaObject* hookCall = hook->GetMember("Call");
 
-		ILuaInterface* gLua = CStateManager::GetByIndex( i );
-		if ( gLua == NULL ){ continue; }
+	gLua->Push( hookCall );
+		gLua->Push("InstallStringTableCallback");
+		gLua->PushNil();
+		gLua->Push( tableName );
+	gLua->Call(3, 1);
 
-#ifdef GMOD_BETA
-		ILuaObject* _G = gLua->Global();
-#else
-		ILuaObject* _G = gLua->GetGlobal("_G");
-#endif
+	ILuaObject* retrn = gLua->GetReturn(0);
 
-		ILuaObject* hook = _G->GetMember("hook");
-		ILuaObject* hookCall = hook->GetMember("Call");
-
-		gLua->Push( hookCall );
-			gLua->Push("InstallStringTableCallback");
-			gLua->PushNil();
-			gLua->Push( tableName );
-		gLua->Call(3, 1);
-
-		ILuaObject* retrn = gLua->GetReturn(0);
-
-		if ( !retrn->isNil() && retrn->GetType() == GLua::TYPE_BOOL && retrn->GetBool() == true ) {
-			INetworkStringTable *netTbl = g_NetworkStringTable->FindTable( tableName );
-			netTbl->SetStringChangedCallback( NULL, OnTableChanged );
-		}
-		
-		retrn->UnReference();
-		hookCall->UnReference();
-		hook->UnReference();
-
-#ifndef GMOD_BETA
-		_G->UnReference();
-#endif
+	if ( !retrn->isNil() && retrn->GetType() == Type::BOOL && retrn->GetBool() == true ) {
+		INetworkStringTable *netTbl = g_NetworkStringTable->FindTable( tableName );
+		netTbl->SetStringChangedCallback( NULL, OnTableChanged );
 	}
+		
+	retrn->UnReference();
+	hookCall->UnReference();
+	hook->UnReference();
 
 	return origInstallStringTableCallback( baseCLDLL, tableName );
 }
@@ -441,7 +414,7 @@ LUA_FUNCTION( __tostring )
 
 LUA_FUNCTION( __new )
 {
-	Lua()->CheckType( 1, GLua::TYPE_STRING );
+	Lua()->CheckType( 1, Type::STRING );
 
 	INetworkStringTable *stringTable = g_NetworkStringTable->FindTable( Lua()->GetString(1) );
 
@@ -457,7 +430,7 @@ LUA_FUNCTION( __new )
 
 int Init(lua_State *L) {
 
-	ILuaInterface* gLua = Lua();
+	gLua = Lua();
 
 	CreateInterfaceFn EngineFactory = Sys_GetFactory( ENGINE_LIB );
 	if ( !EngineFactory )
@@ -467,8 +440,7 @@ int Init(lua_State *L) {
 	if ( !g_NetworkStringTable )
 		gLua->Error( "gm_stringtables: Error getting INetworkStringTableContainer interface." );
 
-	if ( gLua->IsClient() ) {
-
+#ifdef CLIENT
 		CreateInterfaceFn ClientFactory = Sys_GetFactory( CLIENT_LIB );
 		if ( !ClientFactory )
 			gLua->Error( "gm_stringtables: Error getting " CLIENT_LIB " factory." );
@@ -484,18 +456,12 @@ int Init(lua_State *L) {
 
 		ConColorMsg( Blue, "gm_stringtables" );
 		ConColorMsg( White, ": Loaded!\n" );
-
-	} else
-		gLua->Msg( "gm_stringtables: Loaded!\n" );
-
-#ifdef GMOD_BETA
-		ILuaObject* _G = gLua->Global();
 #else
-		ILuaObject* _G = gLua->GetGlobal("_G");
+		Msg( "gm_stringtables: Loaded!\n" );
 #endif
 
-	_G->SetMember( "GetAllStringTables", GetTableNames );
-	_G->SetMember( "StringTable", __new );
+	gLua->SetGlobal( "GetAllStringTables", GetTableNames );
+	gLua->SetGlobal( "StringTable", __new );
 
 	ILuaObject *metaT = gLua->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID );
 		metaT->SetMember( "GetTable", GetTable );
@@ -520,15 +486,12 @@ int Init(lua_State *L) {
 		metaT->SetMember( "__index", metaT );
 	metaT->UnReference();
 
-#ifndef GMOD_BETA
-	_G->UnReference();
-#endif
-
 	return 0;
 }
 
 int Shutdown(lua_State *L) {
-	if ( Lua()->IsClient() )
+#ifdef CLIENT
 		UNHOOKVFUNC( g_BaseClientDLL, 34, origInstallStringTableCallback );
+#endif
 	return 0;
 }

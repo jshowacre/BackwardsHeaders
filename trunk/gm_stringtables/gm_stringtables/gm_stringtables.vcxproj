@@ -77,7 +77,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Jake%27s Stuff\MyModules\gm_stringtables\gm_stringtables\main.cpp" />
-    <ClCompile Include="..\..\..\..\SourceSDK\gmod\CStateManager\CEasyState.cpp" />
+    <ClCompile Include="..\..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaInterface.cpp" />
+    <ClCompile Include="..\..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaModuleManager.cpp" />
+    <ClCompile Include="..\..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaObject.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

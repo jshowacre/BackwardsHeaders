@@ -88,20 +88,12 @@ LUA_FUNCTION( GetAllCvars )
 	while( conCmds )
 	{
 		if ( !conCmds->IsCommand() ) {
-
-			/*
-			ConVar *cvar = ( ConVar* ) g_ICvar->FindVar( conCmds->GetName() );
-
 			ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
-				gLua->PushUserData( metaT, cvar );
+				ILuaObject* cvar = gLua->NewUserData( metaT );
+					cvar->SetUserData( conCmds );
+					conVarTable->SetMember( i, cvar );
+				cvar->UnReference();
 			metaT->UnReference();
-			*/
-
-			/*ILuaObject* luaCvar = NewConVarObject( L, conCmds->GetName() );
-				conVarTable->SetMember( i, luaCvar ); // attempt to index a userdata value?
-			luaCvar->UnReference();*/
-
-			conVarTable->SetMember( i, conCmds->GetName() );
 			i++;
 		}
 		conCmds = conCmds->GetNext();
@@ -125,7 +117,12 @@ LUA_FUNCTION( GetAllCmds )
 	while( conCmds )
 	{
 		if ( conCmds->IsCommand() ) {
-			conVarTable->SetMember( i, conCmds->GetName() );
+			ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
+				ILuaObject* cvar = gLua->NewUserData( metaT );
+					cvar->SetUserData( conCmds );
+					conVarTable->SetMember( i, cvar );
+				cvar->UnReference();
+			metaT->UnReference();
 			i++;
 		}
 		conCmds = conCmds->GetNext();
@@ -307,7 +304,7 @@ LUA_FUNCTION( GetFlags )
 	return 1;
 }
 
-LUA_FUNCTION( ConVarHasFlag )
+LUA_FUNCTION( HasFlag )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -355,7 +352,7 @@ LUA_FUNCTION( GetHelpText )
 	return 1;
 }
 
-LUA_FUNCTION( ResetConVarValue )
+LUA_FUNCTION( ResetValue )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
@@ -412,7 +409,7 @@ LUA_FUNCTION( GetMax )
 	return 0;
 }
 
-LUA_FUNCTION( RemoveConVar )
+LUA_FUNCTION( Remove )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType( 1, Type::CONVAR );
@@ -639,11 +636,11 @@ int Open( lua_State *L ) {
 		conVarMeta->SetMember( "GetString", GetString );
 		conVarMeta->SetMember( "SetFlags", SetFlags );
 		conVarMeta->SetMember( "GetFlags", GetFlags );
-		conVarMeta->SetMember( "HasFlag", ConVarHasFlag );
+		conVarMeta->SetMember( "HasFlag", HasFlag );
 		conVarMeta->SetMember( "SetHelpText", SetHelpText );
 		conVarMeta->SetMember( "GetHelpText", GetHelpText );
-		conVarMeta->SetMember( "ResetValue", ResetConVarValue );
-		conVarMeta->SetMember( "Remove", RemoveConVar );
+		conVarMeta->SetMember( "ResetValue", ResetValue );
+		conVarMeta->SetMember( "Remove", Remove );
 		conVarMeta->SetMember( "GetMin", GetMin );
 		conVarMeta->SetMember( "GetMax", GetMax );
 		conVarMeta->SetMember( "__tostring", __tostring );
