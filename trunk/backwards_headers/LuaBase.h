@@ -2,6 +2,8 @@
 #ifndef GARRYSMOD_LUA_LUABASE_H
 #define GARRYSMOD_LUA_LUABASE_H
 
+#include <stddef.h>
+
 struct lua_State;
 
 namespace GarrysMod 
