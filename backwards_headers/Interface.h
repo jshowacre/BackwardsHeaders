@@ -2,7 +2,6 @@
 #ifndef GARRYSMOD_LUA_INTERFACE_H
 #define GARRYSMOD_LUA_INTERFACE_H
 
-#include <stdio.h>
 #include "Types.h"
 #include "LuaBase.h"
 
@@ -18,7 +17,7 @@
 		#ifdef _WIN32
 			#define  DLL_EXPORT extern "C" __declspec( dllexport )
 		#else
-			#define DLL_EXPORT		
+			#define DLL_EXPORT	extern "C" __attribute__((visibility("default")))	
 		#endif
 
 		#define GMOD_MODULE_OPEN()	DLL_EXPORT int gmod13_open( lua_State* state )
