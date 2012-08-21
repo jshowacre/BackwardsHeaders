@@ -22,7 +22,7 @@ LUA_FUNCTION( CRC32 )
 	CRC32_ProcessBuffer( &crc, crcTxt, strlen(crcTxt) );
 	CRC32_Final( &crc );
 
-	char buffer[10];
+	char buffer[11];
 	sprintf(buffer, "%lu", crc);
 
 	gLua->Push( buffer );
