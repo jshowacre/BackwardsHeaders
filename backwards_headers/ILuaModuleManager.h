@@ -1,6 +1,8 @@
 #ifndef ILUAMODULEMANAGER_H
 #define ILUAMODULEMANAGER_H
 
+#define GMMODULE
+
 #include "Interface.h"
 #include "ILuaInterface.h"
 #include <map>
