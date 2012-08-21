@@ -1,10 +1,12 @@
 #pragma comment (linker, "/NODEFAULTLIB:libcmt")
 
+#include <string.h>
+
 // Lua module interface
 #include "ILuaModuleManager.h"
 
 // File system
-#include "filesystem.h"
+#include "checksum_crc.h"
 
 GMOD_MODULE( Open, Close );
 
