@@ -110,7 +110,7 @@ class Database
 	friend class DoQueryTask;
 
 public:
-	Database( const char* host, const char* user, const char* pass, const char* db, int port, const char* unix );
+	Database( const char* host, const char* user, const char* pass, const char* db, int port, const char* unixSock );
 	~Database( void );
 
 	bool	Initialize( std::string& error );
@@ -118,7 +118,6 @@ public:
 	void	Shutdown( void );
 
 	bool		SetCharacterSet( const char* charset, std::string& error );
-	char*		Escape( const char* query );
 	void		QueueQuery( const char* query, int callback = -1, int flags = 0, int callbackref = -1 );
 
 	std::deque< Query* >& CompletedQueries( void ) { return m_vecCompleted; }
