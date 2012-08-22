@@ -50,8 +50,8 @@ ifeq ($(config),release32)
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -g -msse -O2 -ffast-math -m32 -fPIC
   CXXFLAGS  += $(CFLAGS) 
-  LDFLAGS   += -shared -m32 -L/usr/lib32 -L../../lib -L/blackawps/boost_1_51_0/stage/lib
-  LIBS      += -llibmysql -llibboost_thread
+  LDFLAGS   += -shared -m32 -L/usr/lib32 -L../../lib -lm -ldl /blackawps/boost_1_51_0/stage/lib/libboost_thread.so.1.51.0 /blackawps/gm_tmysql4/lib/libmysql.so.16 /blackawps/gm_tmysql4/lib/libmysqlclient.a
+  LIBS      += 
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += 
   LINKCMD    = $(CXX) -o $(TARGET) $(OBJECTS) $(LDFLAGS) $(RESOURCES) $(ARCH) $(LIBS)
