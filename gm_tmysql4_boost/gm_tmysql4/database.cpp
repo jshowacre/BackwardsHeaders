@@ -1,8 +1,6 @@
 #include "gm_tmysql.h"
 
-Database::Database( const char* host, const char* user, const char* pass, const char* db, int port, const char* unix ) :
-	m_strHost(host), m_strUser(user), m_strPass(pass), m_strDB(db), m_iPort(port), m_strUnix(unix),
-	m_pThreadPool(NULL)
+Database::Database( const char* host, const char* user, const char* pass, const char* db, int port, const char* unixSock ) : m_strHost(host), m_strUser(user), m_strPass(pass), m_strDB(db), m_iPort(port), m_strUnix(unixSock), m_pThreadPool(NULL)
 {
 }
 
@@ -103,16 +101,6 @@ void Database::Shutdown( void )
 	m_vecAllConnections.clear();
 	m_vecAvailableConnections.clear();
 	m_vecCompleted.clear();
-}
-
-char* Database::Escape( const char* query )
-{
-	size_t len = strlen( query );
-	char* escaped = new char[len*2+1];
-
-	mysql_escape_string( escaped, query, len );
-
-	return escaped;
 }
 
 bool Database::SetCharacterSet( const char* charset, std::string& error )

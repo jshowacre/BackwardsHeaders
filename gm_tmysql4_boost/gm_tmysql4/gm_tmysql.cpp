@@ -1,7 +1,3 @@
-#pragma comment (lib, "tier0.lib")
-#pragma comment (lib, "tier1.lib")
-#pragma comment (linker, "/NODEFAULTLIB:libcmt")
-
 #include "gm_tmysql.h"
 
 #define DATABASE_NAME "Database"
@@ -100,12 +96,12 @@ LUA_FUNCTION( initialize )
 	const char* pass = gLua->GetString(3);
 	const char* db = gLua->GetString(4);
 	int port = gLua->GetInteger(5);
-	const char* unix = gLua->GetString(6); // Optional unix socket path for linux servers
+	const char* unixSock = gLua->GetString(6); // Optional unix socket path for linux servers
 
 	if(port == 0)
 		port = 3306;
 
-	Database* mysqldb = new Database( host, user, pass, db, port, unix );
+	Database* mysqldb = new Database( host, user, pass, db, port, unixSock );
 
 	std::string error;
 
@@ -113,7 +109,7 @@ LUA_FUNCTION( initialize )
 	{
 		char buffer[1024];
 
-		sprintf_s( buffer, sizeof(buffer), "Error connecting to DB: %s", error.c_str() );
+		sprintf( buffer, "Error connecting to DB: %s", error.c_str() );
 		//Msg( "%s\n", buffer );
 
 		gLua->Push( false );
