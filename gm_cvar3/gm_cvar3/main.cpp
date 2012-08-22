@@ -18,20 +18,14 @@
 #include "ILuaModuleManager.h"
 
 // CVar
-#include "tier1/iconvar.h"
-#include "tier1/tier1.h"
-#include "vstdlib/cvar.h"
-#include "iconvar.h"
 #include "convar.h"
 
-#include "eiface.h"
 #include "netadr.h"
 #include "inetmsghandler.h"
 
 #include "tmpserver.h"
 #include "tmpclient.h"
 
-#include "igameevents.h"
 #include "inetchannel.h"
 
 GMOD_MODULE( Open, Close );
@@ -388,6 +382,21 @@ LUA_FUNCTION( GetMin )
 	return 0;
 }
 
+LUA_FUNCTION( SetMin )
+{
+	ILuaInterface* gLua = Lua();
+	gLua->CheckType(1, Type::CONVAR);
+	gLua->CheckType(2, Type::NUMBER);
+
+	ConVar *cvar = (ConVar*) gLua->GetUserData(1);
+
+	if (!cvar)
+		gLua->Error("Invalid ConVar handle!\n");
+
+	cvar->m_fMinVal = gLua->GetFloat(2);
+	return 0;
+}
+
 LUA_FUNCTION( GetMax )
 {
 	ILuaInterface* gLua = Lua();
@@ -406,6 +415,21 @@ LUA_FUNCTION( GetMax )
 		return 1;
 	}
 
+	return 0;
+}
+
+LUA_FUNCTION( SetMax )
+{
+	ILuaInterface* gLua = Lua();
+	gLua->CheckType(1, Type::CONVAR);
+	gLua->CheckType(2, Type::NUMBER);
+
+	ConVar *cvar = (ConVar*) gLua->GetUserData(1);
+
+	if (!cvar)
+		gLua->Error("Invalid ConVar handle!\n");
+
+	cvar->m_fMaxVal = gLua->GetFloat(2);
 	return 0;
 }
 
@@ -642,7 +666,9 @@ int Open( lua_State *L ) {
 		conVarMeta->SetMember( "ResetValue", ResetValue );
 		conVarMeta->SetMember( "Remove", Remove );
 		conVarMeta->SetMember( "GetMin", GetMin );
+		conVarMeta->SetMember( "SetMin", SetMin );
 		conVarMeta->SetMember( "GetMax", GetMax );
+		conVarMeta->SetMember( "SetMax", SetMax );
 		conVarMeta->SetMember( "__tostring", __tostring );
 		conVarMeta->SetMember( "__eq", __eq );
 		conVarMeta->SetMember( "__index", conVarMeta );

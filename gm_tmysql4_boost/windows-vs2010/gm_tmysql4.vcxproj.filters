@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<Filter Include="gm_tmysql4">
+			<UniqueIdentifier>{E566097E-6D84-3C4A-93AD-C9F3C117AE33}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="gm_tmysql4\include">
+			<UniqueIdentifier>{A0E85A80-EC88-B448-9369-9F9D8CFDB24C}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="gm_tmysql4\include\atomic">
+			<UniqueIdentifier>{6B3B5CD8-0E15-3A4C-B1C4-56819D516EAC}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="gm_tmysql4\include\mysys">
+			<UniqueIdentifier>{DDD0D1BD-F2C3-2449-A491-ADB793549565}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="gm_tmysql4\lib">
+			<UniqueIdentifier>{E1C057B7-3490-984E-887A-903C0B6F057D}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="gm_tmysql4\Release">
+			<UniqueIdentifier>{2971F451-599A-214D-81B0-DF3348BF3327}</UniqueIdentifier>
+		</Filter>
+	</ItemGroup>
+	<ItemGroup>
+		<ClInclude Include="..\gm_tmysql4\database.h">
+			<Filter>gm_tmysql4</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\gm_tmysql.h">
+			<Filter>gm_tmysql4</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\base64.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\config-win.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\decimal.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\errmsg.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\hash.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\keycache.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\lf.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\myisampack.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\mysql.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\mysqld_error.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\mysql_com.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\mysql_time.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\mysql_version.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\mysys_err.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_aes.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_alarm.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_alloc.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_atomic.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_attribute.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_base.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_bit.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_bitmap.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_charsets.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_config.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_dbug.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_dir.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_getopt.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_global.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_libwrap.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_list.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_md5.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_net.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_nosys.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_no_pthread.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_pthread.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_stacktrace.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_sys.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_time.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_tree.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_trie.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_uctype.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_vle.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\my_xml.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\m_ctype.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\m_string.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\queues.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\service_versions.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\sha1.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\sha2.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\sql_common.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\sslopt-case.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\sslopt-longopts.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\sslopt-vars.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\thr_alarm.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\thr_lock.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\typelib.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\t_ctype.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\violite.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\waiting_threads.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\wqueue.h">
+			<Filter>gm_tmysql4\include</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\atomic\gcc_builtins.h">
+			<Filter>gm_tmysql4\include\atomic</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\atomic\generic-msvc.h">
+			<Filter>gm_tmysql4\include\atomic</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\atomic\nolock.h">
+			<Filter>gm_tmysql4\include\atomic</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\atomic\rwlock.h">
+			<Filter>gm_tmysql4\include\atomic</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\atomic\x86-gcc.h">
+			<Filter>gm_tmysql4\include\atomic</Filter>
+		</ClInclude>
+		<ClInclude Include="..\gm_tmysql4\include\mysys\rijndael.h">
+			<Filter>gm_tmysql4\include\mysys</Filter>
+		</ClInclude>
+	</ItemGroup>
+	<ItemGroup>
+		<ClCompile Include="..\gm_tmysql4\database.cpp">
+			<Filter>gm_tmysql4</Filter>
+		</ClCompile>
+		<ClCompile Include="..\gm_tmysql4\gm_tmysql.cpp">
+			<Filter>gm_tmysql4</Filter>
+		</ClCompile>
+		<ClCompile Include="..\gm_tmysql4\ILuaInterface.cpp">
+			<Filter>gm_tmysql4</Filter>
+		</ClCompile>
+		<ClCompile Include="..\gm_tmysql4\ILuaModuleManager.cpp">
+			<Filter>gm_tmysql4</Filter>
+		</ClCompile>
+		<ClCompile Include="..\gm_tmysql4\ILuaObject.cpp">
+			<Filter>gm_tmysql4</Filter>
+		</ClCompile>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\gm_tmysql4\gm_tmysql4.sdf">
+			<Filter>gm_tmysql4</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\gm_tmysql4.sln">
+			<Filter>gm_tmysql4</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\gm_tmysql4.suo">
+			<Filter>gm_tmysql4</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\gm_tmysql4.vcxproj">
+			<Filter>gm_tmysql4</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\gm_tmysql4.vcxproj.filters">
+			<Filter>gm_tmysql4</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\gm_tmysql4.vcxproj.user">
+			<Filter>gm_tmysql4</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\SRCDS.props">
+			<Filter>gm_tmysql4</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\lib\libmysql.dll">
+			<Filter>gm_tmysql4\lib</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\lib\libmysql.lib">
+			<Filter>gm_tmysql4\lib</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\lib\mysqlclient.lib">
+			<Filter>gm_tmysql4\lib</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\cl.command.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\CL.read.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\CL.write.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\database.obj">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\gm_tmysql.obj">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\gm_tmysql4.dll.intermediate.manifest">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\gm_tmysql4.lastbuildstate">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\gm_tmysql4.log">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\gm_tmysql4.write.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\ILuaInterface.obj">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\ILuaModuleManager.obj">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\ILuaObject.obj">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\link.command.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\link.read.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\link.write.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\mt.command.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\mt.read.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\mt.write.1.tlog">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+		<None Include="..\gm_tmysql4\Release\vc100.pdb">
+			<Filter>gm_tmysql4\Release</Filter>
+		</None>
+	</ItemGroup>
+</Project>
