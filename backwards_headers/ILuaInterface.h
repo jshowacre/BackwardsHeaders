@@ -8,6 +8,17 @@
 #include "ILuaObject.h"
 #include "Interface.h"
 
+struct LuaKeyValue
+{
+	ILuaObject* pKey;
+	ILuaObject* pValue;
+};
+
+#ifndef NO_SDK
+#include "tier1/utlvector.h"
+typedef CUtlVector<LuaKeyValue> CUtlLuaVector;
+#endif
+
 using namespace GarrysMod::Lua;
 
 class ILuaInterface
@@ -28,8 +39,9 @@ public:
 	ILuaObject*		NewUserData( ILuaObject* metaT );
 
 	void			PushUserData( ILuaObject* metatable, void * v );
-
+	
 	void			Error( const char* strError );
+	void			LuaError( const char* strError, int argument = -1 );
 
 	ILuaObject*		GetGlobal( const char* name );
 
@@ -40,6 +52,9 @@ public:
 	void			SetGlobal( const char* name, void* u );
 	void			SetGlobal( const char* name, ILuaObject* o );
 
+	void			RemoveGlobal( const char* name );
+	void			NewGlobalTable( const char* name );
+
 	ILuaObject*		GetObject( int i = -1 );
 	const char*		GetString( int i = -1 );
 	int				GetInteger( int i = -1 );
@@ -47,7 +62,18 @@ public:
 	double			GetDouble( int i = -1 );
 	float			GetFloat( int i = -1 );
 	bool			GetBool( int i = -1 );
+	void**			GetUserDataPtr( int i = -1 );
 	void*			GetUserData( int i = -1 );
+	void			GetTable( int i = -1 );
+	const char*		GetStringOrError( int i );
+
+#ifndef NO_SDK
+	CUtlLuaVector*	GetAllTableMembers( int iTable );
+	void			DeleteLuaVector( CUtlLuaVector* pVector );
+#else
+	void*			GetAllTableMembers( int iTable );
+	void			DeleteLuaVector( void* pVector );
+#endif
 
 	int				GetReference( int i = -1 );
 	void			FreeReference( int i );
