@@ -1,4 +1,4 @@
-#pragma comment (lib, "tier0.lib")
+//pragma comment (lib, "tier0.lib")
 #pragma comment (lib, "tier1.lib")
 #pragma comment (linker, "/NODEFAULTLIB:libcmt")
 
