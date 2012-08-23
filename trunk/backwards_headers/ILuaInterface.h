@@ -1,23 +1,11 @@
 #ifndef ILUAINTERFACE_H
 #define ILUAINTERFACE_H
 
-#define GMMODULE
 #include <stdio.h>
 #include <stdarg.h>
 
 #include "ILuaObject.h"
-#include "Interface.h"
-
-struct LuaKeyValue
-{
-	ILuaObject* pKey;
-	ILuaObject* pValue;
-};
-
-#ifndef NO_SDK
-#include "tier1/utlvector.h"
-typedef CUtlVector<LuaKeyValue> CUtlLuaVector;
-#endif
+#include "ILuaTable.h"
 
 using namespace GarrysMod::Lua;
 
@@ -67,13 +55,8 @@ public:
 	void			GetTable( int i = -1 );
 	const char*		GetStringOrError( int i );
 
-#ifndef NO_SDK
 	CUtlLuaVector*	GetAllTableMembers( int iTable );
 	void			DeleteLuaVector( CUtlLuaVector* pVector );
-#else
-	void*			GetAllTableMembers( int iTable );
-	void			DeleteLuaVector( void* pVector );
-#endif
 
 	int				GetReference( int i = -1 );
 	void			FreeReference( int i );

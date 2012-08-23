@@ -2,6 +2,7 @@
 #define ILUAOBJECT_H
 
 #include "Interface.h"
+#include "ILuaTable.h"
 
 using namespace GarrysMod::Lua;
 
@@ -28,6 +29,8 @@ public:
 	float			GetFloat();
 	bool			GetBool();
 	void*			GetUserData();
+
+	CUtlLuaVector*	GetMembers();
 	
 	void			SetMember( const char* name );
 	void			SetMember( const char* name, ILuaObject* obj );

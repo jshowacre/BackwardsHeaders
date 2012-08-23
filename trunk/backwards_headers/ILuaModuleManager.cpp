@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#define GMMODULE
 #include "ILuaModuleManager.h"
 
 void ILuaModuleManager::CreateInterface(lua_State* state)

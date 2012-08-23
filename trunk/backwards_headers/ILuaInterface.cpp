@@ -250,13 +250,28 @@ CUtlLuaVector* ILuaInterface::GetAllTableMembers( int i )
 		keyValues.pKey = GetObject( -2 );
 		keyValues.pValue = GetObject( -1 );
 
+#ifndef NO_SDK
 		tableMembers->AddToTail( keyValues );
+#else
+		tableMembers->push_back( keyValues );
+#endif
 
 		m_pLua->Pop();
 	}
 
 	if(i != 0)
 		m_pLua->Pop( i );
+
+	/*
+	FOR_LOOP( tableMembers, j ) // Example Loop
+	{
+	#ifndef NO_SDK
+		LuaKeyValue& keyValues = tableMembers->Element(j);
+	#else
+		LuaKeyValue& keyValues = tableMembers->at(j);
+	#endif
+	}
+	*/
 
 	return tableMembers;
 }

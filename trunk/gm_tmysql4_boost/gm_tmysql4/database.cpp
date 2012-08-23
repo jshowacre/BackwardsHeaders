@@ -177,7 +177,7 @@ void Database::DoExecute( Query* query )
 
 		if ( query->GetFlags() & QUERY_FLAG_LASTID )
 		{
-			query->SetLastID( mysql_insert_id( pMYSQL ) );
+			query->SetLastID( (int) mysql_insert_id( pMYSQL ) );
 		}
 	}
 

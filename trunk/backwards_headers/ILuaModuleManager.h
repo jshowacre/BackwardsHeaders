@@ -1,7 +1,7 @@
 #ifndef ILUAMODULEMANAGER_H
 #define ILUAMODULEMANAGER_H
 
-#define GMMODULE
+#define NO_SDK
 
 #include "Interface.h"
 #include "ILuaInterface.h"

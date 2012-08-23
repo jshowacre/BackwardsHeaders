@@ -110,6 +110,34 @@ void* ILuaObject::GetUserData( void )
 	return data->obj;
 }
 
+CUtlLuaVector* ILuaObject::GetMembers()
+{
+	Push();
+
+	CUtlLuaVector* tableMembers = new CUtlLuaVector();
+
+	m_pLua->PushNil();
+	while ( m_pLua->Next( -2 ) != 0 )
+	{
+		LuaKeyValue keyValues;
+		
+		keyValues.pValue = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+		keyValues.pKey = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -2
+
+#ifndef NO_SDK
+		tableMembers->AddToTail( keyValues );
+#else
+		tableMembers->push_back( keyValues );
+#endif
+
+		m_pLua->Pop();
+	}
+	
+	m_pLua->Pop();
+
+	return tableMembers;
+}
+
 void ILuaObject::SetMember( const char* name )
 {
 	Push(); // +1
