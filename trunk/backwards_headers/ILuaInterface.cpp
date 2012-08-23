@@ -89,6 +89,11 @@ void ILuaInterface::Error( const char* strError )
 	m_pLua->ThrowError( strError );
 }
 
+void ILuaInterface::LuaError( const char* strError, int argument )
+{
+	m_pLua->ArgError( argument, strError );
+}
+
 ILuaObject* ILuaInterface::GetGlobal( const char* name )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
@@ -152,6 +157,24 @@ void ILuaInterface::SetGlobal( const char* name, ILuaObject* o )
 	m_pLua->Pop(); // -1
 }
 
+void ILuaInterface::RemoveGlobal( const char* name )
+{
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->PushNil();
+		m_pLua->SetTable( -3 ); // -2
+	m_pLua->Pop(); // -1
+}
+
+void ILuaInterface::NewGlobalTable( const char* name )
+{
+	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->CreateTable();
+		m_pLua->SetTable( -3 ); // -2
+	m_pLua->Pop(); // -1
+}
+
 ILuaObject* ILuaInterface::GetObject( int i )
 {
 	if(i != 0)
@@ -189,10 +212,59 @@ bool ILuaInterface::GetBool( int i )
 	return m_pLua->GetBool( i );
 }
 
+void** ILuaInterface::GetUserDataPtr( int i )
+{
+	ILuaUserData* data = (ILuaUserData*) m_pLua->GetUserdata( i );
+	return &data->obj; // Not sure if this is correct
+}
+
 void* ILuaInterface::GetUserData( int i )
 {
 	ILuaUserData* data = (ILuaUserData*) m_pLua->GetUserdata( i );
 	return data->obj;
+}
+
+void ILuaInterface::GetTable( int i )
+{
+	// ??
+}
+
+const char* ILuaInterface::GetStringOrError( int i )
+{
+	m_pLua->CheckType( i, Type::STRING );
+	return m_pLua->GetString( i );
+}
+
+CUtlLuaVector* ILuaInterface::GetAllTableMembers( int i )
+{
+	if(i != 0)
+		m_pLua->Push( i );
+
+	CUtlLuaVector* tableMembers = new CUtlLuaVector();
+
+	m_pLua->PushNil();
+	while ( m_pLua->Next( i - 2 ) != 0 )
+	{
+		LuaKeyValue keyValues;
+
+		keyValues.pKey = GetObject( -2 );
+		keyValues.pValue = GetObject( -1 );
+
+		tableMembers->AddToTail( keyValues );
+
+		m_pLua->Pop();
+	}
+
+	if(i != 0)
+		m_pLua->Pop( i );
+
+	return tableMembers;
+}
+
+void ILuaInterface::DeleteLuaVector( CUtlLuaVector* pVector )
+{
+	if (pVector)
+		delete pVector;
 }
 
 int ILuaInterface::GetReference( int i )
