@@ -237,7 +237,11 @@ void ILuaInterface::PushVA(const char* str, ...)
 	char buff[ 1024 ];
 	va_list argptr;
 	va_start( argptr, str );
+#ifdef _LINUX
+	vsprintf( buff, str, argptr );
+#else
 	vsprintf_s( buff, str, argptr );
+#endif
 	va_end( argptr );
 	m_pLua->PushString( buff );
 }
