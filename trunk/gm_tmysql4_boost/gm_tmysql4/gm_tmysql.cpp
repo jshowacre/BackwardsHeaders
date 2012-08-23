@@ -109,9 +109,11 @@ LUA_FUNCTION( initialize )
 	{
 		char buffer[1024];
 
+#ifdef _LINUX
 		sprintf( buffer, "Error connecting to DB: %s", error.c_str() );
-		//Msg( "%s\n", buffer );
-
+#else
+		sprintf_s( buffer, sizeof( buffer ), "Error connecting to DB: %s", error.c_str() );
+#endif
 		gLua->Push( false );
 		gLua->Push( buffer );
 		return 2;
