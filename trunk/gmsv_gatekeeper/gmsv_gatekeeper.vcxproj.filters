@@ -1,0 +1,591 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\osw">
+      <UniqueIdentifier>{c32042ec-4799-48ad-964e-d374db1e8b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sourcemod">
+      <UniqueIdentifier>{69be6973-9313-423e-a31b-7d77cad66c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\csteamid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sigscan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaModuleManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\sigscan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tmpclient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tmpserver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vfnhook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\AppsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\BillingCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\BridgeCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\CCallback.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\CGameID.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ClientCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ContentServerCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\CSteamAPIContext.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\CSteamID.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\EAccountType.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\EChatMemberStateChange.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ELobbyType.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ENotificationPosition.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\EPersonalQuestion.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\EResult.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\EServerMode.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamAppUpdateStatsQueryType.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamBufferMethod.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamError.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamFindFilter.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamNotify.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamPaymentCardType.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamSeekMethod.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamServerType.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamSubscriptionBillingInfoType.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ESteamSubscriptionStatus.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\EUniverse.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\FriendGameInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\FriendsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\GameCoordinatorCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\GameServerCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\gameserveritem.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\GameServerItemsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\GameServerStatsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\GameStatsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientAppManager.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientApps.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientBilling.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientConfigStore.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientContentServer.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientDepotBuilder.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientEngine.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientFriends.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientGameCoordinator.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientGameServer.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientGameStats.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientHTTP.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientMatchmaking.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientRemoteStorage.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientUser.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\IClientUtils.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\Interface_OSW.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteam003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteam004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteam005.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteam006.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteam2Bridge001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteam2Bridge002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamApps001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamApps002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamApps003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamBilling001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamBilling002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamClient006.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamClient007.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamClient008.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamClient009.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamContentServer001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamContentServer002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamFriends001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamFriends002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamFriends003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamFriends004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamFriends005.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameCoordinator001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer005.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer006.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer007.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer008.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer009.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServer010.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServerItems002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServerItems003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServerItems004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameServerStats001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamGameStats001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMasterServerUpdater001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking005.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking006.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking007.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmaking008.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmakingServers001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamMatchmakingServers002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamNetworking001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamNetworking002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamNetworking003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamRemoteStorage001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamRemoteStorage002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser005.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser006.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser007.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser008.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser009.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser010.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser011.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser012.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUser013.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserItems001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserItems002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserItems003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserItems004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserStats001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserStats002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserStats003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserStats004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserStats005.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserStats006.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUserStats007.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUtils001.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUtils002.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUtils003.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUtils004.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\ISteamUtils005.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\MasterServerUpdaterCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\MatchmakingCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\MatchMakingKeyValuePair.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\MatchmakingServersCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\NetworkingCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\POSIXLibrary.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\RemoteStorageCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\servernetadr.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\Steam.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\SteamAPI.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\Steamclient.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\SteamclientAPI.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\SteamSalt.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\SteamTypes.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\Steamworks.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\string_t.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamApp.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamAppDependencyInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamAppLaunchOption.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamAppStats.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamAppVersion.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamDiscountQualifier.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamElemInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamError.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamExternalBillingInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamGlobalUserID.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamOfflineStatus.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamPaymentCardInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamPaymentCardReceiptInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamPrepurchaseInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamPrepurchaseReceiptInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamProgress.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamSplitLocalUserID.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamSubscription.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamSubscriptionBillingInfo.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamSubscriptionDiscount.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamSubscriptionReceipt.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamSubscriptionStats.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\TSteamUpdateStats.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\UserCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\UserItemsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\UserStatsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\UtilsCommon.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osw\Win32Library.h">
+      <Filter>Header Files\osw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sourcemod\memutils.h">
+      <Filter>Header Files\sourcemod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sourcemod\sh_vector.h">
+      <Filter>Header Files\sourcemod</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sourcemod\sm_symtable.h">
+      <Filter>Header Files\sourcemod</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
