@@ -177,6 +177,8 @@ LUA_FUNCTION( __tostring )
 LUA_FUNCTION( setcharset )
 {
 	ILuaInterface* gLua = Lua();
+	gLua->CheckType( 1, DATABASE_ID );
+
 	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
 
 	if ( !mysqldb )
@@ -195,6 +197,8 @@ LUA_FUNCTION( setcharset )
 LUA_FUNCTION( query )
 {
 	ILuaInterface* gLua = Lua();
+	gLua->CheckType( 1, DATABASE_ID );
+
 	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
 
 	if ( !mysqldb )
@@ -225,6 +229,8 @@ LUA_FUNCTION( query )
 LUA_FUNCTION( poll )
 {
 	ILuaInterface* gLua = Lua();
+	gLua->CheckType( 1, DATABASE_ID );
+
 	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
 
 	if ( !mysqldb )
