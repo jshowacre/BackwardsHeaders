@@ -61,6 +61,16 @@ public:
 	void			SetMember( int iKey, CFunc f );
 
 	ILuaObject*		GetMember( const char* name );
+	ILuaObject*		GetMember( double dKey );
+	ILuaObject*		GetMember( float fKey );
+	ILuaObject*		GetMember( int iKey );
+
+	bool			GetMemberBool( const char* name, bool b = true );
+	int				GetMemberInt( const char* name, int i = 0 );
+	float			GetMemberFloat( const char* name, float f = 0.0f );
+	double			GetMemberDouble( const char* name, double d = 0 );
+	const char*		GetMemberStr( const char* name, const char* s = "" );
+	void*			GetMemberUserData( const char* name, void* = NULL );
 
 	void			SetUserData( void* obj );
 	

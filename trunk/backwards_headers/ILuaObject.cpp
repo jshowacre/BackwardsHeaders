@@ -1,5 +1,6 @@
 #include "ILuaObject.h"
 #include "ILuaUserData.h"
+#include <sstream>
 
 ILuaObject::ILuaObject( ILuaBase* lua ) : m_pLua(lua), m_iRef(-1)
 {
@@ -310,9 +311,91 @@ ILuaObject* ILuaObject::GetMember( const char* name )
 {
 	Push(); // +1
 		m_pLua->GetField( -1, name ); // +1
-		ILuaObject* o = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
 	m_pLua->Pop(); // -1
-	return o;
+	return r;
+}
+
+ILuaObject* ILuaObject::GetMember( double dKey )
+{
+	std::stringstream sstr;
+	sstr << dKey;
+
+	Push(); // +1
+		m_pLua->GetField( -1, sstr.str().c_str() ); // +1
+		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+	m_pLua->Pop(); // -1
+	return r;
+}
+
+ILuaObject* ILuaObject::GetMember( float fKey )
+{
+	std::stringstream sstr;
+	sstr << fKey;
+
+	Push(); // +1
+		m_pLua->GetField( -1, sstr.str().c_str() ); // +1
+		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+	m_pLua->Pop(); // -1
+	return r;
+}
+
+ILuaObject* ILuaObject::GetMember( int iKey )
+{
+	std::stringstream sstr;
+	sstr << iKey;
+
+	Push(); // +1
+		m_pLua->GetField( -1, sstr.str().c_str() ); // +1
+		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+	m_pLua->Pop(); // -1
+	return r;
+}
+
+bool ILuaObject::GetMemberBool( const char* name, bool b )
+{
+	Push(); // +1
+		m_pLua->GetField( -1, name ); // +1
+		bool r = ( m_pLua->GetType(-1) != Type::NIL ) ? m_pLua->GetBool(-1) : b;
+	m_pLua->Pop(2); // -2
+	return r;
+}
+
+int ILuaObject::GetMemberInt( const char* name, int i )
+{
+	return (int) GetMemberDouble( name, (int) i );
+}
+
+float ILuaObject::GetMemberFloat( const char* name, float f )
+{
+	return (float) GetMemberDouble( name, (double) f );
+}
+
+double ILuaObject::GetMemberDouble( const char* name, double d )
+{
+	Push(); // +1
+		m_pLua->GetField( -1, name ); // +1
+		double r = ( m_pLua->GetType(-1) != Type::NIL ) ? m_pLua->GetNumber(-1) : d;
+	m_pLua->Pop(2); // -2
+	return r;
+}
+
+const char* ILuaObject::GetMemberStr( const char* name, const char* s )
+{
+	Push(); // +1
+		m_pLua->GetField( -1, name ); // +1
+		const char* r = ( m_pLua->GetType(-1) != Type::NIL ) ? m_pLua->GetString(-1) : s;
+	m_pLua->Pop(2); // -2
+	return r;
+}
+
+void* ILuaObject::GetMemberUserData( const char* name, void* u )
+{
+	Push(); // +1
+		m_pLua->GetField( -1, name ); // +1
+		void* r = ( m_pLua->GetType(-1) != Type::NIL ) ? ((ILuaUserData*) m_pLua->GetUserdata(-1))->obj : u;
+	m_pLua->Pop(2); // -2
+	return r;
 }
 
 void ILuaObject::SetUserData( void* obj )
