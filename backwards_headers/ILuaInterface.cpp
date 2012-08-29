@@ -178,7 +178,7 @@ void ILuaInterface::NewGlobalTable( const char* name )
 ILuaObject* ILuaInterface::GetObject( int i )
 {
 	if(i != 0)
-		m_pLua->Push( i ); // +??
+		m_pLua->Push( i ); // +1
 	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
 }
 
