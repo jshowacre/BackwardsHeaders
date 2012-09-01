@@ -314,9 +314,9 @@ void ILuaInterface::Push( ILuaObject* o )
 	o->Push();
 }
 
-void ILuaInterface::Push( const char* str )
+void ILuaInterface::Push( const char* str, unsigned int iLen )
 {
-	m_pLua->PushString( str );
+	m_pLua->PushString( str, iLen );
 }
 
 void ILuaInterface::PushVA(const char* str, ...)
