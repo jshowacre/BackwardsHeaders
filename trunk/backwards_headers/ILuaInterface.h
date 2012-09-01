@@ -66,7 +66,7 @@ public:
 	int				Top();
 
 	void			Push( ILuaObject* o );
-	void			Push( const char* s );
+	void			Push( const char* str, unsigned int iLen = 0 );
 	void			PushVA( const char* str, ... );
 	void			Push( double d );
 	void			Push( bool b );
