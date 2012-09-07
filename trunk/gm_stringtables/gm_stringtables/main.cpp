@@ -15,7 +15,7 @@
 
 #include <windows.h>
 
-#define CLIENT_DLL
+//#define CLIENT_DLL
 
 //String stuff
 #include <string>
@@ -36,31 +36,31 @@ INetworkStringTableContainer* g_NetworkStringTable = NULL;
 
 GMOD_MODULE( Init, Shutdown );
 
-LUA_FUNCTION(DumpInfo)
+LUA_FUNCTION(Dump)
 {
 	Lua()->CheckType( 1, STRINGTABLE_ID );
 
 	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
-	if ( netTbl )
-		Msg("%d %s %d %d %d\n", netTbl->a, netTbl->b, netTbl->c, netTbl->d);
-	else
+	if ( netTbl ) {
+		netTbl->Dump();
+	} else
 		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
 
 	return 0;
 }
 
-LUA_FUNCTION(SetTableSize)
+LUA_FUNCTION(Lock)
 {
-	Lua()->CheckType(1, Type::STRING);
-	Lua()->CheckType(2, Type::NUMBER);
+	Lua()->CheckType( 1, STRINGTABLE_ID );
+	Lua()->CheckType( 2, Type::BOOL );
 
-	INetworkStringTable *netTbl = g_NetworkStringTable->FindTable(Lua()->GetString(1));
+	INetworkStringTable *netTbl = ( INetworkStringTable* ) Lua()->GetUserData(1);
 
-	if(netTbl) {
-		netTbl->c = Lua()->GetInteger(2);
-		netTbl->d = Q_log2(netTbl->c);
-	}
+	if ( netTbl ) {
+		netTbl->Lock( Lua()->GetBool(2) );
+	} else
+		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
 
 	return 0;
 }
@@ -440,7 +440,7 @@ int Init(lua_State *L) {
 	if ( !g_NetworkStringTable )
 		gLua->Error( "gm_stringtables: Error getting INetworkStringTableContainer interface." );
 
-#ifdef CLIENT
+#ifdef CLIENT_DLL
 		CreateInterfaceFn ClientFactory = Sys_GetFactory( CLIENT_LIB );
 		if ( !ClientFactory )
 			gLua->Error( "gm_stringtables: Error getting " CLIENT_LIB " factory." );
@@ -464,6 +464,8 @@ int Init(lua_State *L) {
 	gLua->SetGlobal( "StringTable", __new );
 
 	ILuaObject *metaT = gLua->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID );
+		metaT->SetMember( "Dump", Dump );
+		metaT->SetMember( "Lock", Lock );
 		metaT->SetMember( "GetTable", GetTable );
 		metaT->SetMember( "GetName", GetName );
 		metaT->SetMember( "GetTableID", GetTableId );
@@ -477,10 +479,8 @@ int Init(lua_State *L) {
 		metaT->SetMember( "GetString", GetString );
 		metaT->SetMember( "GetBool", GetBool );
 		metaT->SetMember( "GetNumber", GetNumber );
-		//metaT->SetMember( "SetBool", SetBool );
 		metaT->SetMember( "FindStringIndex", FindStringIndex );
 		metaT->SetMember( "SetAllowClientSideAddString", SetAllowClientSideAddString );
-		metaT->SetMember( "DumpInfo", DumpInfo );
 		metaT->SetMember( "__tostring", __tostring );
 		metaT->SetMember( "__eq", __eq );
 		metaT->SetMember( "__index", metaT );
