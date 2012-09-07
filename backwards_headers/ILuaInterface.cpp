@@ -77,11 +77,13 @@ void ILuaInterface::PushUserData( ILuaObject* metaT, void * v )
 	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
 	data->obj = v;
 
-	ILuaObject* obj = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+	int iRef = m_pLua->ReferenceCreate();
 
-	obj->Push(); // +1
+	m_pLua->ReferencePush( iRef );
 		metaT->Push(); // +1
 		m_pLua->SetMetaTable( -2 ); // -1
+
+	m_pLua->ReferenceFree( iRef );
 }
 
 void ILuaInterface::Error( const char* strError )
