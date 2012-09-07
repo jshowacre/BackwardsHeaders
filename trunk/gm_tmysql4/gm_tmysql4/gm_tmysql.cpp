@@ -30,7 +30,6 @@ int Start( lua_State* L )
 	ILuaInterface* gLua = Lua();
 	mysql_library_init( 0, NULL, NULL );
 
-	gLua->SetGlobal( "QUERY_SUCCESS", QUERY_SUCCESS );
 
 	gLua->SetGlobal( "QUERY_SUCCESS", QUERY_SUCCESS );
 	gLua->SetGlobal( "QUERY_FAIL", QUERY_FAIL );

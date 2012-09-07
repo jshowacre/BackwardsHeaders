@@ -12,12 +12,10 @@ ILuaObject::ILuaObject( ILuaBase* lua, int iRef ) : m_pLua(lua), m_iRef(iRef)
 
 ILuaObject::ILuaObject( ILuaBase* lua, ILuaObject* obj ) : m_pLua(lua), m_iRef(obj->m_iRef)
 {
-	
 }
 
 ILuaObject::~ILuaObject()
 {
-	m_pLua->ReferenceFree( m_iRef );
 }
 
 void ILuaObject::Set( ILuaObject* obj ) // ???
@@ -39,6 +37,7 @@ void ILuaObject::SetFromStack(int i) // THIS DOESN'T ToDo: Fix
 
 void ILuaObject::UnReference()
 {
+	m_pLua->ReferenceFree( m_iRef );
 	delete this;
 }
 
