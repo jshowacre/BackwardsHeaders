@@ -3,7 +3,7 @@
 #define DATABASE_NAME "Database"
 #define DATABASE_ID 6603
 
-GMOD_MODULE( Start, Close );
+GMOD_MODULE( open_module, close_module );
 
 std::vector< Database* > m_vecConnections;
 LUA_FUNCTION( escape );
@@ -21,8 +21,8 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 void HandleQueryCallback( ILuaInterface* gLua, Query* query );
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query );
 
-int Start( lua_State* L )
-{
+int open_module( lua_State* L )
+{	
 	ILuaInterface* gLua = Lua();
 	mysql_library_init( 0, NULL, NULL );
 
@@ -75,7 +75,7 @@ int Start( lua_State* L )
 	return 0;
 }
 
-int Close( lua_State* L )
+int close_module( lua_State* L )
 {
 	mysql_library_end();
 	return 0;
