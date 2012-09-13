@@ -53,7 +53,8 @@ void ILuaInterface::NewTable()
 
 ILuaObject* ILuaInterface::NewTemporaryObject()
 {
-	return new ILuaObject( m_pLua );
+	m_pLua->PushNil();
+	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 }
 
 ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
