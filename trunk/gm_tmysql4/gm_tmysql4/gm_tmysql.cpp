@@ -383,9 +383,8 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 	while ( row != NULL )
 	{
 		// black magic warning: we use a temp and assign it so that we avoid consuming all the temp objects and causing horrible disasters
-		/*gLua->NewTable();
-			resultrow->SetFromStack(-1);
-		gLua->Pop();*/
+		//gLua->NewTable();
+		//resultrow->SetFromStack(0);
 
 		ILuaObject* resultrow = gLua->GetNewTable();
 
