@@ -2,10 +2,6 @@
 #include "ILuaUserData.h"
 #include <sstream>
 
-ILuaObject::ILuaObject( ILuaBase* lua ) : m_pLua(lua), m_iRef(-1)
-{
-}
-
 ILuaObject::ILuaObject( ILuaBase* lua, int iRef ) : m_pLua(lua), m_iRef(iRef)
 {
 }
@@ -20,19 +16,20 @@ ILuaObject::~ILuaObject()
 
 void ILuaObject::Set( ILuaObject* obj ) // ???
 {
-	if(m_iRef >= 0)
-		m_pLua->ReferenceFree( m_iRef );
 	
-	m_iRef = obj->GetReference();
 }
 
 void ILuaObject::SetFromStack(int i) // THIS DOESN'T ToDo: Fix
 {
-	if(m_iRef >= 0)
-		m_pLua->ReferenceFree( m_iRef );
-		
-	m_pLua->Push(i);
-		m_iRef = m_pLua->ReferenceCreate();
+	m_pLua->ReferenceFree( m_iRef );
+
+	if (i != 0)
+		m_pLua->Push(i);
+
+	m_iRef = m_pLua->ReferenceCreate();
+
+	if (i != 0)
+		m_pLua->Pop(i);
 }
 
 void ILuaObject::UnReference()
@@ -317,11 +314,9 @@ ILuaObject* ILuaObject::GetMember( const char* name )
 
 ILuaObject* ILuaObject::GetMember( double dKey )
 {
-	std::stringstream sstr;
-	sstr << dKey;
-
 	Push(); // +1
-		m_pLua->GetField( -1, sstr.str().c_str() ); // +1
+		m_pLua->PushNumber( dKey ); // +1
+		m_pLua->GetTable( -2 );
 		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
 	m_pLua->Pop(); // -1
 	return r;
@@ -329,26 +324,12 @@ ILuaObject* ILuaObject::GetMember( double dKey )
 
 ILuaObject* ILuaObject::GetMember( float fKey )
 {
-	std::stringstream sstr;
-	sstr << fKey;
-
-	Push(); // +1
-		m_pLua->GetField( -1, sstr.str().c_str() ); // +1
-		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
-	m_pLua->Pop(); // -1
-	return r;
+	return GetMember( (double) fKey );
 }
 
 ILuaObject* ILuaObject::GetMember( int iKey )
 {
-	std::stringstream sstr;
-	sstr << iKey;
-
-	Push(); // +1
-		m_pLua->GetField( -1, sstr.str().c_str() ); // +1
-		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
-	m_pLua->Pop(); // -1
-	return r;
+	return GetMember( (int) iKey );
 }
 
 bool ILuaObject::GetMemberBool( const char* name, bool b )
