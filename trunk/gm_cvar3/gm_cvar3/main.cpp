@@ -10,7 +10,7 @@
 	#define ENGINE_LIB "engine.dll"
 #endif
 
-#define SERVER
+//#define CLIENT_DLL
 
 #include "sigscan.h"
 
@@ -607,7 +607,7 @@ int Open( lua_State *L ) {
 		gLua->Error( "gm_cvar3: Error getting ICvar interface.\n" );
 
 	//if ( gLua->IsServer() ) {
-#ifdef SERVER
+#ifndef CLIENT_DLL
 		// rip from gatekeeper
 		CSigScan::sigscan_dllfunc = Sys_GetFactory( ENGINE_LIB );
 	

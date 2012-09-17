@@ -125,10 +125,8 @@ inline ILuaObject* NewVectorObject( lua_State* L, Vector& vec ) {
 	Lua()->Push( vec.z );
 	if( !Lua()->Call( 3, 1 ) ) {
 		func->UnReference();
-		_G->UnReference();
 		return NULL;
 	}
-	_G->UnReference();
 	return Lua()->GetReturn( 0 );
 }
 
@@ -151,10 +149,8 @@ inline ILuaObject* NewAngleObject( lua_State* L, QAngle& vec ) {
 	Lua()->Push( vec.z );
 	if( !Lua()->Call( 3, 1 ) ) {
 		func->UnReference();
-		_G->UnReference();
 		return NULL;
 	}
-	_G->UnReference();
 	return Lua()->GetReturn( 0 );
 }
 
@@ -181,11 +177,8 @@ inline ILuaObject *NewMaterialObject( lua_State* L, const char* path ) {
 
 	if( !Lua()->Call( 1, 1 ) ) {
 		func->UnReference();
-		_G->UnReference();
 		return NULL;
 	}
-
-	_G->UnReference();
 
 	return Lua()->GetReturn( 0 );
 }
@@ -1300,7 +1293,6 @@ void VFUNC newStartProgressBar( IGameUI *gGUI ) {
 
 	hookCall->UnReference();
 	hook->UnReference();
-	_G->UnReference();
 
 	return origStartProgressBar( gGUI );
 }
@@ -1344,7 +1336,6 @@ void VFUNC newStopProgressBar( IGameUI *gGUI, bool something1, const char* somet
 
 	hookCall->UnReference();
 	hook->UnReference();
-	_G->UnReference();
 
 	return origStopProgressBar( gGUI, something1, something2, something3 );
 }
@@ -1388,7 +1379,6 @@ void VFUNC newOnConnectToServer( IGameUI *gGUI, const char *game, int IP, int co
 
 	hookCall->UnReference();
 	hook->UnReference();
-	_G->UnReference();
 
 	return origOnConnectToServer( gGUI, game, IP, connectionPort, queryPort );
 }
@@ -1430,7 +1420,6 @@ void VFUNC newVoiceStatus( IBaseClientDLL *baseCLDLL, int entindex, qboolean bTa
 
 	hookCall->UnReference();
 	hook->UnReference();
-	_G->UnReference();
 
 	return origVoiceStatus( baseCLDLL, entindex, bTalking );
 }
@@ -1768,8 +1757,6 @@ int Open( lua_State *L ) {
 		ConColorMsg( Blue, "gmcl_extras" );
 		ConColorMsg( White, ": Client mode..\n" );
 	}
-
-	_G->UnReference();
 
 	return 0;
 }
