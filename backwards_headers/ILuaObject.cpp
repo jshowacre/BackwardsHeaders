@@ -329,7 +329,7 @@ ILuaObject* ILuaObject::GetMember( float fKey )
 
 ILuaObject* ILuaObject::GetMember( int iKey )
 {
-	return GetMember( (int) iKey );
+	return GetMember( (double) iKey );
 }
 
 bool ILuaObject::GetMemberBool( const char* name, bool b )
