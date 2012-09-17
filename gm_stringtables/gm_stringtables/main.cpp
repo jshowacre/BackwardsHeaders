@@ -15,13 +15,13 @@
 
 #include <windows.h>
 
-//#define CLIENT_DLL
+#define CLIENT_DLL
 
 //String stuff
 #include <string>
 #include <sstream>
 
-#include "gmod/CStateManager/vfnhook.h"
+#include "vfnhook.h"
 
 //Lua module interface
 #include "ILuaModuleManager.h"
