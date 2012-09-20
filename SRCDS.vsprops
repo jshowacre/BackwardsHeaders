@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="SourceSDK"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="D:\SourceSDK\gmod13\tools;C:\Developer\boost_1_51_0;D:\SourceSDK\public\steam;&quot;D:\SourceSDK\opensteamworks\Open Steamworks&quot;;D:\SourceSDK\public\tier1;D:\SourceSDK\public\tier0;D:\SourceSDK;D:\SourceSDK\common;D:\SourceSDK\gmod13\include\GarrysMod\Lua;D:\SourceSDK\public;D:\SourceSDK\game\client;D:\SourceSDK\game\shared;D:\SourceSDK\game\server"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		AdditionalDependencies="bitmap.lib choreoobjects.lib dmxloader.lib mathlib.lib matsys_controls.lib nvtristrip.lib particles.lib raytrace.lib steam_api.lib tier0.lib tier1.lib tier2.lib tier3.lib vgui_controls.lib vmpi.lib vstdlib.lib vtf.lib"
+		AdditionalLibraryDirectories="C:\Developer\boost_1_51_0\stage\lib;D:\SourceSDK\lib\public"
+	/>
+</VisualStudioPropertySheet>
