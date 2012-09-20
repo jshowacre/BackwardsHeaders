@@ -141,10 +141,10 @@ private:
 	std::deque< MYSQL* > m_vecAvailableConnections;
 	std::vector< MYSQL* > m_vecAllConnections;
 
-	std::string		m_strHost;
-	std::string		m_strUser;
-	std::string		m_strPass;
-	std::string		m_strDB;
+	const char*		m_strHost;
+	const char*		m_strUser;
+	const char*		m_strPass;
+	const char*		m_strDB;
 	int				m_iPort;
-	std::string		m_strUnix;
+	const char*		m_strUnix;
 };
