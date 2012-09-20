@@ -40,7 +40,7 @@ bool Database::Initialize( std::string& error )
 
 bool Database::Connect( MYSQL* mysql, std::string& error )
 {
-	if ( !mysql_real_connect( mysql, m_strHost.c_str(), m_strUser.c_str(), m_strPass.c_str(), m_strDB.c_str(), m_iPort, m_strUnix.c_str(), 0 ) )
+	if ( !mysql_real_connect( mysql, m_strHost, m_strUser, m_strPass, m_strDB, m_iPort, m_strUnix, 0 ) )
 	{
 		error.assign( mysql_error( mysql ) );
 		return false;

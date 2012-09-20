@@ -45,7 +45,7 @@ ifeq ($(config),release32)
   OBJDIR     = obj/x32
   TARGETDIR  = ../lib/linux
   TARGET     = $(TARGETDIR)/libgm_tmysql4.so
-  DEFINES   += -DNDEBUG -D_LINUX
+  DEFINES   += -DNDEBUG -D_LINUX -DNO_SDK
   INCLUDES  += -I../../include -I/blackawps/boost_1_51_0 -I/blackawps/sourcesdk/gmod13/include/GarrysMod/Lua
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -g -msse -O2 -ffast-math -m32 -fPIC
