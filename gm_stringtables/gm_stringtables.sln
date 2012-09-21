@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gm_stringtables", "gm_stringtables\gm_stringtables.vcproj", "{78679013-3DE2-48F3-82C4-C0E949CCFF05}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gm_stringtables", "gm_stringtables\gm_stringtables.vcproj", "{5D807A21-3508-4084-BF38-8398912DC274}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{78679013-3DE2-48F3-82C4-C0E949CCFF05}.Debug|Win32.ActiveCfg = Debug|Win32
-		{78679013-3DE2-48F3-82C4-C0E949CCFF05}.Debug|Win32.Build.0 = Debug|Win32
-		{78679013-3DE2-48F3-82C4-C0E949CCFF05}.Release|Win32.ActiveCfg = Release|Win32
-		{78679013-3DE2-48F3-82C4-C0E949CCFF05}.Release|Win32.Build.0 = Release|Win32
+		{5D807A21-3508-4084-BF38-8398912DC274}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D807A21-3508-4084-BF38-8398912DC274}.Debug|Win32.Build.0 = Debug|Win32
+		{5D807A21-3508-4084-BF38-8398912DC274}.Release|Win32.ActiveCfg = Release|Win32
+		{5D807A21-3508-4084-BF38-8398912DC274}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
