@@ -15,7 +15,7 @@
 
 #include <windows.h>
 
-#define CLIENT_DLL
+//#define CLIENT_DLL
 
 //String stuff
 #include <string>

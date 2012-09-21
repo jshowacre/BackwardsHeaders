@@ -54,6 +54,7 @@ namespace GarrysMod
 				virtual void		PushNumber( double val ) = 0;
 				virtual void		PushBool( bool val ) = 0;
 				virtual void		PushCFunction( CFunc val ) = 0;
+				virtual void		PushCClosure( CFunc val, int iVars ) = 0;
 				virtual void		PushUserdata( void* ) = 0;
 
 				//

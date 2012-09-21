@@ -10,7 +10,7 @@
 	#define ENGINE_LIB "engine.dll"
 #endif
 
-//#define CLIENT_DLL
+#define CLIENT_DLL
 
 #include "sigscan.h"
 
