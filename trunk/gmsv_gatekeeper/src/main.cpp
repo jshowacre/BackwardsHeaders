@@ -180,8 +180,8 @@ bool VFUNC newCheckPassword( CBaseServer *srv, netadr_t &netinfo, const char *pa
 	}
 	else if ( ret->GetType() == Type::TABLE )
 	{
-		ILuaObject *allow = ret->GetMember( "1" );
-		ILuaObject *reason = ret->GetMember( "2");
+		ILuaObject *allow = ret->GetMember( 1 );
+		ILuaObject *reason = ret->GetMember( 2 );
 		
 		ret->UnReference();
 
