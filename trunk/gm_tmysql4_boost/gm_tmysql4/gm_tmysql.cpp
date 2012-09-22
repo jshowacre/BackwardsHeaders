@@ -289,10 +289,10 @@ void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb )
 	}
 }
 
+typedef std::deque< Query* > QueryCollection;
+
 void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requireSync )
 {
-	typedef std::deque< Query* > QueryCollection;
-
 	QueryCollection& completed = mysqldb->CompletedQueries();
 	recursive_mutex& mutex = mysqldb->CompletedMutex();
 
@@ -303,21 +303,21 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 	{
 		recursive_mutex::scoped_lock lock( mutex );
 
-		for( QueryCollection::const_iterator iter = completed.begin(); iter != completed.end(); ++iter )
+		for( QueryCollection::const_iterator it = completed.begin(); it != completed.end(); ++it )
 		{
-			Query* query = *iter;
+			Query* m_pQuery = *it;
 
-			if ( query->GetCallback() >= 0 )
+			if ( m_pQuery->GetCallback() >= 0 )
 			{
-				HandleQueryCallback( gLua, query );
+				HandleQueryCallback( gLua, m_pQuery );
 			}
 
-			if ( query->GetResult() != NULL )
+			if ( m_pQuery->GetResult() != NULL )
 			{
-				mysql_free_result( query->GetResult() );
+				mysql_free_result( m_pQuery->GetResult() );
 			}
 
-			delete query;
+			delete m_pQuery;
 		}
 
 		completed.clear();
