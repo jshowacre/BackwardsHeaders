@@ -80,6 +80,7 @@ int Start( lua_State* L )
 
 int Close( lua_State* L )
 {
+	m_vecConnections.RemoveAll();
 	mysql_library_end();
 	return 0;
 }
@@ -303,7 +304,7 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 		{
 			Query* query = completed[i];
 
-			if ( query->GetCallback() >= 0 ) // Don't do the lua callbacks on shutdown.. Crashes..
+			if ( query->GetCallback() >= 0 )
 			{
 				HandleQueryCallback( gLua, query );
 			}
