@@ -77,6 +77,7 @@ int open_module( lua_State* L )
 
 int close_module( lua_State* L )
 {
+	m_vecConnections.clear();
 	mysql_library_end();
 	return 0;
 }
@@ -289,11 +290,9 @@ void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb )
 	}
 }
 
-typedef std::deque< Query* > QueryCollection;
-
 void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requireSync )
 {
-	QueryCollection& completed = mysqldb->CompletedQueries();
+	std::deque< Query* >& completed = mysqldb->CompletedQueries();
 	recursive_mutex& mutex = mysqldb->CompletedMutex();
 
 	// peek at the size, the query threads will only add to it, so we can do this and not end up locking it for nothing
@@ -303,7 +302,7 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 	{
 		recursive_mutex::scoped_lock lock( mutex );
 
-		for( QueryCollection::const_iterator it = completed.begin(); it != completed.end(); ++it )
+		for( std::deque< Query* >::const_iterator it = completed.begin(); it != completed.end(); ++it )
 		{
 			Query* m_pQuery = *it;
 
