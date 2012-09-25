@@ -164,7 +164,7 @@ void ILuaInterface::RemoveGlobal( const char* name )
 {
 	m_pLua->PushSpecial( SPECIAL_GLOB ); // +1
 		m_pLua->PushString( name ); // +1
-		m_pLua->PushNil();
+		m_pLua->PushNil(); // +1
 		m_pLua->SetTable( -3 ); // -2
 	m_pLua->Pop(); // -1
 }
@@ -227,9 +227,9 @@ void* ILuaInterface::GetUserData( int i )
 	return data->obj;
 }
 
-void ILuaInterface::GetTable( int i )
+void ILuaInterface::GetTable( int i ) // ???
 {
-	// ??
+	Error( "ILuaInterface::GetTable( int i ) is not implemented yet, but feel free to contribute!" );
 }
 
 const char* ILuaInterface::GetStringOrError( int i )
