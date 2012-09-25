@@ -185,9 +185,9 @@ ILuaObject* ILuaInterface::GetObject( int i )
 	return new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
 }
 
-const char* ILuaInterface::GetString( int i )
+const char* ILuaInterface::GetString( int i, unsigned int* iLen )
 {
-	return m_pLua->GetString( i );
+	return m_pLua->GetString( i, iLen );
 }
 
 int ILuaInterface::GetInteger( int i )

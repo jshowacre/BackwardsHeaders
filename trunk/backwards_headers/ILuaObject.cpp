@@ -59,10 +59,10 @@ const char* ILuaObject::GetTypeName()
 	return ret;
 }
 
-const char* ILuaObject::GetString( void )
+const char* ILuaObject::GetString( unsigned int* iLen )
 {
 	Push(); // +1
-		const char* ret = m_pLua->GetString( -1 );
+		const char* ret = m_pLua->GetString( -1, iLen );
 	m_pLua->Pop(); // -1
 	return ret;
 }
@@ -360,11 +360,11 @@ double ILuaObject::GetMemberDouble( const char* name, double d )
 	return r;
 }
 
-const char* ILuaObject::GetMemberStr( const char* name, const char* s )
+const char* ILuaObject::GetMemberStr( const char* name, const char* s, unsigned int* iLen )
 {
 	Push(); // +1
 		m_pLua->GetField( -1, name ); // +1
-		const char* r = ( m_pLua->GetType(-1) != Type::NIL ) ? m_pLua->GetString(-1) : s;
+		const char* r = ( m_pLua->GetType(-1) != Type::NIL ) ? m_pLua->GetString(-1, iLen) : s;
 	m_pLua->Pop(2); // -2
 	return r;
 }
