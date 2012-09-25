@@ -64,6 +64,7 @@ public:
 	ILuaObject*		GetMember( double dKey );
 	ILuaObject*		GetMember( float fKey );
 	ILuaObject*		GetMember( int iKey );
+	ILuaObject*		GetMember( ILuaObject* oKey );
 
 	bool			GetMemberBool( const char* name, bool b = true );
 	int				GetMemberInt( const char* name, int i = 0 );

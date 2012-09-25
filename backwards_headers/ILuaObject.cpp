@@ -16,12 +16,12 @@ ILuaObject::~ILuaObject()
 
 void ILuaObject::Set( ILuaObject* obj ) // ???
 {
-	
+	m_pLua->ThrowError( "ILuaObject::Set( ILuaObject* obj ) is not implemented yet, but feel free to contribute!" );
 }
 
-void ILuaObject::SetFromStack(int i) // THIS DOESN'T ToDo: Fix
+void ILuaObject::SetFromStack( int i ) // ???
 {
-	m_pLua->ReferenceFree( m_iRef );
+	/*m_pLua->ReferenceFree( m_iRef );
 
 	if (i != 0)
 		m_pLua->Push(i);
@@ -29,7 +29,9 @@ void ILuaObject::SetFromStack(int i) // THIS DOESN'T ToDo: Fix
 	m_iRef = m_pLua->ReferenceCreate();
 
 	if (i != 0)
-		m_pLua->Pop(i);
+		m_pLua->Pop(i);*/
+		
+	m_pLua->ThrowError( "ILuaObject::SetFromStack( int i ) is not implemented yet, but feel free to contribute!" );
 }
 
 void ILuaObject::UnReference()
@@ -330,6 +332,16 @@ ILuaObject* ILuaObject::GetMember( float fKey )
 ILuaObject* ILuaObject::GetMember( int iKey )
 {
 	return GetMember( (double) iKey );
+}
+
+ILuaObject* ILuaObject::GetMember( ILuaObject* oKey )
+{
+	Push(); // +1
+		oKey->Push(); // +1
+		m_pLua->GetTable( -2 ); // -2 AND +1
+		ILuaObject* r = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
+	m_pLua->Pop(); // -1
+	return r;
 }
 
 bool ILuaObject::GetMemberBool( const char* name, bool b )
