@@ -23,7 +23,7 @@ public:
 	int				GetType();
 	const char*		GetTypeName();
 
-	const char*		GetString();
+	const char*		GetString( unsigned int* iLen = NULL );
 	int				GetInt();
 	double			GetDouble();
 	float			GetFloat();
@@ -69,7 +69,7 @@ public:
 	int				GetMemberInt( const char* name, int i = 0 );
 	float			GetMemberFloat( const char* name, float f = 0.0f );
 	double			GetMemberDouble( const char* name, double d = 0 );
-	const char*		GetMemberStr( const char* name, const char* s = "" );
+	const char*		GetMemberStr( const char* name, const char* s = "", unsigned int* iLen = NULL );
 	void*			GetMemberUserData( const char* name, void* = NULL );
 
 	void			SetUserData( void* obj );
