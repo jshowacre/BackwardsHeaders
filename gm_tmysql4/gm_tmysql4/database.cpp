@@ -17,7 +17,6 @@ bool Database::Initialize( CUtlString& error )
 	for( int i = NUM_CON_DEFAULT; i; i-- )
 	{
 		MYSQL* mysql = mysql_init(NULL);
-		mysql_options(mysql, MYSQL_OPT_RECONNECT, &bTrue);
 
 		if ( !Connect( mysql, error ) )
 		{
@@ -246,9 +245,18 @@ void Database::DoExecute( Query* query )
 
 	if ( err > 0 )
 	{
-		mysql_ping( pMYSQL );
-
-		err = mysql_real_query( pMYSQL, strquery, len );
+		int ping = mysql_ping( pMYSQL );
+		if ( ping > 0 )
+		{
+			mysql_close( pMYSQL );
+			mysql_init( pMYSQL );
+			if(mysql_real_connect( pMYSQL, m_strHost, m_strUser, m_strPass, m_strDB, m_iPort, NULL, 0 ))
+			{
+				err = mysql_real_query( pMYSQL, strquery, len );
+			} else {
+				err = 1;
+			}
+		}
 	}
 
 	if ( err > 0 )
