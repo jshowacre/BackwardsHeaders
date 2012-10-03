@@ -117,6 +117,8 @@ LUA_FUNCTION( initialize )
 #endif
 		gLua->Push( false );
 		gLua->Push( buffer );
+
+		delete mysqldb;
 		return 2;
 	}
 
