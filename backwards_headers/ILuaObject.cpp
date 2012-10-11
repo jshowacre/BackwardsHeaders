@@ -173,11 +173,11 @@ void ILuaObject::SetMember( const char* name, bool b )
 	m_pLua->Pop(); // -1
 }
 
-void ILuaObject::SetMember( const char* name, const char* s )
+void ILuaObject::SetMember( const char* name, const char* s, unsigned int iLen )
 {
 	Push(); // +1
 		m_pLua->PushString( name ); // +1
-		m_pLua->PushString( s ); // +1
+		m_pLua->PushString( s, iLen ); // +1
 		m_pLua->SetTable( -3 ); // -2
 	m_pLua->Pop(); // -1
 }
@@ -227,11 +227,11 @@ void ILuaObject::SetMember( double dKey, bool b )
 	m_pLua->Pop(); // -1
 }
 
-void ILuaObject::SetMember( double dKey, const char* s )
+void ILuaObject::SetMember( double dKey, const char* s, unsigned int iLen )
 {
 	Push(); // +1
 		m_pLua->PushNumber( dKey ); // +1
-		m_pLua->PushString( s ); // +1
+		m_pLua->PushString( s, iLen ); // +1
 		m_pLua->SetTable( -3 ); // -2
 	m_pLua->Pop(); // -1
 }
@@ -265,9 +265,9 @@ void ILuaObject::SetMember( float fKey, bool b )
 	SetMember( (double) fKey, b );
 }
 
-void ILuaObject::SetMember( float fKey, const char* s )
+void ILuaObject::SetMember( float fKey, const char* s, unsigned int iLen )
 {
-	SetMember( (double) fKey, s );
+	SetMember( (double) fKey, s, iLen );
 }
 
 void ILuaObject::SetMember( float fKey, CFunc f )
@@ -295,9 +295,9 @@ void ILuaObject::SetMember( int iKey, bool b )
 	SetMember( (double) iKey, b );
 }
 
-void ILuaObject::SetMember( int iKey, const char* s )
+void ILuaObject::SetMember( int iKey, const char* s, unsigned int iLen )
 {
-	SetMember( (double) iKey, s );
+	SetMember( (double) iKey, s, iLen );
 }
 
 void ILuaObject::SetMember( int iKey, CFunc f )
