@@ -36,28 +36,28 @@ public:
 	void			SetMember( const char* name, ILuaObject* obj );
 	void			SetMember( const char* name, double d );
 	void			SetMember( const char* name, bool b );
-	void			SetMember( const char* name, const char* s, unsigned int iLen = NULL );
+	void			SetMember( const char* name, const char* s, unsigned int iLen = 0 );
 	void			SetMember( const char* name, CFunc f );
 	
 	void			SetMember( double dKey );
 	void			SetMember( double dKey, ILuaObject* obj );
 	void			SetMember( double dKey, double d );
 	void			SetMember( double dKey, bool b );
-	void			SetMember( double dKey, const char* s, unsigned int iLen = NULL );
+	void			SetMember( double dKey, const char* s, unsigned int iLen = 0 );
 	void			SetMember( double dKey, CFunc f );
 
 	void			SetMember( float fKey );
 	void			SetMember( float fKey, ILuaObject* obj );
 	void			SetMember( float fKey, double d );
 	void			SetMember( float fKey, bool b );
-	void			SetMember( float fKey, const char* s, unsigned int iLen = NULL );
+	void			SetMember( float fKey, const char* s, unsigned int iLen = 0 );
 	void			SetMember( float fKey, CFunc f );
 
 	void			SetMember( int iKey );
 	void			SetMember( int iKey, ILuaObject* obj );
 	void			SetMember( int iKey, double d );
 	void			SetMember( int iKey, bool b );
-	void			SetMember( int iKey, const char* s, unsigned int iLen = NULL );
+	void			SetMember( int iKey, const char* s, unsigned int iLen = 0 );
 	void			SetMember( int iKey, CFunc f );
 
 	ILuaObject*		GetMember( const char* name );
