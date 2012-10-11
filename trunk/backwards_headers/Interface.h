@@ -16,10 +16,10 @@
 		#define DLL_EXPORT extern "C" __attribute__( ( visibility("default") ) )	
 	#endif
 
-	#define GMOD_MODULE_OPEN()	DLL_EXPORT int gmod13_open( lua_State* state )
-	#define GMOD_MODULE_CLOSE()	DLL_EXPORT int gmod13_close( lua_State* state )
+	#define GMOD_MODULE_OPEN()	DLL_EXPORT int gmod13_open( lua_State* L )
+	#define GMOD_MODULE_CLOSE()	DLL_EXPORT int gmod13_close( lua_State* L )
 
-	#define LUA state->luabase
+	#define LUA L->luabase
 
 #endif 
 
