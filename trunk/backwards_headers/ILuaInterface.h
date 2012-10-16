@@ -28,7 +28,7 @@ public:
 
 	void			PushUserData( ILuaObject* metatable, void * v );
 	
-	void			Error( const char* strError );
+	void			Error( const char* strError, ... );
 	void			LuaError( const char* strError, int argument = -1 );
 
 	ILuaObject*		GetGlobal( const char* name );
