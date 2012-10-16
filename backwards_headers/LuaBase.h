@@ -80,6 +80,9 @@ namespace GarrysMod
 				// Will return the old meta table of this name if it already exists.
 				//
 				virtual void			CreateMetaTableType( const char* strName, int iType ) = 0;
+				
+				virtual void			CheckString( int iStackPos ) = 0;
+				virtual void			CheckNumber( int iStackPos ) = 0;
 
 		};
 

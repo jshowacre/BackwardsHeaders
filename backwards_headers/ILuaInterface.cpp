@@ -87,9 +87,19 @@ void ILuaInterface::PushUserData( ILuaObject* metaT, void * v )
 	m_pLua->ReferenceFree( iRef );
 }
 
-void ILuaInterface::Error( const char* strError )
+void ILuaInterface::Error( const char* strError, ... )
 {
-	m_pLua->ThrowError( strError );
+	char buff[ 1024 ];
+	va_list argptr;
+	va_start( argptr, strError );
+#ifdef _LINUX
+	vsprintf( buff, strError, argptr );
+#else
+	vsprintf_s( buff, strError, argptr );
+#endif
+	va_end( argptr );
+
+	m_pLua->ThrowError( buff );
 }
 
 void ILuaInterface::LuaError( const char* strError, int argument )
