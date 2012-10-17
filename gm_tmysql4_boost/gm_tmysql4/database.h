@@ -134,7 +134,6 @@ private:
 	pool*	m_pThreadPool;
 
 	mutable recursive_mutex m_CompletedMutex;
-
 	mutable recursive_mutex m_AvailableMutex;
 
 	std::deque< Query* > m_vecCompleted;
