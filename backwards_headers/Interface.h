@@ -6,7 +6,7 @@
 
 	struct lua_State
 	{
-		unsigned char				_ignore_this_common_lua_header_[6];
+		unsigned char				_ignore_this_common_lua_header_[69];
 		GarrysMod::Lua::ILuaBase*	luabase;
 	};
 
@@ -22,4 +22,3 @@
 	#define LUA L->luabase
 
 #endif 
-
