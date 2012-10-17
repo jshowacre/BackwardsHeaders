@@ -163,7 +163,7 @@ void Database::DoExecute( Query* query )
 
 			mysql_close( pMYSQL );
 			pMYSQL = mysql_init( NULL );
-			if(mysql_real_connect( pMYSQL, m_strHost, m_strUser, m_strPass, m_strDB, m_iPort, NULL, 0 ))
+			if(mysql_real_connect( pMYSQL, m_strHost, m_strUser, m_strPass, m_strDB, m_iPort, m_strUnix, 0 ))
 			{
 				err = mysql_real_query( pMYSQL, strquery, len );
 
