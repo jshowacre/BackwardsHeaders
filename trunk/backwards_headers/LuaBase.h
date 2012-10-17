@@ -72,6 +72,7 @@ namespace GarrysMod
 				//
 				// For type enums see Types.h 
 				//
+				virtual bool			IsType( int iStackPos, int iType ) = 0;
 				virtual int				GetType( int iStackPos ) = 0;
 				virtual const char*		GetTypeName( int iType ) = 0;
 
@@ -83,6 +84,12 @@ namespace GarrysMod
 				
 				virtual void			CheckString( int iStackPos ) = 0;
 				virtual void			CheckNumber( int iStackPos ) = 0;
+
+				//
+				// Like Get* but throws errors and returns if they're not of the expected type
+				//
+				virtual const char*		CheckString( int iStackPos = -1 ) = 0;
+				virtual double			CheckNumber( int iStackPos = -1 ) = 0;
 
 		};
 
