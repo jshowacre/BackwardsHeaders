@@ -401,7 +401,7 @@ void ILuaObject::SetUserData( void* obj )
 bool ILuaObject::isType( int iType )
 {
 	Push(); // +1
-		bool ret = m_pLua->GetType( -1 ) == iType;
+		bool ret = m_pLua->IsType( -1, iType );
 	m_pLua->Pop(); // -1
 	return ret;
 }
