@@ -306,19 +306,22 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 
 		for( std::deque< Query* >::const_iterator it = completed.begin(); it != completed.end(); ++it )
 		{
-			Query* m_pQuery = *it;
+			Query* query = *it;
 
-			if ( m_pQuery->GetCallback() >= 0 )
+			if ( query != NULL )
 			{
-				HandleQueryCallback( gLua, m_pQuery );
-			}
+				if ( query->GetCallback() >= 0 )
+				{
+					HandleQueryCallback( gLua, query );
+				}
 
-			if ( m_pQuery->GetResult() != NULL )
-			{
-				mysql_free_result( m_pQuery->GetResult() );
-			}
+				if ( query->GetResult() != NULL )
+				{
+					mysql_free_result( query->GetResult() );
+				}
 
-			delete m_pQuery;
+				delete query;
+			}
 		}
 
 		completed.clear();
@@ -358,7 +361,7 @@ void HandleQueryCallback( ILuaInterface* gLua, Query* query )
 		gLua->Push( query->GetError().c_str() );
 	}
 
-	gLua->Call(args); // Crashes here on shutdown... Not sure why this is the case
+	gLua->Call(args);
 }
 
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query )
