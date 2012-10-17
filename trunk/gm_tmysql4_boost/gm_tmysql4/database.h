@@ -139,7 +139,6 @@ private:
 
 	std::deque< Query* > m_vecCompleted;
 	std::deque< MYSQL* > m_vecAvailableConnections;
-	std::vector< MYSQL* > m_vecAllConnections;
 
 	const char*		m_strHost;
 	const char*		m_strUser;
