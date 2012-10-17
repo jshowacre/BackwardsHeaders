@@ -24,7 +24,6 @@ bool Database::Initialize( CUtlString& error )
 		}
 
 		m_vecAvailableConnections.AddToTail( mysql );
-		m_vecAllConnections.AddToTail( mysql );
 	}
 
 	m_pThreadPool = CreateThreadPool();
@@ -177,23 +176,22 @@ void Database::Shutdown( void )
 		m_pThreadPool = NULL;
 	}
 
-	FOR_EACH_VEC( m_vecAllConnections, i )
+	FOR_EACH_VEC( m_vecAvailableConnections, i )
 	{
-		mysql_close( m_vecAllConnections[i] );
+		mysql_close( m_vecAvailableConnections[i] );
 	}
 
-	m_vecAllConnections.Purge();
 	m_vecAvailableConnections.Purge();
 	m_vecCompleted.Purge();
 }
 
 bool Database::SetCharacterSet( const char* charset, CUtlString& error )
 {
-	FOR_EACH_VEC( m_vecAllConnections, i )
+	FOR_EACH_VEC( m_vecAvailableConnections, i )
 	{
-		if ( mysql_set_character_set( m_vecAllConnections[i], charset ) > 0 )
+		if ( mysql_set_character_set( m_vecAvailableConnections[i], charset ) > 0 )
 		{
-			error.Set( mysql_error( m_vecAllConnections[i] ) );
+			error.Set( mysql_error( m_vecAvailableConnections[i] ) );
 			return false;
 		}
 	}
@@ -248,24 +246,37 @@ void Database::DoExecute( Query* query )
 		int ping = mysql_ping( pMYSQL );
 		if ( ping > 0 )
 		{
+			AUTO_LOCK_FM( m_vecAvailableConnections );
+
 			mysql_close( pMYSQL );
-			mysql_init( pMYSQL );
+			pMYSQL = mysql_init( NULL );
 			if(mysql_real_connect( pMYSQL, m_strHost, m_strUser, m_strPass, m_strDB, m_iPort, m_strUnix, 0 ))
 			{
 				err = mysql_real_query( pMYSQL, strquery, len );
-			} else {
-				err = 1;
+
+				if ( err > 0 )
+				{
+					query->SetError( mysql_error( pMYSQL ) );
+					query->SetStatus( QUERY_FAIL );
+					query->SetResult( NULL );
+				}
+			} 
+			else
+			{
+				query->SetError( "Unable to reconnect to database" );
+				query->SetStatus( QUERY_FAIL );
+				query->SetResult( NULL );
 			}
+		}
+		else
+		{
+			query->SetError( mysql_error( pMYSQL ) );
+			query->SetStatus( QUERY_FAIL );
+			query->SetResult( NULL );
 		}
 	}
 
-	if ( err > 0 )
-	{
-		query->SetStatus( QUERY_FAIL );
-		query->SetResult( NULL );
-		query->SetError( mysql_error( pMYSQL ) );
-	}
-	else
+	if ( err == 0 )
 	{
 		query->SetStatus( QUERY_SUCCESS );
 		query->SetResult( mysql_store_result( pMYSQL ) );

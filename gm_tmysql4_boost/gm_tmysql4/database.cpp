@@ -19,11 +19,10 @@ bool Database::Initialize( std::string& error )
 
 		if ( !Connect( mysql, error ) )
 		{
-			return false;	
+			return false;
 		}
 
 		m_vecAvailableConnections.push_back( mysql );
-		m_vecAllConnections.push_back( mysql );
 	}
 
 	m_pThreadPool = new pool( NUM_THREADS_DEFAULT );
@@ -93,19 +92,18 @@ void Database::Shutdown( void )
 		m_pThreadPool = NULL;
 	}
 
-	for( std::vector< MYSQL* >::const_iterator iter = m_vecAllConnections.begin(); iter != m_vecAllConnections.end(); ++iter )
+	for( std::deque< MYSQL* >::const_iterator iter = m_vecAvailableConnections.begin(); iter != m_vecAvailableConnections.end(); ++iter )
 	{
 		mysql_close( *iter );
 	}
 
-	m_vecAllConnections.clear();
 	m_vecAvailableConnections.clear();
 	m_vecCompleted.clear();
 }
 
 bool Database::SetCharacterSet( const char* charset, std::string& error )
 {
-	for( std::vector< MYSQL* >::const_iterator iter = m_vecAllConnections.begin(); iter != m_vecAllConnections.end(); ++iter )
+	for( std::deque< MYSQL* >::const_iterator iter = m_vecAvailableConnections.begin(); iter != m_vecAvailableConnections.end(); ++iter )
 	{
 		if ( mysql_set_character_set( *iter, charset ) > 0 )
 		{
@@ -144,7 +142,6 @@ void Database::YieldPostCompleted( Query* query )
 void Database::DoExecute( Query* query )
 {
 	MYSQL* pMYSQL;
-
 	{
 		recursive_mutex::scoped_lock lock( m_AvailableMutex );
 
@@ -162,31 +159,44 @@ void Database::DoExecute( Query* query )
 		int ping = mysql_ping( pMYSQL );
 		if ( ping > 0 )
 		{
+			recursive_mutex::scoped_lock lock( m_AvailableMutex );
+
 			mysql_close( pMYSQL );
-			mysql_init( pMYSQL );
-			if(mysql_real_connect( pMYSQL, m_strHost, m_strUser, m_strPass, m_strDB, m_iPort, m_strUnix, 0 ))
+			pMYSQL = mysql_init( NULL );
+			if(mysql_real_connect( pMYSQL, m_strHost, m_strUser, m_strPass, m_strDB, m_iPort, NULL, 0 ))
 			{
 				err = mysql_real_query( pMYSQL, strquery, len );
-			} else {
-				err = 1;
+
+				if ( err > 0 )
+				{
+					query->SetError( mysql_error( pMYSQL ) );
+					query->SetStatus( QUERY_FAIL );
+					query->SetResult( NULL );
+				}
+			} 
+			else
+			{
+				query->SetError( "Unable to reconnect to database" );
+				query->SetStatus( QUERY_FAIL );
+				query->SetResult( NULL );
 			}
+		}
+		else
+		{
+			query->SetError( mysql_error( pMYSQL ) );
+			query->SetStatus( QUERY_FAIL );
+			query->SetResult( NULL );
 		}
 	}
 
-	if ( err > 0 )
-	{
-		query->SetStatus( QUERY_FAIL );
-		query->SetResult( NULL );
-		query->SetError( mysql_error( pMYSQL ) );
-	}
-	else
+	if ( err == 0 )
 	{
 		query->SetStatus( QUERY_SUCCESS );
 		query->SetResult( mysql_store_result( pMYSQL ) );
 
 		if ( query->GetFlags() & QUERY_FLAG_LASTID )
 		{
-			query->SetLastID( (int) mysql_insert_id( pMYSQL ) );
+			query->SetLastID( mysql_insert_id( pMYSQL ) );
 		}
 	}
 
