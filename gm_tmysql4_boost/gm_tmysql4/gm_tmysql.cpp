@@ -21,9 +21,14 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 void HandleQueryCallback( ILuaInterface* gLua, Query* query );
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query );
 
+ILuaObject* ErrorNoHalt;
+
 int open_module( lua_State* L )
 {	
 	ILuaInterface* gLua = Lua();
+
+	ErrorNoHalt = gLua->GetGlobal("ErrorNoHalt");
+
 	mysql_library_init( 0, NULL, NULL );
 
 	gLua->SetGlobal( "QUERY_SUCCESS", QUERY_SUCCESS );
@@ -77,6 +82,7 @@ int open_module( lua_State* L )
 
 int close_module( lua_State* L )
 {
+	ErrorNoHalt->UnReference();
 	m_vecConnections.clear();
 	mysql_library_end();
 	return 0;
@@ -361,7 +367,14 @@ void HandleQueryCallback( ILuaInterface* gLua, Query* query )
 		gLua->Push( query->GetError().c_str() );
 	}
 
-	gLua->Call(args);
+	if ( gLua->PCall( args ) != 0 )
+	{
+		const char* err = gLua->GetString(-1);
+		ErrorNoHalt->Push();
+			gLua->Push( err );
+		gLua->Call(1);
+	}
+
 }
 
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query )
@@ -395,7 +408,7 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 			if ( query->GetFlags() & QUERY_FLAG_ASSOC )
 			{
 				resultrow->SetMember( fields[i].name, row[i] );
-			} 
+			}
 			else
 			{
 				resultrow->SetMember( (float)i+1, row[i] );
