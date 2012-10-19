@@ -80,6 +80,7 @@ public:
 	ILuaObject*		GetReturn( int iNum );
 
 	void			Call( int args, int returns = 0 );
+	int				PCall( int args, int returns = 0, int iErrorFunc = 0 );
 
 	ILuaObject*		GetMetaTable( const char* strName, int iType );
 	ILuaObject*		GetMetaTable( int i );

@@ -391,6 +391,11 @@ void ILuaInterface::Call( int args, int returns )
 	m_pLua->Call( args, returns );
 }
 
+int ILuaInterface::PCall( int args, int returns, int iErrorFunc )
+{
+	return m_pLua->PCall( args, returns, iErrorFunc );
+}
+
 ILuaObject* ILuaInterface::GetMetaTable( const char* strName, int iType )
 {
 	m_pLua->CreateMetaTableType( strName, iType );
