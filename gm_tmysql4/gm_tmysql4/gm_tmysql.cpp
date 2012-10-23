@@ -25,13 +25,9 @@ void DispatchCompletedQueries( ILuaInterface* gLua, Database* mysqldb, bool requ
 void HandleQueryCallback( ILuaInterface* gLua, Query* query );
 bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* query );
 
-ILuaObject* ErrorNoHalt;
-
 int Start( lua_State* L )
 {
 	ILuaInterface* gLua = Lua();
-
-	ErrorNoHalt = gLua->GetGlobal("ErrorNoHalt");
 
 	mysql_library_init( 0, NULL, NULL );
 
@@ -84,7 +80,6 @@ int Start( lua_State* L )
 
 int Close( lua_State* L )
 {
-	ErrorNoHalt->UnReference();
 	m_vecConnections.RemoveAll();
 	mysql_library_end();
 	return 0;
@@ -364,9 +359,7 @@ void HandleQueryCallback( ILuaInterface* gLua, Query* query )
 	if ( gLua->PCall( args ) != 0 )
 	{
 		const char* err = gLua->GetString(-1);
-		ErrorNoHalt->Push();
-			gLua->Push( err );
-		gLua->Call(1);
+		gLua->ErrorNoHalt( err );
 	}
 }
 
