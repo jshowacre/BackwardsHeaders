@@ -72,6 +72,9 @@ public:
 	double			GetMemberDouble( const char* name, double d = 0 );
 	const char*		GetMemberStr( const char* name, const char* s = "", unsigned int* iLen = NULL );
 	void*			GetMemberUserData( const char* name, void* = NULL );
+	
+	void			SetMemberUserDataLite( const char* name, void* pData );
+	void*			GetMemberUserDataLite( const char* name, void* u = NULL )
 
 	void			SetUserData( void* obj );
 	
