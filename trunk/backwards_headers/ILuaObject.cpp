@@ -16,22 +16,20 @@ ILuaObject::~ILuaObject()
 
 void ILuaObject::Set( ILuaObject* obj ) // ???
 {
-	m_pLua->ThrowError( "ILuaObject::Set( ILuaObject* obj ) is not implemented yet, but feel free to contribute!" );
+	if ( m_iRef )
+		m_pLua->ReferenceFree( m_iRef );
+		
+	m_pLua->ReferencePush( obj->m_iRef );
+	m_iRef = m_pLua->ReferenceCreate();
 }
 
 void ILuaObject::SetFromStack( int i ) // ???
 {
-	/*m_pLua->ReferenceFree( m_iRef );
-
-	if (i != 0)
-		m_pLua->Push(i);
-
-	m_iRef = m_pLua->ReferenceCreate();
-
-	if (i != 0)
-		m_pLua->Pop(i);*/
+	if ( m_iRef )
+		m_pLua->ReferenceFree( m_iRef );
 		
-	m_pLua->ThrowError( "ILuaObject::SetFromStack( int i ) is not implemented yet, but feel free to contribute!" );
+	m_pLua->Push( i );
+	m_iRef = m_pLua->ReferenceCreate();
 }
 
 void ILuaObject::UnReference()
@@ -396,6 +394,24 @@ void ILuaObject::SetUserData( void* obj )
 		ILuaUserData *data = (ILuaUserData*) m_pLua->GetUserdata();
 		data->obj = obj;
 	m_pLua->Pop(); // -1
+}
+
+void ILuaObject::SetMemberUserDataLite( const char* name, void* pData )
+{
+	Push(); // +1
+		m_pLua->PushString( name ); // +1
+		m_pLua->PushUserdata( pData ); // +1
+		m_pLua->SetTable( -3 ); // -2
+	m_pLua->Pop(); // -1
+}
+
+void* ILuaObject::GetMemberUserDataLite( const char* name, void* u )
+{
+	Push(); // +1
+		m_pLua->GetField( -1, name ); // +1
+		void* r  = ( m_pLua->GetType(-1) != Type::NIL ) ? m_pLua->GetUserdata(-1) : u;
+	m_pLua->Pop(2); // -2
+	return r;
 }
 
 bool ILuaObject::isType( int iType )
