@@ -29,6 +29,7 @@ public:
 	void			PushUserData( ILuaObject* metatable, void * v );
 	
 	void			Error( const char* strError, ... );
+	void			ErrorNoHalt( const char* strError, ... );
 	void			LuaError( const char* strError, int argument = -1 );
 
 	ILuaObject*		GetGlobal( const char* name );
@@ -91,6 +92,7 @@ private:
 	ILuaObject*		m_pG;
 	ILuaObject*		m_pR;
 	ILuaObject*		m_pE;
+	ILuaObject*		m_pErrorNoHalt;
 };
 
 #endif
