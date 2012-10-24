@@ -20,12 +20,12 @@ require( "tmysql4" )
 
 --[[
 	Database:Query( String, function onComplete, return flags, random object to be used in callback )
-	function onComplete( Table result, Bool status, String error, Object random object from query thing )	
+	function onComplete( [Object random object from query thing], Table result, Bool status, String error )	
 	Database:Disconnect() - Close the current database connection and finish any pending queries
 	Database:SetCharset( String character set )
 	Database:Poll() - Polls all active queries and calls their callbacks on completion
 	
-	local function onCompleted( results, status, error, ply )
+	local function onCompleted( ply, results, status, error )
 		print( "Query for player completed", ply )
 		if status == QUERY_SUCCESS then
 			PrintTable( results )
@@ -35,6 +35,12 @@ require( "tmysql4" )
 	end
 	
 	Database:Query( "select * from some_table", onCompleted, QUERY_FLAG_ASSOC, Player(1) )
+	
+	function GM:OurMySQLCallback( results, status, error )
+		print( result, status, error )
+	end
+	
+	Database:Query( "select * from some_table", GAMEMODE.OurMySQLCallback, QUERY_FLAG_ASSOC, GAMEMODE ) -- Call the gamemode function
 ]]
 
 DB_DM, err = tmysql.initialize( HOSTNAME, USERNAME, PASSWORD, DATABASE, PORT, OPTIONAL_UNIX_SOCKET_PATH )
