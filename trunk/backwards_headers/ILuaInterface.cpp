@@ -11,6 +11,8 @@ ILuaInterface::ILuaInterface( lua_State* state ) : m_pState(state), m_pLua(state
 
 	m_pLua->PushSpecial( SPECIAL_ENV );
 	m_pE = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
+
+	m_pErrorNoHalt = GetGlobal( "ErrorNoHalt" );
 }
 
 ILuaInterface::~ILuaInterface()
@@ -18,6 +20,7 @@ ILuaInterface::~ILuaInterface()
 	m_pG->UnReference();
 	m_pR->UnReference();
 	m_pE->UnReference();
+	m_pErrorNoHalt->UnReference();
 }
 
 lua_State* ILuaInterface::GetLuaState()
@@ -100,6 +103,23 @@ void ILuaInterface::Error( const char* strError, ... )
 	va_end( argptr );
 
 	m_pLua->ThrowError( buff );
+}
+
+void ILuaInterface::ErrorNoHalt( const char* strError, ... )
+{
+	char buff[ 1024 ];
+	va_list argptr;
+	va_start( argptr, strError );
+#ifdef _LINUX
+	vsprintf( buff, strError, argptr );
+#else
+	vsprintf_s( buff, strError, argptr );
+#endif
+	va_end( argptr );
+
+	m_pErrorNoHalt->Push();
+		m_pLua->PushString( strError );
+	m_pLua->Call(1,0);
 }
 
 void ILuaInterface::LuaError( const char* strError, int argument )
