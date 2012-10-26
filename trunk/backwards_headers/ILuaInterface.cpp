@@ -381,6 +381,21 @@ void ILuaInterface::Push( CFunc f )
 	m_pLua->PushCFunction( f );
 }
 
+void ILuaInterface::Push( int i )
+{
+	m_pLua->PushNumber( i );
+}
+
+void ILuaInterface::Push( float f )
+{
+	m_pLua->PushNumber( f );
+}
+
+void ILuaInterface::PushLong( int i )
+{
+	m_pLua->PushNumber( i );
+}
+
 void ILuaInterface::PushNil()
 {
 	m_pLua->PushNil();

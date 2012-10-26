@@ -72,6 +72,9 @@ public:
 	void			Push( double d );
 	void			Push( bool b );
 	void			Push( CFunc f );
+	void			Push( int i );
+	void			Push( float f );
+	void			PushLong( int i );
 	void			PushNil();
 
 	void			CheckType( int i, int iType );
