@@ -571,13 +571,16 @@ LUA_FUNCTION( GetConVar )
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::STRING);
 
-	ConVar *ConVar = g_ICvar->FindVar( gLua->GetString( 1 ) );
+	ConVar *cvar = g_ICvar->FindVar( gLua->GetString( 1 ) );
 
-	ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
-		gLua->PushUserData( metaT, cvar );
-	metaT->UnReference();
+	if (cvar) {
+		ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
+			gLua->PushUserData( metaT, cvar );
+		metaT->UnReference();
+		return 1;
+	}
 
-	return 1;
+	return 0;
 }
 
 LUA_FUNCTION( GetCommand )
@@ -587,11 +590,14 @@ LUA_FUNCTION( GetCommand )
 
 	ConCommand *cvar = g_ICvar->FindCommand( gLua->GetString( 1 ) );
 
-	ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
-		gLua->PushUserData( metaT, cvar );
-	metaT->UnReference();
+	if (cvar) {
+		ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
+			gLua->PushUserData( metaT, cvar );
+		metaT->UnReference();
+		return 1;
+	}
 
-	return 1;
+	return 0;
 }
 
 int Open( lua_State *L ) {
