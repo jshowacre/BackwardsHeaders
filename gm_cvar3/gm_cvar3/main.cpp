@@ -640,10 +640,11 @@ int Open( lua_State *L ) {
 	gLua->SetGlobal( "FCVAR_DEVELOPMENTONLY", (float) FCVAR_DEVELOPMENTONLY );
 	gLua->SetGlobal( "FCVAR_HIDDEN", (float) FCVAR_HIDDEN );
 	
-	ILuaObject* cvars = gLua->GetNewTable();
+	ILuaObject* cvars = gLua->GetGlobal( "cvars" );
 		cvars->SetMember( "GetAllConVars", GetAllCvars );
 		cvars->SetMember( "GetAllCommands", GetAllCmds );
 		cvars->SetMember( "GetCommand", GetCommand );
+		cvars->SetMember( "GetConVar", GetConVar );
 	gLua->SetGlobal( "cvars", cvars );
 
 	cvars->UnReference();
