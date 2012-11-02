@@ -3,7 +3,7 @@
 
 #include "Types.h"
 #include "LuaBase.h"
-#include "Userdata.h"
+#include "UserData.h"
 
 	struct lua_State
 	{
