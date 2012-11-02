@@ -1,5 +1,5 @@
 #include "ILuaInterface.h"
-#include "Userdata.h"
+#include "UserData.h"
 
 ILuaInterface::ILuaInterface( lua_State* state ) : m_pState(state), m_pLua(state->luabase)
 {

@@ -1,5 +1,5 @@
 #include "ILuaObject.h"
-#include "Userdata.h"
+#include "UserData.h"
 #include <sstream>
 
 ILuaObject::ILuaObject( ILuaBase* lua, int iRef ) : m_pLua(lua), m_iRef(iRef)
