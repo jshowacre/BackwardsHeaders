@@ -1,5 +1,5 @@
 #include "ILuaObject.h"
-#include "ILuaUserData.h"
+#include "Userdata.h"
 #include <sstream>
 
 ILuaObject::ILuaObject( ILuaBase* lua, int iRef ) : m_pLua(lua), m_iRef(iRef)
@@ -102,9 +102,9 @@ bool ILuaObject::GetBool( void )
 void* ILuaObject::GetUserData( void )
 {
 	Push(); // +1
-		ILuaUserData* data = (ILuaUserData*) m_pLua->GetUserdata( -1 );
+		UserData* data = (UserData*) m_pLua->GetUserdata( -1 );
 	m_pLua->Pop(); // -1
-	return data->obj;
+	return data->data;
 }
 
 CUtlLuaVector* ILuaObject::GetMembers()
@@ -383,7 +383,7 @@ void* ILuaObject::GetMemberUserData( const char* name, void* u )
 {
 	Push(); // +1
 		m_pLua->GetField( -1, name ); // +1
-		void* r = ( m_pLua->GetType(-1) != Type::NIL ) ? ((ILuaUserData*) m_pLua->GetUserdata(-1))->obj : u;
+		void* r = ( m_pLua->GetType(-1) != Type::NIL ) ? ((UserData*) m_pLua->GetUserdata(-1))->data : u;
 	m_pLua->Pop(2); // -2
 	return r;
 }
@@ -391,8 +391,8 @@ void* ILuaObject::GetMemberUserData( const char* name, void* u )
 void ILuaObject::SetUserData( void* obj )
 {
 	Push(); // +1
-		ILuaUserData *data = (ILuaUserData*) m_pLua->GetUserdata();
-		data->obj = obj;
+		UserData *data = (UserData*) m_pLua->GetUserdata();
+		data->data = obj;
 	m_pLua->Pop(); // -1
 }
 

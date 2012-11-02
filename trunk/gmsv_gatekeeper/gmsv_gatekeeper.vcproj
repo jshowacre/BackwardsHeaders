@@ -186,15 +186,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaInterface.cpp"
+				RelativePath="..\backwards_headers\ILuaInterface.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaModuleManager.cpp"
+				RelativePath="..\backwards_headers\ILuaModuleManager.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\SourceSDK\gmod13\include\GarrysMod\Lua\ILuaObject.cpp"
+				RelativePath="..\backwards_headers\ILuaObject.cpp"
 				>
 			</File>
 			<File

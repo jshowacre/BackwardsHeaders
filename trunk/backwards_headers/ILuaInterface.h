@@ -26,7 +26,7 @@ public:
 	ILuaObject*		NewTemporaryObject();
 	ILuaObject*		NewUserData( ILuaObject* metaT );
 
-	void			PushUserData( ILuaObject* metatable, void * v );
+	void			PushUserData( ILuaObject* metatable, void * v, unsigned char type );
 	
 	void			Error( const char* strError, ... );
 	void			ErrorNoHalt( const char* strError, ... );

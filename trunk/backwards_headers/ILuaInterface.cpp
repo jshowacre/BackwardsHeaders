@@ -1,5 +1,5 @@
 #include "ILuaInterface.h"
-#include "ILuaUserData.h"
+#include "Userdata.h"
 
 ILuaInterface::ILuaInterface( lua_State* state ) : m_pState(state), m_pLua(state->luabase)
 {
@@ -62,7 +62,7 @@ ILuaObject* ILuaInterface::NewTemporaryObject()
 
 ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
 {
-	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
+	UserData *data = (UserData*) m_pLua->NewUserdata( sizeof( UserData ) );
 	ILuaObject* obj = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() );
 
 	obj->Push(); // +1
@@ -73,13 +73,14 @@ ILuaObject* ILuaInterface::NewUserData( ILuaObject* metaT )
 	return obj;
 }
 
-void ILuaInterface::PushUserData( ILuaObject* metaT, void * v )
+void ILuaInterface::PushUserData( ILuaObject* metaT, void * v, unsigned char type )
 {
 	if (!metaT)
 		Error("CLuaInterface - No Metatable!\n");
 
-	ILuaUserData *data = (ILuaUserData*) m_pLua->NewUserdata( sizeof( ILuaUserData ) );
-	data->obj = v;
+	UserData *data = (UserData*) m_pLua->NewUserdata( sizeof( UserData ) );
+	data->data = v;
+	data->type = type;
 
 	int iRef = m_pLua->ReferenceCreate();
 
@@ -247,14 +248,14 @@ bool ILuaInterface::GetBool( int i )
 
 void** ILuaInterface::GetUserDataPtr( int i )
 {
-	ILuaUserData* data = (ILuaUserData*) m_pLua->GetUserdata( i );
-	return &data->obj; // Not sure if this is correct
+	UserData* data = (UserData*) m_pLua->GetUserdata( i );
+	return &data->data; // Not sure if this is correct
 }
 
 void* ILuaInterface::GetUserData( int i )
 {
-	ILuaUserData* data = (ILuaUserData*) m_pLua->GetUserdata( i );
-	return data->obj;
+	UserData* data = (UserData*) m_pLua->GetUserdata( i );
+	return data->data;
 }
 
 void ILuaInterface::GetTable( int i ) // ???
