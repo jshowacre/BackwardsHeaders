@@ -10,7 +10,7 @@
 	#define ENGINE_LIB "engine.dll"
 #endif
 
-#define CLIENT_DLL
+//#define CLIENT_DLL
 
 #include "sigscan.h"
 
@@ -53,21 +53,6 @@ int GetPlayerMethodInt( lua_State* L, int i, char *methodName )
     retrn->UnReference();
 
 	return retrnNum;
-}
-
-inline ILuaObject* NewConVarObject( lua_State* L, const char *name )
-{
-	ILuaInterface* gLua = Lua();
-
-	ILuaObject* func = gLua->GetGlobal( "GetConVar" );
-
-		gLua->Push( func );
-			gLua->Push( name );
-		gLua->Call( 1, 1 );
-
-	func->UnReference();
-
-	return gLua->GetReturn( 0 );
 }
 
 LUA_FUNCTION( GetAllCvars )
@@ -444,7 +429,7 @@ LUA_FUNCTION( Remove )
 		gLua->Error("Invalid ConVar!\n");
 
 	g_ICvar->UnregisterConCommand( cvar );
-	delete cvar;
+	//delete cvar;
 	return 0;
 }
 
@@ -543,10 +528,7 @@ LUA_FUNCTION( __eq )
 	ConVar *cvar1 = ( ConVar* ) gLua->GetUserData(1);
 	ConVar *cvar2 = ( ConVar* ) gLua->GetUserData(2);
 	
-	if ( cvar1 == cvar2 )
-		gLua->Push( (bool) true );
-	else
-		gLua->Push( (bool) false );
+	gLua->Push( (bool) ( cvar1 == cvar2 ) );
 
 	return 1;
 }
@@ -575,7 +557,7 @@ LUA_FUNCTION( GetConVar )
 
 	if (cvar) {
 		ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
-			gLua->PushUserData( metaT, cvar );
+			gLua->PushUserData( metaT, cvar, Type::CONVAR );
 		metaT->UnReference();
 		return 1;
 	}
@@ -592,7 +574,7 @@ LUA_FUNCTION( GetCommand )
 
 	if (cvar) {
 		ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
-			gLua->PushUserData( metaT, cvar );
+			gLua->PushUserData( metaT, cvar, Type::CONVAR );
 		metaT->UnReference();
 		return 1;
 	}
@@ -614,6 +596,32 @@ int Open( lua_State *L ) {
 
 	//if ( gLua->IsServer() ) {
 #ifndef CLIENT_DLL
+
+#ifdef WIN32
+	CSigScan::sigscan_dllfunc = Sys_GetFactory( ENGINE_LIB );
+	
+	if ( CSigScan::GetDllMemInfo() )
+	{
+		CSigScan sigBaseServer;
+		sigBaseServer.Init( (unsigned char *)
+			"\x00\x00\x00\x00" "\x88\x1D\x00\x00\x00\x00" "\xE8\x00\x00\x00\x00" "\xD9\x1D",
+			"????xx????x????xx",
+			17 );
+
+		if ( sigBaseServer.is_set )
+			pServer = *(CBaseServer **)sigBaseServer.sig_addr;
+	}
+#else
+	void *hEngine = dlopen( ENGINE_LIB, RTLD_LAZY );
+
+	if ( hEngine )
+	{
+		pServer = (CBaseServer *)ResolveSymbol( hEngine, "sv" );
+
+		dlclose( hEngine );
+	}
+#endif
+
 		// rip from gatekeeper
 		CSigScan::sigscan_dllfunc = Sys_GetFactory( ENGINE_LIB );
 	

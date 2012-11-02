@@ -9,7 +9,7 @@
 #endif
 
 #define STRINGTABLE_NAME "StringTable"
-#define STRINGTABLE_ID 5843
+#define STRINGTABLE_ID 101
 
 #undef _UNICODE
 
@@ -340,7 +340,7 @@ void OnTableChanged( void *object, INetworkStringTable *stringTable, int stringN
 		gLua->PushNil();
 
 		ILuaObject *metaT = gLua->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID ); //Push our custom stringtable object
-			gLua->PushUserData( metaT, stringTable );
+			gLua->PushUserData( metaT, stringTable, STRINGTABLE_ID );
 		metaT->UnReference();
 
 		gLua->Push( (float) stringNumber );
@@ -422,7 +422,7 @@ LUA_FUNCTION( __new )
 		Lua()->Error("gm_stringtables: Invalid StringTable!\n");
 
 	ILuaObject *metaT = Lua()->GetMetaTable( STRINGTABLE_NAME, STRINGTABLE_ID );
-		Lua()->PushUserData( metaT, stringTable );
+		Lua()->PushUserData( metaT, stringTable, STRINGTABLE_ID );
 	metaT->UnReference();
 
 	return 1;

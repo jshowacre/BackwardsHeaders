@@ -4,8 +4,8 @@
 
 #include "gm_tmysql.h"
 
-#define DATABASE_NAME "tmysqlDB"
-#define DATABASE_ID 6603
+#define DATABASE_NAME "Database"
+#define DATABASE_ID 200
 
 GMOD_MODULE( Start, Close );
 
@@ -125,7 +125,7 @@ LUA_FUNCTION( initialize )
 	m_vecConnections.AddToTail(mysqldb);
 	
 	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
-		gLua->PushUserData( metaT, mysqldb );
+		gLua->PushUserData( metaT, mysqldb, DATABASE_ID );
 	metaT->UnReference();
 
 	return 1;
