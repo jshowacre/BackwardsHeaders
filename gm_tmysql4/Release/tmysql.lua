@@ -25,7 +25,10 @@ require( "tmysql4" )
 	Database:SetCharset( String character set )
 	Database:Poll() - Polls all active queries and calls their callbacks on completion
 	
-	local function onCompleted( ply, results, status, error )
+	local function onPlayerCompleted( ply, results, status, error )
+		--[[
+			if status == true, the error will be the mysql_last_id if doing an insert into an AUTO INCREMENT'd table
+		]]
 		print( "Query for player completed", ply )
 		if status == QUERY_SUCCESS then
 			PrintTable( results )
@@ -34,7 +37,21 @@ require( "tmysql4" )
 		end
 	end
 	
-	Database:Query( "select * from some_table", onCompleted, QUERY_FLAG_ASSOC, Player(1) )
+	Database:Query( "select * from some_table", onPlayerCompleted, QUERY_FLAG_ASSOC, Player(1) )
+	
+	local function onCompleted( results, status, error )
+		--[[
+			if status == true, the error will be the mysql_last_id if doing an insert into an AUTO INCREMENT'd table
+		]]
+		print( "Query for completed" )
+		if status == QUERY_SUCCESS then
+			PrintTable( results )
+		else
+			ErrorNoHalt( error )
+		end
+	end
+	
+	Database:Query( "select * from some_table", onCompleted, QUERY_FLAG_ASSOC )
 	
 	function GM:OurMySQLCallback( results, status, error )
 		print( result, status, error )
@@ -48,11 +65,16 @@ DB_DM, err = tmysql.initialize( HOSTNAME, USERNAME, PASSWORD, DATABASE, PORT, OP
 hook.Remove( "Tick", "TMysqlPoll" ) -- This hook is added when the module is started, it calles tmysql.PollAll() as shown below
 
 --[[
-hook.Add( "Tick", "TMysqlPoll", function()
-	--tmysql.PollAll()
+-- THIS IS BASICALLY WHAT THE CPP MODULE IS DOING
+
+function tmysql.PollAll()
 	for k,db in pairs( tmysql.GetTable() ) do
 		db:Poll()
 	end
+end
+
+hook.Add( "Tick", "TMysqlPoll", function()
+	tmysql.PollAll()
 end )
 ]]
 
