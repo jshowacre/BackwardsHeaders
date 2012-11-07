@@ -7,6 +7,7 @@ GMOD_MODULE( open_module, close_module );
 
 std::vector< Database* > m_vecConnections;
 LUA_FUNCTION( escape );
+LUA_FUNCTION( dbescape );
 LUA_FUNCTION( initialize );
 LUA_FUNCTION( disconnect );
 LUA_FUNCTION( __tostring );
@@ -55,7 +56,7 @@ int open_module( lua_State* L )
 		metaT->SetMember( "Disconnect", disconnect );
 		metaT->SetMember( "SetCharset", setcharset );
 		metaT->SetMember( "Poll", poll );
-		metaT->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
+		//metaT->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
 		metaT->SetMember( "__tostring", __tostring );
 		metaT->SetMember( "__index", metaT );
 	metaT->UnReference();
@@ -78,6 +79,16 @@ int open_module( lua_State* L )
 
 int close_module( lua_State* L )
 {
+	ILuaInterface* gLua = Lua();
+
+	for( std::vector< Database* >::const_iterator iter = m_vecConnections.begin(); iter != m_vecConnections.end(); ++iter )
+	{
+		Database* mysqldb = *iter;
+
+		if ( mysqldb )
+			DisconnectDB( gLua, mysqldb );
+	}
+
 	m_vecConnections.clear();
 	mysql_library_end();
 	return 0;
@@ -144,6 +155,28 @@ LUA_FUNCTION( escape )
 
 	mysql_escape_string( escaped, query, len );	
 
+	gLua->Push( escaped );
+
+	delete escaped;
+	return 1;
+}
+
+LUA_FUNCTION( dbescape )
+{
+	ILuaInterface* gLua = Lua();
+	gLua->CheckType( 1, DATABASE_ID );
+	gLua->CheckType( 2, Type::STRING );
+
+	Database *mysqldb = ( Database* ) gLua->GetUserData( 1 );
+
+	if ( !mysqldb )
+		return 0;
+
+	gLua->CheckType( 2, Type::STRING );
+
+	const char* query = gLua->GetString( 2 );
+
+	char* escaped = mysqldb->Escape( query );
 	gLua->Push( escaped );
 
 	delete escaped;
