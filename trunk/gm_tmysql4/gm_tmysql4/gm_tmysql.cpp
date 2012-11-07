@@ -11,6 +11,7 @@ GMOD_MODULE( Start, Close );
 
 CUtlVectorMT<CUtlVector<Database*>> m_vecConnections;
 LUA_FUNCTION( escape );
+LUA_FUNCTION( dbescape );
 LUA_FUNCTION( initialize );
 LUA_FUNCTION( disconnect );
 LUA_FUNCTION( __tostring );
@@ -54,10 +55,11 @@ int Start( lua_State* L )
 
 	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
 		metaT->SetMember( "Query", query );
+		metaT->SetMember( "Escape", dbescape );
 		metaT->SetMember( "Disconnect", disconnect );
 		metaT->SetMember( "SetCharset", setcharset );
 		metaT->SetMember( "Poll", poll );
-		metaT->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
+		//metaT->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
 		metaT->SetMember( "__tostring", __tostring );
 		metaT->SetMember( "__index", metaT );
 	metaT->UnReference();
@@ -80,7 +82,17 @@ int Start( lua_State* L )
 
 int Close( lua_State* L )
 {
-	m_vecConnections.RemoveAll();
+	ILuaInterface* gLua = Lua();
+
+	FOR_EACH_VEC( m_vecConnections, i )
+	{
+		Database* mysqldb = m_vecConnections.Element(i);
+
+		if (mysqldb)
+			DisconnectDB( gLua, mysqldb );
+	}
+
+	m_vecConnections.Purge();
 	mysql_library_end();
 	return 0;
 }
@@ -143,6 +155,28 @@ LUA_FUNCTION( escape )
 
 	mysql_escape_string( escaped, query, len );	
 
+	gLua->Push( escaped );
+
+	delete escaped;
+	return 1;
+}
+
+LUA_FUNCTION( dbescape )
+{
+	ILuaInterface* gLua = Lua();
+	gLua->CheckType( 1, DATABASE_ID );
+	gLua->CheckType( 2, Type::STRING );
+
+	Database *mysqldb = ( Database* ) gLua->GetUserData( 1 );
+
+	if ( !mysqldb )
+		return 0;
+
+	gLua->CheckType( 2, Type::STRING );
+
+	const char* query = gLua->GetString( 2 );
+
+	char* escaped = mysqldb->Escape( query );
 	gLua->Push( escaped );
 
 	delete escaped;

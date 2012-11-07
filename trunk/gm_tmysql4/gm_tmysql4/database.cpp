@@ -220,6 +220,31 @@ void Database::YieldPostCompleted( Query* query )
 	m_vecCompleted.AddToTail( query );
 }
 
+char* Database::Escape( const char* query )
+{
+	MYSQL* pMYSQL;
+	{
+		AUTO_LOCK_FM( m_vecAvailableConnections );
+		Assert( m_vecAvailableConnections.Size() > 0 );
+
+		pMYSQL = m_vecAvailableConnections.Head();
+		m_vecAvailableConnections.Remove( 0 );
+
+		Assert( pMYSQL );
+	}
+
+	size_t len = Q_strlen( query );
+	char* escaped = new char[len*2+1];
+
+	mysql_real_escape_string( pMYSQL, escaped, query, len );
+
+	{
+		AUTO_LOCK_FM( m_vecAvailableConnections );
+		m_vecAvailableConnections.AddToTail( pMYSQL );
+	}
+
+	return escaped;
+}
 
 void Database::DoExecute( Query* query )
 {

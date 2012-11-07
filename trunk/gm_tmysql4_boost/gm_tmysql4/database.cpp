@@ -139,6 +139,30 @@ void Database::YieldPostCompleted( Query* query )
 	m_vecCompleted.push_back( query );
 }
 
+char* Database::Escape( const char* query )
+{
+	MYSQL* pMYSQL;
+	{
+		recursive_mutex::scoped_lock lock( m_AvailableMutex );
+
+		pMYSQL = m_vecAvailableConnections.front();
+		m_vecAvailableConnections.pop_front();
+	}
+
+	size_t len = strlen( query );
+	char* escaped = new char[len*2+1];
+
+	mysql_real_escape_string( pMYSQL, escaped, query, len );
+
+	{
+		recursive_mutex::scoped_lock lock( m_AvailableMutex );
+
+		m_vecAvailableConnections.push_back( pMYSQL );
+	}
+
+	return escaped;
+}
+
 void Database::DoExecute( Query* query )
 {
 	MYSQL* pMYSQL;

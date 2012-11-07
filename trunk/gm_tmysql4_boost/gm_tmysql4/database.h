@@ -118,6 +118,7 @@ public:
 	void	Shutdown( void );
 
 	bool		SetCharacterSet( const char* charset, std::string& error );
+	char*		Escape( const char* query );
 	void		QueueQuery( const char* query, int callback = -1, int flags = 0, int callbackref = -1 );
 
 	std::deque< Query* >& CompletedQueries( void ) { return m_vecCompleted; }
