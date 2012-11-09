@@ -1,8 +1,6 @@
 #ifndef ILUAMODULEMANAGER_H
 #define ILUAMODULEMANAGER_H
 
-#define NO_SDK
-
 #include "Interface.h"
 #include "ILuaInterface.h"
 #include <map>
