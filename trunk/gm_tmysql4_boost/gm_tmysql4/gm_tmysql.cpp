@@ -5,6 +5,8 @@
 
 GMOD_MODULE( open_module, close_module );
 
+ILuaObject* g_tConnections;
+ILuaObject* g_DBMeta;
 std::vector< Database* > m_vecConnections;
 LUA_FUNCTION( escape );
 LUA_FUNCTION( dbescape );
@@ -25,6 +27,9 @@ bool PopulateTableFromQuery( ILuaInterface* gLua, ILuaObject* table, Query* quer
 int open_module( lua_State* L )
 {	
 	ILuaInterface* gLua = Lua();
+
+	g_tConnections = gLua->GetNewTable();
+	g_DBMeta = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
 
 	mysql_library_init( 0, NULL, NULL );
 
@@ -51,26 +56,22 @@ int open_module( lua_State* L )
 
 	tmysql->UnReference();
 
-	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
-		metaT->SetMember( "Query", query );
-		metaT->SetMember( "Disconnect", disconnect );
-		metaT->SetMember( "SetCharset", setcharset );
-		metaT->SetMember( "Poll", poll );
-		//metaT->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
-		metaT->SetMember( "__tostring", __tostring );
-		metaT->SetMember( "__index", metaT );
-	metaT->UnReference();
+	g_DBMeta->SetMember( "Query", query );
+	g_DBMeta->SetMember( "Disconnect", disconnect );
+	g_DBMeta->SetMember( "SetCharset", setcharset );
+	g_DBMeta->SetMember( "Poll", poll );
+	g_DBMeta->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
+	g_DBMeta->SetMember( "__tostring", __tostring );
+	g_DBMeta->SetMember( "__index", g_DBMeta );
 	
 	// hook.Add("Think", "TMysqlPoll", tmysql.poll)
 	ILuaObject *hook = gLua->GetGlobal("hook");
 		ILuaObject *Add = hook->GetMember("Add");
-
 			Add->Push();
 				gLua->Push("Tick");
 				gLua->Push("TMysqlPoll");
 				gLua->Push(pollall);
 			gLua->Call(3);
-
 		hook->UnReference();
 	Add->UnReference();
 
@@ -91,6 +92,13 @@ int close_module( lua_State* L )
 
 	m_vecConnections.clear();
 	mysql_library_end();
+
+	if ( g_tConnections )
+		g_tConnections->UnReference();
+
+	if ( g_DBMeta )
+		g_DBMeta->UnReference();
+	
 	return 0;
 }
 
@@ -134,11 +142,11 @@ LUA_FUNCTION( initialize )
 		return 2;
 	}
 
-	m_vecConnections.push_back(mysqldb);
-	
-	ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
-		gLua->PushUserData( metaT, mysqldb, DATABASE_ID );
-	metaT->UnReference();
+	ILuaObject* luaDB = gLua->NewUserData( g_DBMeta );
+		luaDB->SetUserData( mysqldb );
+		g_tConnections->SetMember( db, luaDB );
+		gLua->Push( luaDB );
+	luaDB->UnReference();
 
 	return 1;
 }
@@ -190,7 +198,7 @@ LUA_FUNCTION( disconnect )
 
 	Database *mysqldb = ( Database* ) gLua->GetUserData(1);
 
-	if (mysqldb)
+	if ( mysqldb )
 		DisconnectDB( gLua, mysqldb );
 
 	return 0;
@@ -280,13 +288,19 @@ LUA_FUNCTION( pollall )
 {
 	ILuaInterface* gLua = Lua();
 
-	for( std::vector< Database* >::const_iterator iter = m_vecConnections.begin(); iter != m_vecConnections.end(); ++iter )
+	CUtlLuaVector* luaDBs = g_tConnections->GetMembers();
+
+	FOR_LOOP( luaDBs, i ) // Example Loop
 	{
-		Database* mysqldb = *iter;
+		LuaKeyValue& keyValues = luaDBs->at(i);
+
+		Database* mysqldb = (Database*) keyValues.pValue->GetUserData();
 
 		if ( mysqldb )
 			DispatchCompletedQueries( gLua, mysqldb, false );
 	}
+
+	gLua->DeleteLuaVector( luaDBs );
 	return 0;
 }
 
@@ -295,19 +309,7 @@ LUA_FUNCTION( gettable )
 	ILuaInterface* gLua = Lua();
 	ILuaObject* connections = gLua->GetNewTable();
 
-	int i = 0;
-	for( std::vector< Database* >::const_iterator iter = m_vecConnections.begin(); iter != m_vecConnections.end(); ++iter )
-	{
-		i++;
-		Database* mysqldb = *iter;
-
-		ILuaObject *metaT = gLua->GetMetaTable( DATABASE_NAME, DATABASE_ID );
-			ILuaObject* luaDB = gLua->NewUserData( metaT );
-				luaDB->SetUserData( mysqldb );
-				connections->SetMember( i, luaDB );
-			luaDB->UnReference();
-		metaT->UnReference();
-	}
+	gLua->Push( g_tConnections );
 	return 1;
 }
 
@@ -319,9 +321,8 @@ void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb )
 		{
 			DispatchCompletedQueries( gLua, mysqldb, true );
 		}
-
+		g_tConnections->SetMember( mysqldb->GetDB() );
 		mysqldb->Shutdown();
-
 		delete mysqldb;
 	}
 }

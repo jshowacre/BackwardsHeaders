@@ -274,10 +274,16 @@ CUtlLuaVector* ILuaInterface::GetAllTableMembers( int i )
 	if(i != 0)
 		m_pLua->Push( i );
 
+	if( m_pLua->GetType( -1 ) != Type::TABLE )
+    {
+		m_pLua->ThrowError( "ILuaInterface::GetAllTableMembers, object not a table !" );
+        return NULL;
+    }
+
 	CUtlLuaVector* tableMembers = new CUtlLuaVector();
 
 	m_pLua->PushNil();
-	while ( m_pLua->Next( i - 2 ) != 0 )
+	while ( m_pLua->Next( -2 ) != 0 )
 	{
 		LuaKeyValue keyValues;
 
@@ -290,7 +296,7 @@ CUtlLuaVector* ILuaInterface::GetAllTableMembers( int i )
 		tableMembers->push_back( keyValues );
 #endif
 
-		m_pLua->Pop();
+		keyValues.pKey->Push(); // Push key back for next loop
 	}
 
 	if(i != 0)
@@ -312,6 +318,17 @@ CUtlLuaVector* ILuaInterface::GetAllTableMembers( int i )
 
 void ILuaInterface::DeleteLuaVector( CUtlLuaVector* pVector )
 {
+	FOR_LOOP( pVector, i )
+	{
+		LuaKeyValue& keyValues = pVector->at(i);
+
+		ILuaObject* key = keyValues.pKey;
+		ILuaObject* value = keyValues.pValue;
+
+		key->UnReference();
+		value->UnReference();
+	}
+
 	if (pVector)
 		delete pVector;
 }

@@ -139,6 +139,11 @@ void Database::YieldPostCompleted( Query* query )
 	m_vecCompleted.push_back( query );
 }
 
+const char* Database::GetDB()
+{
+	return m_strDB;
+}
+
 char* Database::Escape( const char* query )
 {
 	MYSQL* pMYSQL;

@@ -111,23 +111,32 @@ CUtlLuaVector* ILuaObject::GetMembers()
 {
 	Push();
 
+	if( m_pLua->GetType( -1 ) != Type::TABLE )
+    {
+		m_pLua->ThrowError( "ILuaObject::GetMembers, object not a table!" );
+        return NULL;
+    }
+
 	CUtlLuaVector* tableMembers = new CUtlLuaVector();
 
 	m_pLua->PushNil();
 	while ( m_pLua->Next( -2 ) != 0 )
 	{
 		LuaKeyValue keyValues;
+
+		int iValue = m_pLua->ReferenceCreate();
+		int iKey = m_pLua->ReferenceCreate();
 		
-		keyValues.pValue = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -1
-		keyValues.pKey = new ILuaObject( m_pLua, m_pLua->ReferenceCreate() ); // -2
+		keyValues.pValue = new ILuaObject( m_pLua, iValue ); // -1
+		keyValues.pKey = new ILuaObject( m_pLua, iKey ); // -2
 
 #ifndef NO_SDK
 		tableMembers->AddToTail( keyValues );
 #else
 		tableMembers->push_back( keyValues );
 #endif
-
-		m_pLua->Pop();
+		
+		m_pLua->ReferencePush( iKey ); // Push key back for next loop
 	}
 	
 	m_pLua->Pop();
