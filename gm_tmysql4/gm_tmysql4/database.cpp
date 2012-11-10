@@ -220,6 +220,11 @@ void Database::YieldPostCompleted( Query* query )
 	m_vecCompleted.AddToTail( query );
 }
 
+const char* Database::GetDB()
+{
+	return m_strDB;
+}
+
 char* Database::Escape( const char* query )
 {
 	MYSQL* pMYSQL;

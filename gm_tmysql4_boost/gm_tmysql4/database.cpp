@@ -130,8 +130,6 @@ void Database::QueueQuery( Query* query )
 	}
 }
 
-
-
 void Database::YieldPostCompleted( Query* query )
 {
 	recursive_mutex::scoped_lock lock( m_CompletedMutex );

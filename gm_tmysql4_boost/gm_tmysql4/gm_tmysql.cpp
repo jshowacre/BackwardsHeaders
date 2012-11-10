@@ -7,7 +7,6 @@ GMOD_MODULE( open_module, close_module );
 
 ILuaObject* g_tConnections;
 ILuaObject* g_DBMeta;
-std::vector< Database* > m_vecConnections;
 LUA_FUNCTION( escape );
 LUA_FUNCTION( dbescape );
 LUA_FUNCTION( initialize );
@@ -80,17 +79,6 @@ int open_module( lua_State* L )
 
 int close_module( lua_State* L )
 {
-	ILuaInterface* gLua = Lua();
-
-	for( std::vector< Database* >::const_iterator iter = m_vecConnections.begin(); iter != m_vecConnections.end(); ++iter )
-	{
-		Database* mysqldb = *iter;
-
-		if ( mysqldb )
-			DisconnectDB( gLua, mysqldb );
-	}
-
-	m_vecConnections.clear();
 	mysql_library_end();
 
 	if ( g_tConnections )
@@ -122,21 +110,26 @@ LUA_FUNCTION( initialize )
 	if(port == 0)
 		port = 3306;
 
+	ILuaObject* prevDB = g_tConnections->GetMember( db );
+
+	if (prevDB->GetType() != Type::NIL )
+	{
+		gLua->Push( false );
+		gLua->PushVA( "Connection for DB: %s already exists!", db );
+		prevDB->UnReference();
+		return 2;
+	}
+
+	prevDB->UnReference();
+
 	Database* mysqldb = new Database( host, user, pass, db, port, unixSock );
 
 	std::string error;
 
 	if ( !mysqldb->Initialize( error ) )
 	{
-		char buffer[1024];
-
-#ifdef _LINUX
-		sprintf( buffer, "Error connecting to DB: %s", error.c_str() );
-#else
-		sprintf_s( buffer, sizeof( buffer ), "Error connecting to DB: %s", error.c_str() );
-#endif
 		gLua->Push( false );
-		gLua->Push( buffer );
+		gLua->PushVA( "Error connecting to DB: %s", error.c_str() );
 
 		delete mysqldb;
 		return 2;
@@ -290,7 +283,7 @@ LUA_FUNCTION( pollall )
 
 	CUtlLuaVector* luaDBs = g_tConnections->GetMembers();
 
-	FOR_LOOP( luaDBs, i ) // Example Loop
+	FOR_LOOP( luaDBs, i )
 	{
 		LuaKeyValue& keyValues = luaDBs->at(i);
 
@@ -321,7 +314,13 @@ void DisconnectDB( ILuaInterface* gLua,  Database* mysqldb )
 		{
 			DispatchCompletedQueries( gLua, mysqldb, true );
 		}
+
+		ILuaObject* luaDB = g_tConnections->GetMember( mysqldb->GetDB() );
+			luaDB->SetNil();
+		luaDB->UnReference();
+
 		g_tConnections->SetMember( mysqldb->GetDB() );
+
 		mysqldb->Shutdown();
 		delete mysqldb;
 	}
