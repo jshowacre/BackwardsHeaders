@@ -23,7 +23,13 @@ void ILuaObject::Set( ILuaObject* obj ) // ???
 	m_iRef = m_pLua->ReferenceCreate();
 }
 
-void ILuaObject::SetFromStack( int i ) // ???
+void ILuaObject::SetNil() // ???
+{
+	m_pLua->PushNil();
+	SetFromStack( -1 );
+}
+
+void ILuaObject::SetFromStack( int i )
 {
 	if ( m_iRef )
 		m_pLua->ReferenceFree( m_iRef );

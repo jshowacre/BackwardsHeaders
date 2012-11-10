@@ -320,7 +320,12 @@ void ILuaInterface::DeleteLuaVector( CUtlLuaVector* pVector )
 {
 	FOR_LOOP( pVector, i )
 	{
+
+	#ifndef NO_SDK
+		LuaKeyValue& keyValues = pVector->Element(i);
+	#else
 		LuaKeyValue& keyValues = pVector->at(i);
+	#endif
 
 		ILuaObject* key = keyValues.pKey;
 		ILuaObject* value = keyValues.pValue;
