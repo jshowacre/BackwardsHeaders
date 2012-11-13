@@ -3,8 +3,9 @@
 #pragma comment (linker, "/NODEFAULTLIB:libcmt")
 
 #ifdef _LINUX
-	#define VSTD_LIB "vstdlib.so"
-	#define ENGINE_LIB "engine.so"
+	#define VSTD_LIB "libvstdlib_srv.so"
+	#define ENGINE_LIB "engine_srv.so"
+	#include "sourcemod/memutils.h"
 #else
 	#define VSTD_LIB "vstdlib.dll"
 	#define ENGINE_LIB "engine.dll"
@@ -504,7 +505,7 @@ LUA_FUNCTION( ReplicateData )
 			char pckBuf[256];
 			bf_write pck( pckBuf, sizeof( pckBuf ) );
 			
-			pck.WriteUBitLong( 5, 5 );
+			pck.WriteUBitLong( 5, 6 );
 			pck.WriteByte( 0x01 );
 			pck.WriteString( gLua->GetString(2) );
 			pck.WriteString( gLua->GetString(3) );
@@ -591,24 +592,28 @@ int Open( lua_State *L ) {
 	g_ICvar = ( ICvar* )VSTDLibFactory( CVAR_INTERFACE_VERSION, NULL );
 	if ( !g_ICvar )
 		gLua->Error( "gm_cvar3: Error getting ICvar interface.\n" );
-
-	//if ( gLua->IsServer() ) {
-#ifndef CLIENT_DLL
+	
+	gLua->SetGlobal( "FCVAR_DEVELOPMENTONLY", (float) FCVAR_DEVELOPMENTONLY );
+	gLua->SetGlobal( "FCVAR_HIDDEN", (float) FCVAR_HIDDEN );
 
 #ifdef WIN32
+	// rip from gatekeeper
 	CSigScan::sigscan_dllfunc = Sys_GetFactory( ENGINE_LIB );
-	
-	if ( CSigScan::GetDllMemInfo() )
-	{
-		CSigScan sigBaseServer;
-		sigBaseServer.Init( (unsigned char *)
-			"\x00\x00\x00\x00" "\x88\x1D\x00\x00\x00\x00" "\xE8\x00\x00\x00\x00" "\xD9\x1D",
-			"????xx????x????xx",
-			17 );
 
-		if ( sigBaseServer.is_set )
-			pServer = *(CBaseServer **)sigBaseServer.sig_addr;
-	}
+	if ( !CSigScan::GetDllMemInfo() )
+		gLua->Error("gm_cvar3: CSigScan::GetDllMemInfo failed!");
+
+	CSigScan sigBaseServer;
+	
+	sigBaseServer.Init( (unsigned char *)
+	"\x00\x00\x00\x00" "\x88\x1D\x00\x00\x00\x00" "\xE8\x00\x00\x00\x00" "\xD9\x1D",
+	"????xx????x????xx",
+	17 );
+
+	if ( !sigBaseServer.is_set )
+		gLua->Error("gm_cvar3: CBaseServer signature failed!");
+	else
+		pServer = *(CBaseServer**) sigBaseServer.sig_addr;
 #else
 	void *hEngine = dlopen( ENGINE_LIB, RTLD_LAZY );
 
@@ -620,45 +625,25 @@ int Open( lua_State *L ) {
 	}
 #endif
 
-		// rip from gatekeeper
-		CSigScan::sigscan_dllfunc = Sys_GetFactory( ENGINE_LIB );
-	
-		if ( !CSigScan::GetDllMemInfo() )
-			gLua->Error("gm_cvar3: CSigScan::GetDllMemInfo failed!");
-
-		CSigScan sigBaseServer;
-		
-		sigBaseServer.Init( (unsigned char *)
-		"\x00\x00\x00\x00" "\x88\x1D\x00\x00\x00\x00" "\xE8\x00\x00\x00\x00" "\xD9\x1D",
-		"????xx????x????xx",
-		17 );
-
-		if ( !sigBaseServer.is_set )
-			gLua->Error("gm_cvar3: CBaseServer signature failed!");
-		else {
-			pServer = *(CBaseServer**) sigBaseServer.sig_addr;
-
-			ILuaObject* playerMeta = gLua->GetMetaTable( "Player", Type::ENTITY );
-			if( playerMeta ) {
-				playerMeta->SetMember( "ExecuteCommandOnClient", ExecuteCommandOnClient );
-				playerMeta->SetMember( "GetUserSetting", GetUserSetting );
-				playerMeta->SetMember( "ReplicateData", ReplicateData );
-			}
-			playerMeta->UnReference();
+	if ( pServer == NULL )
+		gLua->Error("gm_cvar3: pServer NULL!");
+	else {
+		ILuaObject* playerMeta = gLua->GetMetaTable( "Player", Type::ENTITY );
+		if( playerMeta ) {
+			playerMeta->SetMember( "ExecuteCommandOnClient", ExecuteCommandOnClient );
+			playerMeta->SetMember( "GetUserSetting", GetUserSetting );
+			playerMeta->SetMember( "ReplicateData", ReplicateData );
 		}
-	//}
-#endif
-	
-	gLua->SetGlobal( "FCVAR_DEVELOPMENTONLY", (float) FCVAR_DEVELOPMENTONLY );
-	gLua->SetGlobal( "FCVAR_HIDDEN", (float) FCVAR_HIDDEN );
+		playerMeta->UnReference();
+	}
 	
 	ILuaObject* cvars = gLua->GetGlobal( "cvars" );
+	if( cvars ) {
 		cvars->SetMember( "GetAllConVars", GetAllCvars );
 		cvars->SetMember( "GetAllCommands", GetAllCmds );
 		cvars->SetMember( "GetCommand", GetCommand );
 		cvars->SetMember( "GetConVar", GetConVar );
-	gLua->SetGlobal( "cvars", cvars );
-
+	}
 	cvars->UnReference();
 	
 	ILuaObject* conVarMeta = gLua->GetMetaTable( "ConVar", Type::CONVAR );
