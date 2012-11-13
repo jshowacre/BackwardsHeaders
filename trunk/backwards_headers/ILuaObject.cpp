@@ -403,11 +403,12 @@ void* ILuaObject::GetMemberUserData( const char* name, void* u )
 	return r;
 }
 
-void ILuaObject::SetUserData( void* obj )
+void ILuaObject::SetUserData( void* obj, unsigned char type )
 {
 	Push(); // +1
 		UserData *data = (UserData*) m_pLua->GetUserdata();
 		data->data = obj;
+		data->type = type;
 	m_pLua->Pop(); // -1
 }
 

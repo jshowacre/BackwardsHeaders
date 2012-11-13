@@ -77,7 +77,7 @@ public:
 	void			SetMemberUserDataLite( const char* name, void* pData );
 	void*			GetMemberUserDataLite( const char* name, void* u = NULL );
 
-	void			SetUserData( void* obj );
+	void			SetUserData( void* obj, unsigned char type );
 	
 	bool			isType( int iType );
 	bool			isNil();
