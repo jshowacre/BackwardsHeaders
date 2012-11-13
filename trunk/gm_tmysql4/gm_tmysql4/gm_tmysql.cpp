@@ -137,7 +137,7 @@ LUA_FUNCTION( initialize )
 	}
 
 	ILuaObject* luaDB = gLua->NewUserData( g_DBMeta );
-		luaDB->SetUserData( mysqldb );
+		luaDB->SetUserData( mysqldb, DATABASE_ID );
 		g_tConnections->SetMember( db, luaDB );
 		gLua->Push( luaDB );
 	luaDB->UnReference();

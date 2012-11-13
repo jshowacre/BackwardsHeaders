@@ -69,7 +69,7 @@ LUA_FUNCTION( GetAllCvars )
 		if ( !conCmds->IsCommand() ) {
 			ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
 				ILuaObject* cvar = gLua->NewUserData( metaT );
-					cvar->SetUserData( conCmds );
+					cvar->SetUserData( conCmds, Type::CONVAR );
 					conVarTable->SetMember( i, cvar );
 				cvar->UnReference();
 			metaT->UnReference();
@@ -98,7 +98,7 @@ LUA_FUNCTION( GetAllCmds )
 		if ( conCmds->IsCommand() ) {
 			ILuaObject *metaT = gLua->GetMetaTable( "ConVar", Type::CONVAR );
 				ILuaObject* cvar = gLua->NewUserData( metaT );
-					cvar->SetUserData( conCmds );
+					cvar->SetUserData( conCmds, Type::CONVAR );
 					conVarTable->SetMember( i, cvar );
 				cvar->UnReference();
 			metaT->UnReference();
