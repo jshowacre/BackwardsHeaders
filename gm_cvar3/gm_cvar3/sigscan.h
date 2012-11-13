@@ -1,7 +1,5 @@
 #ifndef SIGSCAN_H
 #define SIGSCAN_H
-
-#define nullptr 0
  
 class CSigScan {
 private:
