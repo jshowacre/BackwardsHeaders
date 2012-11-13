@@ -60,7 +60,7 @@ int open_module( lua_State* L )
 		metaT->SetMember( "Disconnect", disconnect );
 		metaT->SetMember( "SetCharset", setcharset );
 		metaT->SetMember( "Poll", poll );
-		//metaT->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
+		metaT->SetMember( "__gc", disconnect ); // This seems to be called on shutdown
 		metaT->SetMember( "__tostring", __tostring );
 		metaT->SetMember( "__index", metaT );
 	metaT->UnReference();
