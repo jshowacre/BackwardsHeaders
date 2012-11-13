@@ -18,6 +18,7 @@ abstract_class IServer : public IConnectionlessPacketHandler
 public:
 	virtual	~IServer() {}
 
+	virtual void	ProcessConnectionlessPacket( void ) const = 0;
 	virtual int		GetNumClients( void ) const = 0; // returns current number of clients
 	virtual int		GetNumProxies( void ) const = 0; // returns number of attached HLTV proxies
 	virtual int		GetNumFakeClients() const = 0; // returns number of fake clients/bots
@@ -89,6 +90,7 @@ public:
 	virtual unknown_ret ReplyServerChallenge( netadr_s& ) = 0;
 	virtual unknown_ret CalculateCPUUsage() = 0;
 	virtual bool ShouldUpdateMasterServer() = 0;
+	virtual unknown_ret UpdateMasterServerPlayers() = 0;
 };
 
 #endif // TMPSERVER_H

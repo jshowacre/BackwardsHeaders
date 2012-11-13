@@ -129,7 +129,7 @@ LUA_FUNCTION( initialize )
 	if ( !mysqldb->Initialize( error ) )
 	{
 		gLua->Push( false );
-		gLua->PushVA( "Error connecting to DB: %s", error.c_str() );
+		gLua->Push( error.c_str() );
 
 		delete mysqldb;
 		return 2;
