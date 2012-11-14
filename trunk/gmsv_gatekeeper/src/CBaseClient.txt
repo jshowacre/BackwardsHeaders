@@ -1,0 +1,62 @@
+// Auto reconstructed from vtable block @ 0x004820B0
+// from "engine.dylib", by ida_vtables.idc
+0	CBaseClient::~CBaseClient()
+1	CBaseClient::~CBaseClient()
+2	CBaseClient::FireGameEvent(IGameEvent *)
+3	CBaseClient::GetPlayerSlot(void)const
+4	CBaseClient::GetUserID(void)const
+5	CBaseClient::GetNetworkID(void)const
+6	CBaseClient::GetClientName(void)const
+7	CBaseClient::GetNetChannel(void)
+8	CBaseClient::GetServer(void)
+9	CBaseClient::GetUserSetting(char  const*)const
+10	CBaseClient::GetNetworkIDString(void)const
+11	CBaseClient::Connect(char  const*,int,INetChannel *,bool,int)
+12	CBaseClient::Inactivate(void)
+13	CBaseClient::Reconnect(void)
+14	CBaseClient::Disconnect(char  const*,...)
+15	CBaseClient::SetRate(int,bool)
+16	CBaseClient::GetRate(void)const
+17	CBaseClient::SetUpdateRate(int,bool)
+18	CBaseClient::GetUpdateRate(void)const
+19	CBaseClient::Clear(void)
+20	CBaseClient::DemoRestart(void)
+21	CBaseClient::GetMaxAckTickCount(void)const
+22	CBaseClient::ExecuteStringCommand(char  const*)
+23	CBaseClient::SendNetMsg(INetMessage &,bool)
+24	CBaseClient::ClientPrintf(char  const*,...)
+25	CBaseClient::IsConnected(void)const
+26	CBaseClient::IsSpawned(void)const
+27	CBaseClient::IsActive(void)const
+28	CBaseClient::IsFakeClient(void)const
+29	CBaseClient::IsHLTV(void)const
+30	CBaseClient::IsHearingClient(int)const
+31	CBaseClient::IsProximityHearingClient(int)const
+32	CBaseClient::SetMaxRoutablePayloadSize(int)
+33	CBaseClient::IsSplitScreenUser(void)const
+34	CBaseClient::ProcessTick(NET_Tick *)
+35	CBaseClient::ProcessStringCmd(NET_StringCmd *)
+36	CBaseClient::ProcessSetConVar(NET_SetConVar *)
+37	CBaseClient::ProcessSignonState(NET_SignonState *)
+38	CBaseClient::ProcessClientInfo(CLC_ClientInfo *)
+39	CBaseClient::ProcessBaselineAck(CLC_BaselineAck *)
+40	CBaseClient::ProcessListenEvents(CLC_ListenEvents *)
+41	CBaseClient::ProcessCmdKeyValues(CLC_CmdKeyValues *)
+42	CBaseClient::ConnectionStart(INetChannel *)
+43	CBaseClient::UpdateAcknowledgedFramecount(int)
+44	CBaseClient::ShouldSendMessages(void)
+45	CBaseClient::UpdateSendState(void)
+46	CBaseClient::FillUserInfo(player_info_s &)
+47	CBaseClient::UpdateUserSettings(void)
+48	CBaseClient::SetSignonState(int,int)
+49	CBaseClient::WriteGameSounds(bf_write &)
+50	CBaseClient::GetDeltaFrame(int)
+51	CBaseClient::SendSnapshot(CClientFrame *)
+52	CBaseClient::SendServerInfo(void)
+53	CBaseClient::SendSignonData(void)
+54	CBaseClient::SpawnPlayer(void)
+55	CBaseClient::ActivatePlayer(void)
+56	CBaseClient::SetName(char  const*)
+57	CBaseClient::SetUserCVar(char  const*,char  const*)
+58	CBaseClient::FreeBaselines(void)
+59	CBaseClient::IgnoreTempEntity(CEventInfo *)

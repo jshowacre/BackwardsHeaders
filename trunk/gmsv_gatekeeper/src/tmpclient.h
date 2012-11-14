@@ -12,7 +12,17 @@ public:
 	virtual	~IClient() {}
 
 	// fires a game event
-	//virtual void	FireGameEvent( IGameEvent *event ) = 0;
+	virtual void	FireGameEvent( IGameEvent *event ) = 0;
+
+	virtual int				GetPlayerSlot() const = 0; // returns client slot (usually entity number-1)
+
+	virtual int				GetUserID() const = 0; // unique ID on this server 
+	virtual const USERID_t	GetNetworkID() const = 0; // network wide ID
+	virtual const char		*GetClientName() const = 0;	// returns client name
+	virtual INetChannel		*GetNetChannel() = 0; // returns client netchannel
+	virtual IServer			*GetServer() = 0; // returns the object server the client belongs to
+	virtual const char		*GetUserSetting(const char *cvar) const = 0; // returns a clients FCVAR_USERINFO setting
+	virtual const char		*GetNetworkIDString() const = 0; // returns a human readable representation of the network id
 
 	// connect client
 	virtual void	Connect(const char * szName, int nUserID, INetChannel *pNetChannel, bool bFakePlayer) = 0;
@@ -25,15 +35,6 @@ public:
 
 	// disconnects a client with a given reason
 	virtual void	Disconnect( const char *reason, ... ) = 0;
-
-	virtual int				GetPlayerSlot() const = 0; // returns client slot (usually entity number-1)
-	virtual int				GetUserID() const = 0; // unique ID on this server 
-	virtual const USERID_t	GetNetworkID() const = 0; // network wide ID
-	virtual const char		*GetClientName() const = 0;	// returns client name
-	virtual INetChannel		*GetNetChannel() = 0; // returns client netchannel
-	virtual IServer			*GetServer() = 0; // returns the object server the client belongs to
-	virtual const char		*GetUserSetting(const char *cvar) const = 0; // returns a clients FCVAR_USERINFO setting
-	virtual const char		*GetNetworkIDString() const = 0; // returns a human readable representation of the network id
 
 	// set/get client data rate in bytes/second
 	virtual void	SetRate( int nRate, bool bForce ) = 0;
