@@ -377,8 +377,8 @@ int Load( lua_State *L )
 		return 0;
 	}
 
-	HOOKVFUNC( pServer, (58 + VTABLE_OFFSET), origCheckPassword, newCheckPassword );
-	HOOKVFUNC( pServer, (49 + VTABLE_OFFSET), origConnectClient, newConnectClient );
+	HOOKVFUNC( pServer, (59 + VTABLE_OFFSET), origCheckPassword, newCheckPassword );
+	HOOKVFUNC( pServer, (50 + VTABLE_OFFSET), origConnectClient, newConnectClient );
 
 	// create table
 	ILuaObject *gatekeeper = gLua->GetNewTable();
@@ -410,8 +410,8 @@ int Unload( lua_State *L )
 
 	ConVar_Unregister();
 
-	UNHOOKVFUNC( pServer, (58 + VTABLE_OFFSET), origCheckPassword );
-	UNHOOKVFUNC( pServer, (49 + VTABLE_OFFSET), origConnectClient );
+	UNHOOKVFUNC( pServer, (59 + VTABLE_OFFSET), origCheckPassword );
+	UNHOOKVFUNC( pServer, (50 + VTABLE_OFFSET), origConnectClient );
 
 	return 0;
 }
