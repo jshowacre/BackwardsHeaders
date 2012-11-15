@@ -18,7 +18,9 @@ abstract_class IServer : public IConnectionlessPacketHandler
 public:
 	virtual	~IServer() {}
 
+#ifdef _LINUX
 	virtual void	ProcessConnectionlessPacket( netpacket_s packet ) const = 0;
+#endif
 	virtual int		GetNumClients( void ) const = 0; // returns current number of clients
 	virtual int		GetNumProxies( void ) const = 0; // returns number of attached HLTV proxies
 	virtual int		GetNumFakeClients() const = 0; // returns number of fake clients/bots

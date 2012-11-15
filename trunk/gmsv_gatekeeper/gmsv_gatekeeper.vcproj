@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="gmsv_gatekeeper"
+	Name="gmsv_gatekeeper_win32"
 	ProjectGUID="{C9A05F75-7C2F-4A9B-AE69-EF01C3A37BEB}"
 	RootNamespace="gmsv_gatekeeper"
 	Keyword="Win32Proj"
