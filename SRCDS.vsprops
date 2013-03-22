@@ -6,7 +6,7 @@
 	>
 	<Tool
 		Name="VCCLCompilerTool"
-		AdditionalIncludeDirectories="E:\Developer\boost_1_51_0;E:\Developer\cpp\sourcesdk\gmod13\tools;E:\Developer\cpp\sourcesdk\public\steam;&quot;E:\Developer\cpp\sourcesdk\opensteamworks\Open Steamworks&quot;;E:\Developer\cpp\sourcesdk\public\tier1;E:\Developer\cpp\sourcesdk\public\tier0;E:\Developer\cpp\sourcesdk;E:\Developer\cpp\sourcesdk\common;E:\Repositories\MyModules\backwards_headers;E:\Developer\cpp\sourcesdk\public;E:\Developer\cpp\sourcesdk\game\client;E:\Developer\cpp\sourcesdk\game\shared;E:\Developer\cpp\sourcesdk\game\server"
+		AdditionalIncludeDirectories="E:\Repositories\MyModules\backwards_headers;E:\Developer\boost_1_51_0;E:\Developer\cpp\sourcesdk\gmod13\tools;E:\Developer\cpp\sourcesdk\public\steam;&quot;E:\Developer\cpp\sourcesdk\opensteamworks\Open Steamworks&quot;;E:\Developer\cpp\sourcesdk\public\tier1;E:\Developer\cpp\sourcesdk\public\tier0;E:\Developer\cpp\sourcesdk;E:\Developer\cpp\sourcesdk\common;E:\Developer\cpp\sourcesdk\public;E:\Developer\cpp\sourcesdk\game\client;E:\Developer\cpp\sourcesdk\game\shared;E:\Developer\cpp\sourcesdk\game\server"
 	/>
 	<Tool
 		Name="VCLinkerTool"
