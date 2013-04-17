@@ -286,7 +286,7 @@ LUA_FUNCTION( HasFlag )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
-	gLua->CheckType(2, Type::CONVAR);
+	gLua->CheckType(2, Type::NUMBER);
 
 	ConVar *cvar = (ConVar*) gLua->GetUserData(1);
 
@@ -302,7 +302,7 @@ LUA_FUNCTION( SetHelpText )
 {
 	ILuaInterface* gLua = Lua();
 	gLua->CheckType(1, Type::CONVAR);
-	gLua->CheckType(2, Type::CONVAR);
+	gLua->CheckType(2, Type::STRING);
 
 	ConVar *cvar = (ConVar*) gLua->GetUserData(1);
 

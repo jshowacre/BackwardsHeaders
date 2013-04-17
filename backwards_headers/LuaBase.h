@@ -88,6 +88,8 @@ namespace GarrysMod
 				virtual const char*		CheckString( int iStackPos = -1 ) = 0;
 				virtual double			CheckNumber( int iStackPos = -1 ) = 0;
 
+				virtual double			ObjLen( int iStackPos = -1 ) = 0;
+
 		};
 
 		enum 

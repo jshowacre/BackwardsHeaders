@@ -1,7 +1,7 @@
 #ifndef ILUAOBJECT_H
 #define ILUAOBJECT_H
 
-#include "Interface.h"
+#include "LuaInterface.h"
 #include "ILuaTable.h"
 
 using namespace GarrysMod::Lua;
